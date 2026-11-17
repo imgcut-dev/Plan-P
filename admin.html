@@ -102,7 +102,7 @@ function posts(){
  ${C.posts.map((p,i)=>[p,i]).sort((a,b)=>b[0].date.localeCompare(a[0].date)).map(([p,i])=>`<tr>
   <td><img class="thumb" src="${esc(p.img)}" alt=""></td><td><b>${esc(p.title)}</b></td><td>${esc(p.cats.join(", "))}</td>
   <td><span class="st ${p.status==="draft"?"d":""}">${p.status==="draft"?"임시":"발행"}</span></td><td style="color:var(--mut);white-space:nowrap">${esc(p.date)}</td>
-  <td><div class="acts"><button class="btn o s" onclick="editPost(${i})">수정</button><a class="btn o s" href="index.html#/post/${encodeURIComponent(p.id)}" target="_blank">보기</a></div></td></tr>`).join("")}</table></div>`;
+  <td><div class="acts"><button class="btn o s" onclick="editPost(${i})">수정</button><a class="btn o s" href="index.html#/post/${encodeURIComponent(p.id)}" target="_blank">보기</a><button class="btn o s" onclick="toggle(${i})">${p.status==="draft"?"발행":"비공개"}</button><button class="btn r s" onclick="delPost(${i})">삭제</button></div></td></tr>`).join("")}</table></div>`;
 }
 /* 글쓰기 */
 function newPost(){D={id:"p"+Date.now().toString(36),title:"",cats:[],author:"Admin",date:today(),status:"draft",img:"",ex:"",body:""};Di=-1}
@@ -115,7 +115,7 @@ function write(){
   <label for="f-title" style="margin-top:0">제목</label><input id="f-title" style="height:52px;font-size:20px;font-weight:700" value="${esc(D.title)}">
   <label for="f-ex">요약 (카드·대표 글에 표시)</label><textarea id="f-ex" rows="2">${esc(D.ex)}</textarea>
   <label>본문</label><div id="f-body"></div>
-  ${Di>=0?`<div class="bar"><button class="btn r" onclick="delPost()">이 글 삭제</button></div>`:""}
+  ${Di>=0?`<div class="bar"><button class="btn r" onclick="delPost(Di)">이 글 삭제</button></div>`:""}
  </div>
  <aside>
   <div class="panel"><h3>발행 설정</h3>
@@ -143,9 +143,12 @@ async function savePost(status){
  Di<0?C.posts.unshift(p):C.posts[Di]=p;
  toast(status==="draft"?"임시저장했습니다":"발행했습니다");D=null;tab="posts";render();
 }
-async function delPost(){if(!confirm("이 글을 삭제할까요? 되돌릴 수 없습니다."))return;
- try{await FB.deleteDoc(FB.doc(FB.db,"posts",D.id))}catch{return toast("삭제 실패: 로그인과 네트워크를 확인하세요")}
- C.posts.splice(Di,1);toast("삭제했습니다");D=null;tab="posts";render()}
+async function delPost(i=Di){const p=C.posts[i];if(!confirm(`"${p.title}" 글을 삭제할까요? 되돌릴 수 없습니다.`))return;
+ try{await FB.deleteDoc(FB.doc(FB.db,"posts",p.id))}catch{return toast("삭제 실패: 로그인과 네트워크를 확인하세요")}
+ C.posts.splice(i,1);toast("삭제했습니다");D=null;tab="posts";render()}
+async function toggle(i){const p=C.posts[i],st=p.status==="draft"?"published":"draft";
+ try{await FB.setDoc(FB.doc(FB.db,"posts",p.id),{...p,status:st})}catch{return toast("변경 실패: 로그인과 네트워크를 확인하세요")}
+ p.status=st;toast(st==="draft"?"비공개로 바꿨습니다":"발행했습니다");render()}
 
 /* 메뉴 */
 function menu(){
