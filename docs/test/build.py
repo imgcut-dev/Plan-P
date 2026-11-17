@@ -45,6 +45,9 @@ DEFECTS = [
     ("DEF-006", "TC-S-115", "중간", "글 전용 주소(/post/ID/)로 열면 방문 통계가 글 경로 대신 `/`로 집계됨",
      "analytics.js가 `window.routeHash`로 함수를 찾았는데, 최상위 const는 window 속성이 되지 않아 항상 예전 방식(해시)으로 계산됨. SEO 개발 중 테스트로 발견(운영에는 나가기 전)",
      "수정함 (`typeof routeHash===\"function\"`). 배포함"),
+    ("DEF-007", "TC-M-012", "중간", "폭 약 900~1000px에서 상단 메뉴가 두 줄로 접혀 헤더 위아래에 붙어 겹쳐 보임 (사용자 제보)",
+     "내비를 남는 폭만 쓰게 하면서(flex:1 1 0) 줄바꿈을 허용해, 메뉴 9개가 한 줄에 안 들어가는 폭에서 두 줄이 됨. 이전 테스트는 정렬·넘침만 봤고 메뉴 줄 수는 재지 않았음",
+     "수정함 (한 줄 유지 + 가로 스크롤 + 오른쪽 흐림 표시 + 현재 메뉴 자동 위치). 5스킨×9폭 측정 통과. 배포 전"),
     ("DEF-005", "TC-R-001~026", "환경", "Firestore 규칙 테스트 26건을 실행하지 못함", "이 PC에 Java가 없어 Firebase 에뮬레이터 실행 불가",
      "대기. Java 설치 후 규칙 테스트 코드 작성·실행 (운영 DB로는 테스트하지 않음)"),
 ]
@@ -297,6 +300,7 @@ td.id{{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}}
 .tools input{{flex:1 1 220px;min-width:180px}}
 #cnt{{align-self:center;color:var(--mut);font-size:13px}}
 tr[hidden]{{display:none}}
+details.fold summary{{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px}}details.fold summary::-webkit-details-marker{{display:none}}details.fold summary::before{{content:"▸";color:var(--mut);transition:transform .15s}}details.fold[open] summary::before{{transform:rotate(90deg)}}details.fold summary h2{{margin:0}}details.fold[open] summary{{margin-bottom:10px}}.hint{{font-weight:400;color:var(--mut);font-size:12px}}details.fold summary:focus-visible{{outline:2px solid var(--acc);outline-offset:4px;border-radius:4px}}
 .gal{{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}}.shot{{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column}}.shot a{{display:block;max-height:360px;overflow:hidden;border-bottom:1px solid var(--line)}}.shot img{{display:block;width:100%;height:auto}}.shot.mob a{{max-height:420px}}.shot:target a{{max-height:none}}.shot:target{{outline:2px solid var(--acc)}}.shot figcaption{{padding:10px 12px;display:flex;flex-direction:column;gap:3px;font-size:13px}}.shot figcaption span{{color:var(--mut);font-size:12px}}.shot .tcs{{font-variant-numeric:tabular-nums}}a.cap{{display:inline-block;margin:4px 4px 0 0;font-size:11px;color:var(--acc);font-weight:600;text-decoration:none;border:1px solid var(--line);border-radius:6px;padding:0 6px}}
 #t tr.r-pass td:first-child{{box-shadow:inset 4px 0 var(--bar-pass)}}#t tr.r-fail td:first-child{{box-shadow:inset 4px 0 var(--bar-fail)}}#t tr.r-block td:first-child{{box-shadow:inset 4px 0 var(--bar-block)}}#t tr.r-skip td:first-child{{box-shadow:inset 4px 0 var(--bar-skip)}}
 #t tr.r-fail td{{background:var(--failb)}}#t tr.r-block td{{background:var(--blockb)}}
@@ -332,8 +336,8 @@ ul.note{{padding-left:18px;color:var(--ink)}}ul.note li{{margin:4px 0}}
 </table></div>
 </div>
 
-<div class="panel"><h2>영역별 결과</h2>
-<table><tr><th>구분</th><th>영역</th><th>케이스</th><th>분포</th><th>합격률</th></tr>{area_rows}</table></div>
+<div class="panel"><details class="fold"><summary><h2>영역별 결과 <span class="hint">({len(AREAS)}개 영역, 눌러서 펼치기)</span></h2></summary>
+<table><tr><th>구분</th><th>영역</th><th>케이스</th><th>분포</th><th>합격률</th></tr>{area_rows}</table></details></div>
 
 <div class="panel"><h2>테스트 화면 캡처 ({len(SHOTS)}장)</h2><div class="gal">{gal}</div></div>
 
