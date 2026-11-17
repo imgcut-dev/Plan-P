@@ -129,7 +129,8 @@ let C,posts;
 const by=id=>posts.find(p=>p.id===id), inCat=c=>posts.filter(p=>p.cats.includes(c));
 const catList=()=>[...new Set(posts.flatMap(p=>p.cats))];
 const pick=ids=>(ids||[]).map(by).filter(Boolean);
-const thumb=p=>`<div class="thumb"><img loading="lazy" src="${esc(p.img)}" alt=""><span class="lb">${esc(p.cats[0]||"")}</span></div>`;
+addEventListener("error",e=>{const i=e.target;if(i.tagName==="IMG"&&!i.src.endsWith("placeholder.svg"))i.src="placeholder.svg"},true);
+const thumb=p=>`<div class="thumb"><img loading="lazy" src="${esc(p.img||"placeholder.svg")}" alt=""><span class="lb">${esc(p.cats[0]||"")}</span></div>`;
 const href=p=>`#/post/${enc(p.id)}`;
 const card=p=>`<a class="card" href="${href(p)}">${thumb(p)}<div class="date">${fmt(p.date)}</div><h3>${esc(p.title)}</h3><p>${esc(p.ex)}</p><span class="tag">${p.cats.map(c=>"#"+esc(c)).join(" ")}</span></a>`;
 const chips=on=>`<div class="chips"><a class="chip ${on===""?"on":""}" href="#/all">전체</a>${catList().map(c=>`<a class="chip ${on===c?"on":""}" href="#/cat/${enc(c)}">${esc(c)}</a>`).join("")}</div>`;
@@ -155,7 +156,7 @@ function listView(title,ps,pg,base,on){
  <div class="lh"><div><h1>${esc(title)}</h1><p>총 ${ps.length}개의 글</p></div></div>${chips(on)}
  <div class="cols"><section>${rows||'<p class="empty">결과가 없습니다.</p>'}${pager}</section>
  <aside class="side"><div><h2>카테고리</h2><div class="catl">${catList().map(c=>`<a href="#/cat/${enc(c)}"><span>${esc(c)}</span><span style="color:var(--mut)">${inCat(c).length}</span></a>`).join("")}</div></div>
- <div><h2>최근 글</h2>${posts.slice(0,3).map(p=>`<a class="mini" href="${href(p)}"><div class="t"><img loading="lazy" src="${esc(p.img)}" alt=""></div><div><span class="date">${fmt(p.date)}</span><b>${esc(p.title)}</b></div></a>`).join("")}</div></aside></div>`;
+ <div><h2>최근 글</h2>${posts.slice(0,3).map(p=>`<a class="mini" href="${href(p)}"><div class="t"><img loading="lazy" src="${esc(p.img||"placeholder.svg")}" alt=""></div><div><span class="date">${fmt(p.date)}</span><b>${esc(p.title)}</b></div></a>`).join("")}</div></aside></div>`;
 }
 function post(p){
  const i=posts.indexOf(p),newer=posts[i-1],older=posts[i+1];
@@ -165,14 +166,14 @@ function post(p){
   ${p.cats.map(c=>`<a class="chip-s" href="#/cat/${enc(c)}">${esc(c)}</a>`).join("")}
   <h1>${esc(p.title)}</h1>
   <div class="meta"><span class="av">${esc((p.author||"A")[0])}</span><b style="color:var(--ink);font-weight:500">${esc(p.author)}</b><span>${fmt(p.date)}</span></div>
-  <div class="hero"><img src="${esc(p.img)}" alt=""></div>
+  <div class="hero"><img src="${esc(p.img||"placeholder.svg")}" alt=""></div>
   <p class="lead">${esc(p.ex)}</p><div id="pbody"></div>
   <div class="tags">${p.cats.map(c=>`<a href="#/cat/${enc(c)}">#${esc(c)}</a>`).join("")}</div>
   <nav class="pn" aria-label="이전·다음 글">${older?`<a href="${href(older)}"><small>이전 글</small><b>${esc(older.title)}</b></a>`:"<span></span>"}${newer?`<a href="${href(newer)}" style="text-align:right"><small>다음 글</small><b>${esc(newer.title)}</b></a>`:"<span></span>"}</nav>
  </article>
  <aside class="side" style="flex:1 1 260px;max-width:320px;min-width:240px;display:flex;flex-direction:column;gap:28px">
   <div class="panel about"><div class="av">${esc((C.site.name||"P")[0])}</div><b>${esc(C.site.name)}</b><p style="font-size:13px;color:var(--mut)">AI와 프로덕트 기획을 기록하는 블로그</p></div>
-  ${rel.length?`<div><h2>관련 글</h2>${rel.map(x=>`<a class="mini" href="${href(x)}"><div class="t"><img loading="lazy" src="${esc(x.img)}" alt=""></div><div><span class="date">${fmt(x.date)}</span><b>${esc(x.title)}</b></div></a>`).join("")}</div>`:""}
+  ${rel.length?`<div><h2>관련 글</h2>${rel.map(x=>`<a class="mini" href="${href(x)}"><div class="t"><img loading="lazy" src="${esc(x.img||"placeholder.svg")}" alt=""></div><div><span class="date">${fmt(x.date)}</span><b>${esc(x.title)}</b></div></a>`).join("")}</div>`:""}
  </aside></div>`;
 }
 // 본문은 마크다운. TOAST UI Viewer(XSS 필터 내장)를 글 페이지에서만 지연 로드

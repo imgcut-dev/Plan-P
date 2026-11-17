@@ -77,6 +77,7 @@ td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical
 <script src="https://uicdn.toast.com/editor/3.2.2/i18n/ko-kr.js"></script>
 <script src="data.js"></script>
 <script>
+addEventListener("error",e=>{const i=e.target;if(i.tagName==="IMG"&&!i.src.endsWith("placeholder.svg"))i.src="placeholder.svg"},true);
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const TABS=[["posts","글 관리"],["write","글쓰기"],["menu","메뉴 관리"],["home","메인 관리"],["design","디자인 관리"],["data","데이터 · 게시"]];
@@ -100,7 +101,7 @@ function posts(){
  return `<h2>글 관리</h2><p class="lead">글 ${C.posts.length}개 · 최신순</p>
  <div class="card"><table><tr><th></th><th>제목</th><th>카테고리</th><th>상태</th><th>날짜</th><th></th></tr>
  ${C.posts.map((p,i)=>[p,i]).sort((a,b)=>b[0].date.localeCompare(a[0].date)).map(([p,i])=>`<tr>
-  <td><img class="thumb" src="${esc(p.img)}" alt=""></td><td><b>${esc(p.title)}</b></td><td>${esc(p.cats.join(", "))}</td>
+  <td><img class="thumb" src="${esc(p.img||"placeholder.svg")}" alt=""></td><td><b>${esc(p.title)}</b></td><td>${esc(p.cats.join(", "))}</td>
   <td><span class="st ${p.status==="draft"?"d":""}">${p.status==="draft"?"임시":"발행"}</span></td><td style="color:var(--mut);white-space:nowrap">${esc(p.date)}</td>
   <td><div class="acts"><button class="btn o s" onclick="editPost(${i})">수정</button><a class="btn o s" href="index.html#/post/${encodeURIComponent(p.id)}" target="_blank">보기</a><button class="btn o s" onclick="toggle(${i})">${p.status==="draft"?"발행":"비공개"}</button><button class="btn r s" onclick="delPost(${i})">삭제</button></div></td></tr>`).join("")}</table></div>`;
 }
@@ -125,8 +126,8 @@ function write(){
   <div class="panel"><h3>카테고리</h3>
    <label for="f-cats">쉼표로 구분</label><input id="f-cats" list="dl-cats" value="${esc(D.cats.join(", "))}" placeholder="Business, Interview"></div>
   <div class="panel"><h3>대표 이미지</h3>
-   <img id="pv" class="prev" src="${esc(D.img)}" alt="">
-   <label for="f-img">이미지 URL</label><input id="f-img" value="${esc(D.img)}" placeholder="https://" oninput="$('#pv').src=this.value"></div>
+   <img id="pv" class="prev" src="${esc(D.img||"placeholder.svg")}" alt="">
+   <label for="f-img">이미지 URL</label><input id="f-img" value="${esc(D.img)}" placeholder="https://" oninput="$('#pv').src=this.value||'placeholder.svg'"></div>
  </aside></div>`;
 }
 // 본문 에디터: TOAST UI Editor(NHN, MIT). 마크다운으로 저장. 이미지는 URL만 허용(Firebase Storage 연결 시 업로드 훅 교체)
@@ -138,7 +139,7 @@ async function savePost(status){
  const g=id=>$("#"+id).value.trim();
  if(!g("f-title"))return toast("제목을 입력하세요");
  const p={id:D.id,title:g("f-title"),cats:g("f-cats").split(",").map(s=>s.trim()).filter(Boolean),author:g("f-author")||"Admin",date:g("f-date")||today(),
-  status,img:g("f-img")||`https://picsum.photos/seed/${D.id}/900/700`,ex:g("f-ex"),body:ED.getMarkdown()};
+  status,img:g("f-img"),ex:g("f-ex"),body:ED.getMarkdown()};
  try{await FB.setDoc(FB.doc(FB.db,"posts",p.id),p)}catch{return toast("저장 실패: 로그인과 네트워크를 확인하세요")}
  Di<0?C.posts.unshift(p):C.posts[Di]=p;
  toast(status==="draft"?"임시저장했습니다":"발행했습니다");D=null;tab="posts";render();
