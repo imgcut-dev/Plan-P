@@ -134,7 +134,8 @@ const pick=ids=>(ids||[]).map(by).filter(Boolean);
 addEventListener("error",e=>{const i=e.target;if(i.tagName==="IMG"&&!i.src.endsWith("placeholder.svg"))i.src="placeholder.svg"},true);
 const thumb=p=>`<div class="thumb"><img loading="lazy" src="${esc(p.img||"placeholder.svg")}" alt=""><span class="lb">${esc(p.cats[0]||"")}</span></div>`;
 const href=p=>`#/post/${enc(p.id)}`;
-const card=p=>`<a class="card" href="${href(p)}">${thumb(p)}<div class="date">${fmt(p.date)}</div><h3>${esc(p.title)}</h3><p>${esc(p.ex)}</p><span class="tag">${p.cats.map(c=>"#"+esc(c)).join(" ")}</span></a>`;
+const hs=p=>((p.tags&&p.tags.length)?p.tags:p.cats).map(c=>"#"+esc(c)).join(" "); // 카드 아래 해시태그: 태그가 있으면 태그, 없으면 카테고리
+const card=p=>`<a class="card" href="${href(p)}">${thumb(p)}<div class="date">${fmt(p.date)}</div><h3>${esc(p.title)}</h3><p>${esc(p.ex)}</p><span class="tag">${hs(p)}</span></a>`;
 const chips=on=>`<div class="chips"><a class="chip ${on===""?"on":""}" href="#/all">전체</a>${catList().map(c=>`<a class="chip ${on===c?"on":""}" href="#/cat/${enc(c)}">${esc(c)}</a>`).join("")}</div>`;
 
 const secHead=(t,more)=>`<div class="head"><h2>${esc(t)}</h2>${more?`<a href="${more}">전체 보기</a>`:""}</div>`;
@@ -142,7 +143,7 @@ const SEC={
  chips:()=>chips(null),
  picks:s=>{let ps=pick(s.ids);if(!ps.length)ps=posts.slice(0,3);return `<section class="picks" aria-label="추천 글">${ps.map(p=>`<a class="pick" href="${href(p)}">${thumb(p)}<h3>${esc(p.title)}</h3></a>`).join("")}</section>`},
  feature:s=>{const f=by(s.post)||posts[0];if(!f)return"";
-  const art=`<a class="feat" href="${href(f)}">${thumb(f)}<div class="tx"><div class="date">${fmt(f.date)}</div><h3>${esc(f.title)}</h3><p>${esc(f.ex)}</p><span class="tag">${f.cats.map(c=>"#"+esc(c)).join(" ")}</span></div></a>`;
+  const art=`<a class="feat" href="${href(f)}">${thumb(f)}<div class="tx"><div class="date">${fmt(f.date)}</div><h3>${esc(f.title)}</h3><p>${esc(f.ex)}</p><span class="tag">${hs(f)}</span></div></a>`;
   const about=`<aside class="panel about"><h2 class="sh" style="align-self:flex-start;margin:0">소개</h2><div class="av">${esc((C.site.name||"P")[0])}</div><b>${esc(C.site.name)}</b><p style="font-size:13px;color:var(--mut)">AI와 프로덕트 기획을 기록하는 블로그</p><a class="btn" href="#/all">전체 글 보기</a></aside>`;
   return `<div class="two"><section><h2 class="sh">대표 글</h2>${art}</section>${s.about?about:""}</div>`},
  latest:s=>`${secHead(s.title||"최신 글","#/all")}<div class="g3">${posts.slice(0,s.count||6).map(card).join("")}</div><div class="more"><a class="btn-o" href="#/all">글 더 보기</a></div>`,
@@ -155,7 +156,7 @@ function home(){
 }
 function listView(title,ps,pg,base,on){
  const n=Math.max(1,Math.ceil(ps.length/PS)),pgNo=Math.min(Math.max(pg,1),n);
- const rows=ps.slice((pgNo-1)*PS,pgNo*PS).map(p=>`<a class="row" href="${href(p)}">${thumb(p)}<div class="tx"><div class="date">${fmt(p.date)}</div><h2>${esc(p.title)}</h2><p>${esc(p.ex)}</p><span class="tag">${p.cats.map(c=>"#"+esc(c)).join(" ")}</span></div></a>`).join("");
+ const rows=ps.slice((pgNo-1)*PS,pgNo*PS).map(p=>`<a class="row" href="${href(p)}">${thumb(p)}<div class="tx"><div class="date">${fmt(p.date)}</div><h2>${esc(p.title)}</h2><p>${esc(p.ex)}</p><span class="tag">${hs(p)}</span></div></a>`).join("");
  const pager=n>1?`<nav class="pg" aria-label="페이지 이동">${Array.from({length:n},(_,i)=>`<a class="${i+1===pgNo?"on":""}" href="${base}/${i+1}">${i+1}</a>`).join("")}</nav>`:"";
  return `<div class="crumb"><a href="#/">홈</a> &nbsp;/&nbsp; 글 목록</div>
  <div class="lh"><div><h1>${esc(title)}</h1><p>총 ${ps.length}개의 글</p></div></div>${chips(on)}
@@ -173,7 +174,7 @@ function post(p){
   <div class="meta"><span class="av">${esc((p.author||"A")[0])}</span><b style="color:var(--ink);font-weight:500">${esc(p.author)}</b><span>${fmt(p.date)}</span></div>
   <div class="hero"><img src="${esc(p.img||"placeholder.svg")}" alt=""></div>
   <p class="lead">${esc(p.ex)}</p><div id="pbody"></div>
-  <div class="tags">${p.cats.map(c=>`<a href="#/cat/${enc(c)}">#${esc(c)}</a>`).join("")}</div>
+  ${(p.tags||[]).length?`<div class="tags">${p.tags.map(t=>`<a href="#/tag/${enc(t)}">#${esc(t)}</a>`).join("")}</div>`:""}
   <nav class="pn" aria-label="이전·다음 글">${older?`<a href="${href(older)}"><small>이전 글</small><b>${esc(older.title)}</b></a>`:"<span></span>"}${newer?`<a href="${href(newer)}" style="text-align:right"><small>다음 글</small><b>${esc(newer.title)}</b></a>`:"<span></span>"}</nav>
  </article>
  <aside class="side" style="flex:1 1 260px;max-width:320px;min-width:240px;display:flex;flex-direction:column;gap:28px">
@@ -195,8 +196,9 @@ function route(){
  document.title=C.site.name;
  if(k==="post"&&by(a[2])){const p=by(a[2]);html=post(p);document.title=p.title+" — "+C.site.name}
  else if(k==="cat"){html=listView(a[2],inCat(a[2]),+a[3]||1,"#/cat/"+enc(a[2]),a[2])}
+ else if(k==="tag"){html=listView("#"+a[2],posts.filter(p=>(p.tags||[]).includes(a[2])),+a[3]||1,"#/tag/"+enc(a[2]),null)}
  else if(k==="all"){html=listView("전체 글",posts,+a[2]||1,"#/all","")}
- else if(k==="search"){const q=a[2]||"";html=listView(`검색: ${q}`,posts.filter(p=>(p.title+p.ex+p.cats).toLowerCase().includes(q.toLowerCase())),+a[3]||1,"#/search/"+enc(q),null)}
+ else if(k==="search"){const q=a[2]||"";html=listView(`검색: ${q}`,posts.filter(p=>(p.title+p.ex+p.cats+(p.tags||[])).toLowerCase().includes(q.toLowerCase())),+a[3]||1,"#/search/"+enc(q),null)}
  else html=home();
  $("#app").innerHTML=html;scrollTo(0,0);
  if(k==="post"&&by(a[2]))showBody(by(a[2]).body);

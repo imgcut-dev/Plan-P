@@ -65,6 +65,7 @@ dialog{margin:auto;border:0;border-radius:14px;padding:24px;width:min(440px,92vw
 .msec{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:14px;max-width:960px}.mh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}.mh>div:first-child{display:flex;flex-direction:column}.mh span{font-size:12px;color:var(--mut)}.mh .acts{flex:none}
 .skins{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;max-width:760px}.skin{text-align:left;background:#fff;border:2px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px}.skin:hover{border-color:var(--ink)}.skin.on{border-color:var(--acc);background:var(--tint)}.skin small{color:var(--mut);font-size:12px;line-height:1.4}.swc{display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--line);margin-bottom:6px}.swc i{flex:1}
 .skpv{width:100%;max-width:960px;height:560px;border:1px solid var(--line);border-radius:12px;background:#fff;display:block}
+.tg{display:inline-flex;align-items:center;gap:2px;height:28px;padding:0 4px 0 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13px;margin:0 6px 6px 0}.tg button{border:0;background:none;width:20px;height:20px;border-radius:50%;color:var(--mut)}.tg button:hover{background:var(--tint)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}.bar{display:flex;gap:8px;margin-top:22px}
 .note{background:#fff;border-left:3px solid var(--acc);border-radius:6px;padding:14px 16px;font-size:13px;color:var(--mut);margin-top:16px}.note b{color:var(--ink)}
 .pv{border:1px solid var(--line);background:#fff;border-radius:12px;padding:22px;text-align:center}.pv .logo{justify-content:center;font-size:28px}.pv .btn{margin-top:12px}
@@ -86,7 +87,7 @@ dialog{margin:auto;border:0;border-radius:14px;padding:24px;width:min(440px,92vw
  <div class="ct"><div class="th" id="th"></div><div class="bd" id="main"></div></div>
 </div>
 <div id="toast"></div>
-<datalist id="dl-cats"></datalist><datalist id="dl-links"></datalist>
+<datalist id="dl-tags"></datalist><datalist id="dl-cats"></datalist><datalist id="dl-links"></datalist>
 
 <script src="https://uicdn.toast.com/editor/3.2.2/toastui-editor-all.min.js"></script>
 <script src="https://uicdn.toast.com/editor/3.2.2/i18n/ko-kr.js"></script>
@@ -99,6 +100,7 @@ const TABS=[["posts","글 관리"],["write","글쓰기"],["menu","카테고리 �
 let C,tab="posts",D=null,Di=-1,ED;
 const today=()=>new Date().toISOString().slice(0,10);
 // 카테고리 후보 = 카테고리 목록(nav)의 #/cat/이름 링크 + 글에 쓰인 카테고리
+const allTags=()=>[...new Set(C.posts.flatMap(p=>p.tags||[]))];
 const cats=()=>[...new Set([...C.nav.map(n=>(n.url.match(/^#\/cat\/(.+)$/)||[])[1]).filter(Boolean).map(decodeURIComponent),...C.posts.flatMap(p=>p.cats)])];
 const arr=p=>p.split(".").reduce((o,k)=>o[k],C);
 const opts=(l,v)=>l.map(([a,b])=>`<option value="${esc(a)}" ${a===v?"selected":""}>${esc(b)}</option>`).join("");
@@ -126,11 +128,25 @@ function posts(){
   <td><span class="st ${p.status==="draft"?"d":""}">${p.status==="draft"?"임시":"발행"}</span></td><td style="color:var(--mut);white-space:nowrap">${esc(p.date)}</td>
   <td><div class="acts"><button class="btn o s" onclick="editPost(${i})">수정</button><a class="btn o s" href="index.html#/post/${encodeURIComponent(p.id)}" target="_blank">보기</a><button class="btn o s" onclick="toggle(${i})">${p.status==="draft"?"발행":"비공개"}</button><button class="btn r s" onclick="delPost(${i})">삭제</button></div></td></tr>`).join("")}</table></div>`;
 }
+/* 태그: 글 하나에 최대 10개, 한 태그 20자까지 */
+const tagHtml=()=>D.tags.map(t=>`<span class="tg">#${esc(t)}<button type="button" aria-label="${esc(t)} 태그 삭제" onclick="delTag(${JSON.stringify(t).replace(/"/g,"&quot;")})">✕</button></span>`).join("");
+const showTags=()=>{const b=$("#f-tagbox");if(b)b.innerHTML=tagHtml()};
+function addTag(v){
+ for(const t of String(v).split(",").map(x=>x.trim().replace(/^#+/,"").slice(0,20)).filter(Boolean)){
+  if(D.tags.includes(t))continue;
+  if(D.tags.length>=10){toast("태그는 10개까지 넣을 수 있습니다");break}
+  D.tags.push(t)}
+ showTags()}
+function delTag(t){D.tags=D.tags.filter(x=>x!==t);showTags()}
+function tagKey(e){const i=e.target;
+ if(e.key==="Enter"||e.key===","||e.key==="，"){e.preventDefault();addTag(i.value);i.value=""}
+ else if(e.key==="Backspace"&&!i.value&&D.tags.length){D.tags.pop();showTags()}}
 /* 글쓰기 */
-function newPost(){D={id:"p"+Date.now().toString(36),title:"",cats:[],author:"Admin",date:today(),status:"draft",img:"",ex:"",body:""};Di=-1}
+function newPost(){D={id:"p"+Date.now().toString(36),title:"",cats:[],author:"Admin",date:today(),status:"draft",img:"",ex:"",tags:[],body:""};Di=-1}
 function editPost(i){D=structuredClone(C.posts[i]);Di=i;tab="write";render()}
 function write(){
  if(!D)newPost();
+ D.tags=D.tags||[];
  head(Di<0?"글쓰기":"글 수정",`<span style="font-size:12px;color:var(--mut)">${Di<0?"새 글":"저장된 글"}</span>
   <button class="btn o" onclick="savePost('draft')">임시저장</button><button class="btn" onclick="savePost('published')">발행</button>`);
  return `<div class="ed"><div class="m">
@@ -147,6 +163,9 @@ function write(){
   <div class="panel"><h3>카테고리</h3>
    <div id="f-catbox" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">${cats().map(c=>`<label class="chk"><input type="checkbox" value="${esc(c)}" ${D.cats.includes(c)?"checked":""}>${esc(c)}</label>`).join("")}</div>
    <label for="f-cats">새 카테고리 추가 (쉼표로 구분)</label><input id="f-cats" placeholder="예: Review"></div>
+  <div class="panel"><h3>태그</h3><p style="font-size:12px;color:var(--mut);margin:2px 0 8px">글을 찾을 때 쓰는 짧은 단어입니다. 예: AI, 기획, 회고</p>
+   <div id="f-tagbox">${tagHtml()}</div>
+   <label for="f-tag">태그 입력</label><input id="f-tag" list="dl-tags" placeholder="입력하고 Enter 또는 쉼표" onkeydown="tagKey(event)" onblur="addTag(this.value);this.value=''"></div>
   <div class="panel"><h3>대표 이미지</h3>
    <img id="pv" class="prev" src="${esc(D.img||"placeholder.svg")}" alt="">
    <label for="f-img">이미지 URL</label><input id="f-img" value="${esc(D.img)}" placeholder="https://" oninput="$('#pv').src=this.value||'placeholder.svg'"></div>
@@ -159,9 +178,10 @@ function initEditor(){
 }
 async function savePost(status){
  const g=id=>$("#"+id).value.trim();
+ addTag($("#f-tag").value);
  if(!g("f-title"))return toast("제목을 입력하세요");
  const p={id:D.id,title:g("f-title"),cats:[...new Set([...document.querySelectorAll("#f-catbox input:checked")].map(i=>i.value).concat(g("f-cats").split(",").map(s=>s.trim())).filter(Boolean))],author:g("f-author")||"Admin",date:g("f-date")||today(),
-  status,img:g("f-img"),ex:g("f-ex"),body:ED.getMarkdown()};
+  status,img:g("f-img"),ex:g("f-ex"),tags:[...D.tags],body:ED.getMarkdown()};
  try{await FB.setDoc(FB.doc(FB.db,"posts",p.id),p)}catch{return toast("저장 실패: 로그인과 네트워크를 확인하세요")}
  Di<0?C.posts.unshift(p):C.posts[Di]=p;
  // 발행하는 글의 카테고리가 카테고리 목록(상단 메뉴)에 없으면 자동 추가
@@ -314,6 +334,7 @@ async function seed(){
 const V={posts,write,menu,home,design,data};
 function render(){
  $("#side").innerHTML=TABS.map(([k,l])=>`<a class="${k===tab?"on":""}" onclick="go('${k}')">${l}</a>`).join("");
+ $("#dl-tags").innerHTML=allTags().map(t=>`<option value="${esc(t)}">`).join("");
  $("#dl-cats").innerHTML=cats().map(c=>`<option value="${esc(c)}">`).join("");
  $("#dl-links").innerHTML=`<option value="#/"><option value="#/all">`+cats().map(c=>`<option value="#/cat/${esc(c)}">`).join("");
  $("#main").innerHTML=V[tab]();
