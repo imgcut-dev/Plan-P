@@ -121,6 +121,7 @@ footer .wrap{padding:28px 24px;font-size:13px;color:var(--mut)}
 <footer><div class="wrap" id="foot"></div></footer>
 
 <script src="data.js"></script>
+<script src="analytics.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -202,6 +203,7 @@ function route(){
  else html=home();
  $("#app").innerHTML=html;scrollTo(0,0);
  if(k==="post"&&by(a[2]))showBody(by(a[2]).body);
+ gaView();
  $("#nav").innerHTML=C.nav.map(n=>`<a href="${esc(safe(n.url))}" class="${h===n.url||(n.url!=="#/"&&h.startsWith(n.url+"/"))?"on":""}">${esc(n.label)}</a>`).join("");
 }
 (async()=>{
@@ -215,6 +217,8 @@ function route(){
  const ac=fk?SK.accent:(S.accent||SK.accent),act=fk?SK.accentText:(S.accentText||(S.accent?ac:SK.accentText));
  document.head.insertAdjacentHTML("beforeend",`<style>:root{--acc:${ac};--acct:${act}}</style>`);
  $("#logo").textContent=S.name;$("#mk").textContent=(S.name||"P")[0];$("#foot").textContent=S.footer;
+ if(gaOn())$("#foot").insertAdjacentHTML("beforeend",`<div style="margin-top:6px;font-size:12px">이 사이트는 방문 통계를 위해 Google Analytics를 사용합니다.</div>`);
+ gaInit();
  addEventListener("hashchange",route);route();
 })();
 $("#srch").onclick=()=>{$("#q").classList.toggle("on");$("#qi").focus()};

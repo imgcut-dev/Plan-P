@@ -1,6 +1,6 @@
 # Plan-P 블로그
 
-순수 HTML/CSS/JS 정적 블로그. 사이트 `index.html`, 관리자 `admin.html`, 데이터 `data.js`(기본 데이터·`SKINS`·`SECTIONS`·`loadCfg`), 스킨 `skins.css`, Firebase 연결 `fb.js`.
+순수 HTML/CSS/JS 정적 블로그. 사이트 `index.html`, 관리자 `admin.html`, 데이터 `data.js`(기본 데이터·`SKINS`·`SECTIONS`·`loadCfg`), 스킨 `skins.css`, Firebase 연결 `fb.js`, 방문 통계 `analytics.js`(사이트만, 관리자 제외).
 
 - GitHub: imgcut-dev/Plan-P (`main`, Pages) · Firebase: `plan-p-1b255` (https://plan-p-1b255.web.app)
 - 읽을 문서: 디자인은 `DESIGN.md`(+ `design-system/`), 정한 것과 이유는 `docs/decisions.md`, 막혔던 일은 `docs/failures/`.
