@@ -41,7 +41,8 @@ input[type=color]{width:60px;padding:2px}
 label{display:block;font-size:12px;font-weight:700;color:var(--mut);margin:14px 0 5px}
 .panel{background:var(--panel);border-radius:8px;padding:18px}.panel h3{font-size:14px;margin-bottom:2px}
 .row{display:grid;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
-.r-menu{grid-template-columns:1fr 1.6fr auto}.acts{display:flex;gap:6px}
+.r-menu,.hd{grid-template-columns:1fr 1.6fr 96px}.hd{display:grid;gap:10px;font-size:12px;font-weight:700;color:var(--mut);padding:0 0 6px}.r-add{display:grid;grid-template-columns:1fr 1.6fr auto;gap:10px;align-items:end}.r-add label{margin:0 0 5px}
+.pvnav{display:flex;gap:22px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:10px;padding:0 20px;min-height:48px;align-items:center;font-weight:500}.pvnav span:first-child{color:var(--acct);font-weight:700;box-shadow:0 3px 0 var(--acc)}.acts{display:flex;gap:6px}
 .card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
 table{width:100%;border-collapse:collapse}th{font-size:11px;letter-spacing:.06em;color:var(--mut);text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);background:#FBFBFA}
 td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle}tr:last-child td{border:0}
@@ -57,7 +58,7 @@ td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical
 .sw{display:flex;align-items:center;gap:12px}.sw code{color:var(--mut);font-size:12px}
 #toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;opacity:0;transition:.25s;pointer-events:none}
 #toast.on{opacity:1;transform:translate(-50%,0)}
-@media(max-width:800px){aside.sb{flex-basis:100%;border:0;border-bottom:1px solid var(--line);padding:12px 0}.mn{flex-direction:row;overflow-x:auto}.mn a{white-space:nowrap}.sf{display:none}.bd{padding:20px 16px}.two,.r-menu{grid-template-columns:1fr}}
+@media(max-width:800px){aside.sb{flex-basis:100%;border:0;border-bottom:1px solid var(--line);padding:12px 0}.mn{flex-direction:row;overflow-x:auto}.mn a{white-space:nowrap}.sf{display:none}.bd{padding:20px 16px}.two,.r-menu,.r-add{grid-template-columns:1fr}.hd{display:none}}
 </style>
 </head>
 <body>
@@ -81,20 +82,25 @@ td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical
 addEventListener("error",e=>{const i=e.target;if(i.tagName==="IMG"&&!i.src.endsWith("placeholder.svg"))i.src="placeholder.svg"},true);
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const TABS=[["posts","글 관리"],["write","글쓰기"],["menu","메뉴 관리"],["home","메인 관리"],["design","디자인 관리"],["data","데이터 · 게시"]];
+const TABS=[["posts","글 관리"],["write","글쓰기"],["menu","카테고리 관리"],["home","메인 관리"],["design","디자인 관리"],["data","데이터 · 게시"]];
 let C,tab="posts",D=null,Di=-1,ED;
 const today=()=>new Date().toISOString().slice(0,10);
-// 카테고리 후보 = 메뉴의 #/cat/이름 링크 + 글에 쓰인 카테고리
+// 카테고리 후보 = 카테고리 목록(nav)의 #/cat/이름 링크 + 글에 쓰인 카테고리
 const cats=()=>[...new Set([...C.nav.map(n=>(n.url.match(/^#\/cat\/(.+)$/)||[])[1]).filter(Boolean).map(decodeURIComponent),...C.posts.flatMap(p=>p.cats)])];
 const arr=p=>p.split(".").reduce((o,k)=>o[k],C);
 const opts=(l,v)=>l.map(([a,b])=>`<option value="${esc(a)}" ${a===v?"selected":""}>${esc(b)}</option>`).join("");
 const postOpts=()=>C.posts.map(p=>[p.id,p.title]);
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),1800)}
 const cfgRef=()=>FB.doc(FB.db,"site","config"),cfgData=()=>({site:C.site,nav:C.nav,home:C.home});
-async function save(m="저장했습니다. 사이트에 바로 반영됩니다"){try{await FB.setDoc(cfgRef(),cfgData());toast(m)}catch{toast("저장 실패: 로그인과 네트워크를 확인하세요")}}
-function go(t){tab=t;D=null;if(t==="write")newPost();render()}
-function mv(p,i,d){const a=arr(p),j=i+d;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];render()}
-const mvB=(p,i)=>`<div class="acts"><button class="ib" aria-label="위로" onclick="mv('${p}',${i},-1)">↑</button><button class="ib" aria-label="아래로" onclick="mv('${p}',${i},1)">↓</button><button class="ib" aria-label="삭제" onclick="arr('${p}').splice(${i},1);render()">✕</button></div>`;
+async function save(m="저장했습니다. 사이트에 바로 반영됩니다"){if(C.nav.some(n=>!n.label.trim()))return toast("이름이 비어 있는 카테고리가 있습니다");try{await FB.setDoc(cfgRef(),cfgData());dirty=false;const e=$("#dirty");if(e)e.textContent="";toast(m)}catch{toast("저장 실패: 로그인과 네트워크를 확인하세요")}}
+let dirty=false;
+const mark=()=>{dirty=true;const e=$("#dirty");if(e)e.textContent="저장하지 않은 변경이 있습니다";const v=$("#pvn");if(v)v.innerHTML=navPv()};
+async function go(t){
+ if(dirty){if(!confirm("카테고리 변경을 아직 저장하지 않았습니다. 저장하지 않고 이동하면 변경이 사라집니다."))return;dirty=false;C=await loadCfg(true)}
+ tab=t;D=null;if(t==="write")newPost();render()}
+function mv(p,i,d){const a=arr(p),j=i+d;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];mark();render()}
+const mvB=(p,i)=>`<div class="acts"><button class="ib" aria-label="위로" onclick="mv('${p}',${i},-1)">↑</button><button class="ib" aria-label="아래로" onclick="mv('${p}',${i},1)">↓</button><button class="ib" aria-label="삭제" onclick="delRow('${p}',${i})">✕</button></div>`;
+function delRow(p,i){const r=arr(p)[i];if(!confirm(`"${r.label||r.title||"이 항목"}" 카테고리를 삭제할까요? (이 카테고리의 글은 지워지지 않습니다)`))return;arr(p).splice(i,1);mark();render()}
 const head=(t,act="")=>{$("#th").innerHTML=`<h1>${t}</h1><div class="ac">${act}</div>`};
 
 /* 글 관리 */
@@ -145,7 +151,11 @@ async function savePost(status){
   status,img:g("f-img"),ex:g("f-ex"),body:ED.getMarkdown()};
  try{await FB.setDoc(FB.doc(FB.db,"posts",p.id),p)}catch{return toast("저장 실패: 로그인과 네트워크를 확인하세요")}
  Di<0?C.posts.unshift(p):C.posts[Di]=p;
- toast(status==="draft"?"임시저장했습니다":"발행했습니다");D=null;tab="posts";render();
+ // 발행하는 글의 카테고리가 카테고리 목록(상단 메뉴)에 없으면 자동 추가
+ const add=status==="published"?p.cats.filter(c=>!C.nav.some(n=>n.url==="#/cat/"+c)):[];
+ if(add.length){C.nav.push(...add.map(c=>({label:c,url:"#/cat/"+c})));await save(`발행했습니다. 새 카테고리(${add.join(", ")})를 카테고리 목록에 추가했습니다`)}
+ else toast(status==="draft"?"임시저장했습니다":"발행했습니다");
+ D=null;tab="posts";render();
 }
 async function delPost(i=Di){const p=C.posts[i];if(!confirm(`"${p.title}" 글을 삭제할까요? 되돌릴 수 없습니다.`))return;
  try{await FB.deleteDoc(FB.doc(FB.db,"posts",p.id))}catch{return toast("삭제 실패: 로그인과 네트워크를 확인하세요")}
@@ -155,11 +165,32 @@ async function toggle(i){const p=C.posts[i],st=p.status==="draft"?"published":"d
  p.status=st;toast(st==="draft"?"비공개로 바꿨습니다":"발행했습니다");render()}
 
 /* 메뉴 */
+const isCat=u=>cats().some(c=>u==="#/cat/"+c),isKnown=u=>u==="#/"||u==="#/all"||isCat(u);
+const linkOpts=v=>`<option value="#/" ${v==="#/"?"selected":""}>홈 (메인 화면)</option><option value="#/all" ${v==="#/all"?"selected":""}>전체 글 목록</option>
+ <optgroup label="카테고리별 글 목록">${cats().map(c=>`<option value="#/cat/${esc(c)}" ${v==="#/cat/"+c?"selected":""}>${esc(c)} 카테고리 글</option>`).join("")}</optgroup>
+ <optgroup label="기타"><option value="custom" ${v==="custom"?"selected":""}>다른 사이트 주소 직접 입력</option></optgroup>`;
+const navPv=()=>C.nav.map(n=>`<span>${esc(n.label||"(이름 없음)")}</span>`).join("");
+function setLink(i,v){C.nav[i].url=v==="custom"?"https://":v;mark();render()}
+function autoName(){const n=$("#nn"),v=$("#nl").value;if(!n.value.trim()&&v.startsWith("#/cat/"))n.value=decodeURIComponent(v.slice(6))}
+function addNav(){
+ const label=$("#nn").value.trim(),v=$("#nl").value;
+ if(!label)return toast("카테고리 이름을 입력하세요");
+ C.nav.push({label,url:v==="custom"?"https://":v});mark();render();
+ toast(v==="custom"?"아래 목록에서 이동할 주소를 입력하세요":"카테고리를 추가했습니다. 저장을 눌러야 사이트에 반영됩니다");
+}
 function menu(){
- head("메뉴 관리",`<button class="btn" onclick="save()">저장</button>`);
- return `<h2>메뉴 관리</h2><p class="lead">상단 메뉴입니다. 링크는 <code>#/cat/카테고리</code>, <code>#/all</code>, 또는 https:// 주소를 쓸 수 있습니다.</p>
- <h4>메뉴 목록 <button class="btn o s" onclick="C.nav.push({label:'새 메뉴',url:'#/'});render()">+ 추가</button></h4>
- ${C.nav.map((n,i)=>`<div class="row r-menu"><input aria-label="메뉴 이름" value="${esc(n.label)}" oninput="C.nav[${i}].label=this.value"><input aria-label="링크" value="${esc(n.url)}" list="dl-links" oninput="C.nav[${i}].url=this.value">${mvB("nav",i)}</div>`).join("")}`;
+ head("카테고리 관리",`<span id="dirty" style="font-size:12px;color:var(--red)">${dirty?"저장하지 않은 변경이 있습니다":""}</span><button class="btn" onclick="save()">저장</button>`);
+ return `<h2>카테고리 관리</h2><p class="lead">사이트 맨 위에 보이는 카테고리입니다. 글을 쓸 때 고르는 카테고리와 같습니다. 홈과 전체 글 링크의 순서도 여기서 정합니다. 이름을 정하고, 누르면 어디로 갈지 고르세요. 바꾼 뒤에는 오른쪽 위 <b>저장</b>을 눌러야 사이트에 반영됩니다.</p>
+ <div class="panel"><h3>새 카테고리 만들기</h3><div class="r-add" style="margin-top:12px">
+  <div><label for="nn">카테고리 이름 (사이트에 보이는 글자)</label><input id="nn" placeholder="예: 여행 이야기"></div>
+  <div><label for="nl">누르면 이동할 곳</label><select id="nl" onchange="autoName()">${linkOpts("#/")}</select></div>
+  <button class="btn" style="height:40px" onclick="addNav()">+ 카테고리 추가</button></div></div>
+ <h4>카테고리 목록 <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--mut)">위에서부터 사이트에 보이는 순서입니다</span></h4>
+ <div class="hd"><span>카테고리 이름</span><span>누르면 이동할 곳</span><span></span></div>
+ ${C.nav.map((n,i)=>{const ext=!isKnown(n.url);return `<div class="row r-menu"><input aria-label="카테고리 이름" value="${esc(n.label)}" oninput="C.nav[${i}].label=this.value;mark()">
+  <div><select aria-label="이동할 곳" onchange="setLink(${i},this.value)">${linkOpts(ext?"custom":n.url)}</select>${ext?`<input style="margin-top:6px" aria-label="이동할 주소" placeholder="https://" value="${esc(n.url)}" oninput="C.nav[${i}].url=this.value;mark()">`:""}</div>
+  ${mvB("nav",i)}</div>`}).join("")}
+ <h4>사이트에서 이렇게 보입니다</h4><div class="pvnav" id="pvn">${navPv()}</div>`;
 }
 /* 메인 */
 function home(){
