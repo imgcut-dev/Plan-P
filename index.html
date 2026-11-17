@@ -3,146 +3,180 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Plan-P — Blog</title>
+<title>Plan-P</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fff;--fg:#111;--mut:#666;--line:#e5e5e5;--acc:#0a6fd6;--ph:#e9e9e9}
-:root[data-theme=dark]{--bg:#121212;--fg:#f2f2f2;--mut:#a0a0a0;--line:#2c2c2c;--acc:#4da3ff;--ph:#222}
+:root{--acc:#4F46E5;--acct:#4338CA;--tint:#EEF2FF;--panel:#E8F0FE;--tile:#E0E7FF;--ink:#1F2328;--mut:#5B6470;--line:#E6E8EB;--surf:#F7F7F5}
 *{box-sizing:border-box;margin:0}
-body{font:14px/1.5 Inter,"Apple SD Gothic Neo",sans-serif;background:var(--bg);color:var(--fg)}
-a{color:inherit;text-decoration:none;cursor:pointer}
-img{display:block;width:100%;height:100%;object-fit:cover;background:var(--ph)}
-button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+body{font:15px/1.6 "Noto Sans KR",sans-serif;color:var(--ink);background:#fff}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit}
+img{display:block;width:100%;height:100%;object-fit:cover;background:var(--tile)}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
 /* header */
-.top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:22px 0}
-.top .l{display:flex;gap:14px}.top .r{text-align:right}
-.logo{font-size:40px;font-weight:700;letter-spacing:.04em}
-.ic{width:20px;height:20px;display:grid;place-items:center;font-size:15px;opacity:.75}
-.sub{background:var(--acc);color:#fff;padding:6px 14px;border-radius:4px;font-weight:600;font-size:12px}
-nav{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-nav ul{list-style:none;display:flex;justify-content:center;gap:28px;padding:0;flex-wrap:wrap}
-nav a{display:block;padding:10px 2px;font-size:12px;border-top:2px solid transparent;margin-top:-1px}
-nav a.on{border-top-color:var(--fg)}
-/* cards */
-.cat{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--acc)}
-.cat a+a:before{content:" · ";color:var(--mut)}
-.date{font-size:11px;color:var(--mut)}
-.card h3{font-size:15px;line-height:1.25;margin:4px 0 6px;font-weight:700}
-.card p{font-size:12px;color:var(--mut);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.card .im{aspect-ratio:5/4;overflow:hidden;margin-bottom:10px}
-.card .im img{transition:transform .4s}.card:hover .im img{transform:scale(1.04)}
-.card:hover h3{color:var(--acc)}
-/* hero */
-.hero{display:grid;grid-template-columns:210px 1fr 250px;gap:22px;padding:22px 0 26px}
-.hero>*+*{border-left:1px solid var(--line);padding-left:22px}
-.stack{display:flex;flex-direction:column;gap:32px}
-.stack .im{aspect-ratio:1/.9}
-.feat .im{aspect-ratio:16/10;overflow:hidden}
-.feat{text-align:center}.feat .cat{display:block;margin:14px 0 8px}
-.feat h2{font-size:28px;line-height:1.2;margin-bottom:12px}
-.feat p{color:var(--mut);max-width:480px;margin:0 auto 10px;font-size:13px}
-.feat .date b{font-weight:500;color:var(--fg)}
-.latest h4,.sec h4{font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding-bottom:8px;border-bottom:1px solid var(--line);margin-bottom:6px;display:flex;justify-content:space-between}
-.sec h4 a{color:var(--acc);text-transform:none;font-weight:500;letter-spacing:0}
-.li{display:grid;grid-template-columns:1fr 62px;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
-.li:last-child{border:0}.li h5{font-size:12px;line-height:1.3}.li .im{aspect-ratio:1;overflow:hidden}
-.li:hover h5{color:var(--acc)}
-/* sections */
-.sec{padding:22px 0 14px}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:14px}
-.pol{display:grid;grid-template-columns:2fr 1fr;gap:22px;margin-top:14px}
-.pol .big .im{aspect-ratio:16/10}.pol .big h3{font-size:24px}.pol .big p{font-size:13px;-webkit-line-clamp:2}
-.pol .side{display:grid;grid-template-columns:1fr 1fr;gap:22px;border-left:1px solid var(--line);padding-left:22px}
-.pol .side .im{aspect-ratio:5/4}
-.by{display:flex;align-items:center;gap:8px;font-size:12px}
-.by i{width:24px;height:24px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-style:normal;font-size:11px}
-/* article */
-.art{max-width:720px;margin:36px auto}
-.art h1{font-size:40px;line-height:1.15;margin:10px 0}
-.art .im{aspect-ratio:16/9;margin:22px 0}
-.art p.b{font-size:16px;line-height:1.8;margin-bottom:18px}
-.pg{margin:34px 0 10px;font-size:22px}
-.art .toastui-editor-contents{font:16px/1.8 Inter,"Apple SD Gothic Neo",sans-serif;color:var(--fg);margin-bottom:18px}
-.art .toastui-editor-contents p,.art .toastui-editor-contents li{font-size:16px;line-height:1.8;color:var(--fg)}
-.art .toastui-editor-contents h1,.art .toastui-editor-contents h2,.art .toastui-editor-contents h3{color:var(--fg);border-color:var(--line)}
-.art .toastui-editor-contents img{max-width:100%}.art .toastui-editor-contents a{color:var(--acc)}
-.back{color:var(--acc);font-size:13px}
-/* modal */
-dialog{border:0;border-radius:8px;padding:28px;background:var(--bg);color:var(--fg);width:min(400px,92vw);margin:auto}
-dialog::backdrop{background:#0008}
-dialog h3{margin-bottom:6px}dialog p{color:var(--mut);margin-bottom:14px}
-dialog input{width:100%;padding:10px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--fg);margin-bottom:10px}
-dialog .sub{width:100%;padding:10px}
+header{border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:32px;min-height:64px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:700;letter-spacing:.02em}
+.mark{width:30px;height:30px;border-radius:8px;background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:700;font-size:16px}
+nav{display:flex;gap:26px;flex-grow:1;flex-wrap:wrap}
+nav a{padding:20px 0 17px;font-size:14px;font-weight:500;border-bottom:3px solid transparent}
+nav a.on{color:var(--acct);border-bottom-color:var(--acc)}
+.tools{display:flex;align-items:center;gap:8px}
+.ib{width:40px;height:40px;border:0;background:none;border-radius:8px;display:grid;place-items:center;cursor:pointer}
+.ib:hover{background:var(--surf)}
+.btn-l{height:36px;padding:0 14px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-weight:500;display:flex;align-items:center}
 #q{display:none;border-bottom:1px solid var(--line);padding:10px 0}
-#q.on{display:block}#q input{width:100%;border:0;outline:0;font-size:18px;background:none;color:var(--fg)}
-footer{border-top:1px solid var(--line);margin-top:40px;padding:26px 0;color:var(--mut);font-size:12px;text-align:center}
-@media(max-width:900px){
- .hero{grid-template-columns:1fr}.hero>*+*{border:0;padding:0}.stack{flex-direction:row}.stack>*{flex:1}
- .g4{grid-template-columns:1fr 1fr}.pol{grid-template-columns:1fr}.pol .side{border:0;padding:0}
- .logo{font-size:30px}nav ul{gap:16px;overflow-x:auto;flex-wrap:nowrap}nav a{white-space:nowrap}.art h1{font-size:30px}
-}
+#q.on{display:block}#q input{width:100%;border:0;outline:0;font-size:18px;background:none}
+/* chips, labels */
+.chips{display:flex;gap:8px;flex-wrap:wrap;padding:24px 0 8px}
+.chip{height:34px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:500;display:flex;align-items:center;border:1px solid var(--line);background:#fff}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.lb{height:22px;padding:0 9px;border-radius:6px;background:#fff;color:var(--acct);font-size:11px;font-weight:700;display:flex;align-items:center;position:absolute;left:12px;bottom:12px}
+.date{font-size:12px;color:var(--mut)}
+.tag{font-size:12px;color:var(--acct);font-weight:500}
+.panel{background:var(--panel);border-radius:8px;padding:22px}
+/* home */
+.picks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;padding:16px 0 8px}
+.pick .thumb{height:200px;border-radius:14px;overflow:hidden;position:relative}
+.pick h3{font-size:18px;line-height:1.35;margin-top:10px}
+.pick:hover h3,.card:hover h3,.row:hover h2{color:var(--acct)}
+.two{display:flex;gap:32px;flex-wrap:wrap;padding-top:32px;align-items:flex-start}
+.two>section{flex:999 1 640px;min-width:0}.two>aside{flex:1 1 280px;max-width:340px;min-width:260px}
+h2.sh{font-size:16px;font-weight:700;margin-bottom:14px}
+.feat{display:flex;gap:24px;flex-wrap:wrap}
+.feat .thumb{flex:1 1 300px;min-height:240px;border-radius:14px;overflow:hidden;position:relative}
+.feat .tx{flex:1 1 300px;display:flex;flex-direction:column;gap:10px;justify-content:center}
+.feat h3{font-size:24px;line-height:1.3}.feat p{color:var(--mut)}
+.about{text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+.av{width:72px;height:72px;border-radius:50%;background:var(--tile);color:var(--acc);display:grid;place-items:center;font-size:28px;font-weight:700}
+.btn{height:38px;padding:0 18px;border-radius:8px;background:var(--acc);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;margin-top:8px}
+.btn-o{height:44px;padding:0 28px;border:1px solid var(--acc);color:var(--acct);border-radius:8px;font-weight:700;display:inline-flex;align-items:center}
+.head{display:flex;justify-content:space-between;align-items:baseline;margin:48px 0 14px}
+.head h2{font-size:16px}.head a{font-size:13px;font-weight:500;color:var(--acct)}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 20px}
+.card{display:flex;flex-direction:column;gap:8px}
+.card .thumb{aspect-ratio:16/10;border-radius:12px;overflow:hidden;position:relative}
+.card h3{font-size:17px;line-height:1.4}
+.card p{font-size:14px;color:var(--mut);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.more{display:flex;justify-content:center;padding-top:36px}
+/* list */
+.crumb{font-size:13px;color:var(--mut);margin:32px 0 8px}
+.lh{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.lh h1{font-size:30px;line-height:1.3}.lh p{color:var(--mut);font-size:14px}
+.cols{display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start}
+.cols>section{flex:999 1 640px;min-width:0}.cols>aside{flex:1 1 260px;max-width:320px;min-width:240px;display:flex;flex-direction:column;gap:28px}
+.row{display:flex;gap:24px;padding:22px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.row .thumb{flex:0 0 220px;height:140px;border-radius:12px;overflow:hidden;position:relative}
+.row .tx{flex:1 1 280px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.row h2{font-size:20px;line-height:1.4}.row p{font-size:14px;color:var(--mut)}
+.pg{display:flex;justify-content:center;gap:6px;padding-top:32px}
+.pg a{min-width:40px;height:40px;padding:0 10px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;border:1px solid var(--line)}
+.pg a.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.side h2{font-size:16px;margin-bottom:12px}
+.catl a{display:flex;justify-content:space-between;padding:12px 18px;font-size:14px;border-bottom:1px solid #D2E1FC}
+.catl a:last-child{border:0}.catl{background:var(--panel);border-radius:8px;overflow:hidden}
+.mini{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+.mini .t{width:84px;height:64px;flex:none;border-radius:10px;overflow:hidden}
+.mini b{display:block;font-size:14px;font-weight:500;line-height:1.45}
+.empty{padding:40px 0;color:var(--mut)}
+/* article */
+.art{max-width:760px;flex:999 1 640px;min-width:0}
+.art h1{font-size:36px;line-height:1.3;margin:12px 0 14px}
+.chip-s{display:inline-flex;height:26px;padding:0 10px;align-items:center;border-radius:6px;background:var(--tint);color:var(--acct);font-size:12px;font-weight:700;margin-right:6px}
+.meta{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--mut);padding-bottom:20px;border-bottom:1px solid var(--line)}
+.meta .av{width:32px;height:32px;font-size:14px}
+.hero{margin:28px 0;aspect-ratio:16/9;border-radius:16px;overflow:hidden}
+.lead{font-size:17px;font-weight:700;line-height:1.9;margin-bottom:12px}
+.art .toastui-editor-contents{font:17px/1.9 "Noto Sans KR",sans-serif;color:var(--ink)}
+.art .toastui-editor-contents p,.art .toastui-editor-contents li{font-size:17px;line-height:1.9;color:var(--ink)}
+.art .toastui-editor-contents h2,.art .toastui-editor-contents h3{color:var(--ink);border-color:var(--line);font-weight:700}
+.art .toastui-editor-contents img{max-width:100%;border-radius:8px}
+.art .toastui-editor-contents a{color:var(--acct)}
+.art .toastui-editor-contents blockquote{background:var(--panel);border-left:4px solid var(--acc);border-radius:8px;padding:14px 20px;color:var(--ink)}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:32px;padding-top:20px;border-top:1px solid var(--line)}
+.tags a{height:32px;padding:0 14px;border-radius:999px;background:var(--surf);font-size:13px;display:flex;align-items:center;color:var(--acct);font-weight:500}
+.pn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:28px}
+.pn a{background:var(--panel);border-radius:8px;padding:16px 18px}.pn small{display:block;font-size:12px;color:var(--mut)}.pn b{font-weight:500}
+footer{border-top:1px solid var(--line);background:var(--surf);margin-top:64px}
+footer .wrap{padding:28px 24px;font-size:13px;color:var(--mut)}
+@media(max-width:900px){.picks,.g3{grid-template-columns:1fr 1fr}nav{gap:16px;flex-wrap:nowrap;overflow-x:auto}nav a{white-space:nowrap}.art h1{font-size:28px}}
+@media(max-width:560px){.picks,.g3{grid-template-columns:1fr}.row .thumb{flex-basis:100%}.pn{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div class="wrap">
- <header class="top">
-  <div class="l"><button class="ic" id="menu" title="Menu">☰</button><button class="ic" id="srch" title="Search">⌕</button><button class="ic" id="theme" title="Theme">☼</button></div>
-  <a class="logo" href="#/" id="logo"></a>
-  <div class="r"><button class="sub" id="subBtn"></button></div>
- </header>
+<header><div class="wrap bar">
+ <a class="logo" href="#/"><span class="mark" id="mk">P</span><span id="logo"></span></a>
+ <nav id="nav" aria-label="주 메뉴"></nav>
+ <div class="tools">
+  <button class="ib" id="srch" aria-label="검색"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
+  <a class="btn-l" href="admin.html">관리자</a>
+ </div>
 </div>
-<nav><div class="wrap"><ul id="nav"></ul></div></nav>
-<div class="wrap">
- <div id="q"><input id="qi" placeholder="Search posts…"></div>
- <main id="app"></main>
- <footer id="foot"></footer>
-</div>
-<dialog id="dlg"><form method="dialog" id="sf">
- <h3>Subscribe</h3><p>새 글을 이메일로 받아보세요.</p>
- <input type="email" id="em" placeholder="you@example.com" required>
- <button class="sub">Subscribe</button>
-</form></dialog>
+<div class="wrap" id="q"><input id="qi" placeholder="글 검색" aria-label="글 검색"></div>
+</header>
+<main class="wrap" id="app"></main>
+<footer><div class="wrap" id="foot"></div></footer>
 
 <script src="data.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const fmt=d=>{const t=new Date(d+"T00:00:00");return isNaN(t)?esc(d):t.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})};
+const fmt=d=>{const t=new Date(d+"T00:00:00");return isNaN(t)?esc(d):t.toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric"})};
 const safe=u=>/^(#|https?:|\/|[\w.-]+\.html)/.test(u)?u:"#/";
+const enc=encodeURIComponent, PS=6;
 let C,posts;
 const by=id=>posts.find(p=>p.id===id), inCat=c=>posts.filter(p=>p.cats.includes(c));
-const cats=p=>`<div class="cat">${p.cats.map(c=>`<a href="#/cat/${esc(c)}">${esc(c)}</a>`).join("")}</div>`;
-const img=p=>`<div class="im"><img loading="lazy" src="${esc(p.img)}" alt=""></div>`;
-const link=(p,h)=>`<a href="#/post/${esc(p.id)}">${h}</a>`;
-const card=(p,ex=true)=>`<article class="card">${link(p,img(p))}${cats(p)}<h3>${link(p,esc(p.title))}</h3>${ex?`<p>${esc(p.ex)}</p>`:""}<div class="date">${fmt(p.date)}</div></article>`;
-const sec=(c,body)=>`<section class="sec"><h4>${esc(c)}<a href="#/cat/${esc(c)}">View all »</a></h4>${body}</section>`;
+const catList=()=>[...new Set(posts.flatMap(p=>p.cats))];
 const pick=ids=>(ids||[]).map(by).filter(Boolean);
+const thumb=p=>`<div class="thumb"><img loading="lazy" src="${esc(p.img)}" alt=""><span class="lb">${esc(p.cats[0]||"")}</span></div>`;
+const href=p=>`#/post/${enc(p.id)}`;
+const card=p=>`<a class="card" href="${href(p)}">${thumb(p)}<div class="date">${fmt(p.date)}</div><h3>${esc(p.title)}</h3><p>${esc(p.ex)}</p><span class="tag">${p.cats.map(c=>"#"+esc(c)).join(" ")}</span></a>`;
+const chips=on=>`<div class="chips"><a class="chip ${on===""?"on":""}" href="#/all">전체</a>${catList().map(c=>`<a class="chip ${on===c?"on":""}" href="#/cat/${enc(c)}">${esc(c)}</a>`).join("")}</div>`;
 
 function home(){
- const H=C.home,f=by(H.feature)||posts[0];if(!f)return`<p style="padding:60px 0;text-align:center;color:var(--mut)">아직 글이 없습니다.</p>`;
- const left=pick(H.left),late=pick(H.latest);
- return `<section class="hero">
-  <div class="stack">${left.map(p=>`<article class="card">${link(p,img(p))}${cats(p)}<h3>${link(p,esc(p.title))}</h3><div class="date">${fmt(p.date)}</div></article>`).join("")}</div>
-  <article class="feat">${link(f,img(f))}<div class="cat">${esc(f.cats[0]||"")}</div><h2>${link(f,esc(f.title))}</h2><p>${esc(f.ex)}</p><div class="date">${fmt(f.date)} · <b>${esc(f.author)}</b></div></article>
-  <aside class="latest"><h4>Latest</h4>${late.map(p=>`<a class="li" href="#/post/${esc(p.id)}"><div><h5>${esc(p.title)}</h5><div class="date">${fmt(p.date)}</div></div><div class="im"><img loading="lazy" src="${esc(p.img)}" alt=""></div></a>`).join("")}</aside>
- </section>
- ${H.sections.map(s=>{
-  const ps=inCat(s.cat);if(!ps.length)return"";
-  if(s.layout==="feature"){const b=ps[0];return sec(s.cat,`<div class="pol"><article class="card big">${link(b,img(b))}${cats(b)}<h3>${link(b,esc(b.title))}</h3><p>${esc(b.ex)}</p><div class="by"><span class="date">${fmt(b.date)}</span><i>${esc(b.author[0]||"A")}</i>by ${esc(b.author)}</div></article><div class="side">${ps.slice(1,5).map(p=>card(p)).join("")}</div></div>`)}
-  return sec(s.cat,`<div class="g4">${ps.slice(0,4).map(p=>card(p)).join("")}</div>`)}).join("")}`;
+ const H=C.home,f=by(H.feature)||posts[0];
+ if(!f)return`<p class="empty">아직 글이 없습니다.</p>`;
+ let picks=pick(H.picks);if(!picks.length)picks=posts.slice(0,3);
+ return `${chips(null)}
+ <section class="picks" aria-label="추천 글">${picks.map(p=>`<a class="pick" href="${href(p)}">${thumb(p)}<h3>${esc(p.title)}</h3></a>`).join("")}</section>
+ <div class="two"><section><h2 class="sh">대표 글</h2>
+  <a class="feat" href="${href(f)}">${thumb(f)}<div class="tx"><div class="date">${fmt(f.date)}</div><h3>${esc(f.title)}</h3><p>${esc(f.ex)}</p><span class="tag">${f.cats.map(c=>"#"+esc(c)).join(" ")}</span></div></a></section>
+  <aside class="panel about"><h2 class="sh" style="align-self:flex-start;margin:0">소개</h2><div class="av">${esc((C.site.name||"P")[0])}</div><b>${esc(C.site.name)}</b><p style="font-size:13px;color:var(--mut)">AI와 프로덕트 기획을 기록하는 블로그</p><a class="btn" href="#/all">전체 글 보기</a></aside></div>
+ <div class="head"><h2>최신 글</h2><a href="#/all">전체 보기</a></div>
+ <div class="g3">${posts.slice(0,H.count||6).map(card).join("")}</div>
+ <div class="more"><a class="btn-o" href="#/all">글 더 보기</a></div>`;
 }
-const list=(t,ps)=>sec(t,ps.length?`<div class="g4">${ps.map(p=>card(p)).join("")}</div>`:`<p style="padding:30px 0;color:var(--mut)">결과가 없습니다.</p>`);
+function listView(title,ps,pg,base,on){
+ const n=Math.max(1,Math.ceil(ps.length/PS)),pgNo=Math.min(Math.max(pg,1),n);
+ const rows=ps.slice((pgNo-1)*PS,pgNo*PS).map(p=>`<a class="row" href="${href(p)}">${thumb(p)}<div class="tx"><div class="date">${fmt(p.date)}</div><h2>${esc(p.title)}</h2><p>${esc(p.ex)}</p><span class="tag">${p.cats.map(c=>"#"+esc(c)).join(" ")}</span></div></a>`).join("");
+ const pager=n>1?`<nav class="pg" aria-label="페이지 이동">${Array.from({length:n},(_,i)=>`<a class="${i+1===pgNo?"on":""}" href="${base}/${i+1}">${i+1}</a>`).join("")}</nav>`:"";
+ return `<div class="crumb"><a href="#/">홈</a> &nbsp;/&nbsp; 글 목록</div>
+ <div class="lh"><div><h1>${esc(title)}</h1><p>총 ${ps.length}개의 글</p></div></div>${chips(on)}
+ <div class="cols"><section>${rows||'<p class="empty">결과가 없습니다.</p>'}${pager}</section>
+ <aside class="side"><div><h2>카테고리</h2><div class="catl">${catList().map(c=>`<a href="#/cat/${enc(c)}"><span>${esc(c)}</span><span style="color:var(--mut)">${inCat(c).length}</span></a>`).join("")}</div></div>
+ <div><h2>최근 글</h2>${posts.slice(0,3).map(p=>`<a class="mini" href="${href(p)}"><div class="t"><img loading="lazy" src="${esc(p.img)}" alt=""></div><div><span class="date">${fmt(p.date)}</span><b>${esc(p.title)}</b></div></a>`).join("")}</div></aside></div>`;
+}
 function post(p){
- const rel=posts.filter(x=>x!==p&&x.cats.some(c=>p.cats.includes(c))).slice(0,4);
- return `<article class="art"><a class="back" href="#/">← Back</a>${cats(p)}<h1>${esc(p.title)}</h1>
-  <div class="by"><i>${esc(p.author[0]||"A")}</i>by ${esc(p.author)} · <span class="date">${fmt(p.date)}</span></div>${img(p)}
-  <p class="b"><b>${esc(p.ex)}</b></p><div id="pbody"></div>
-  ${rel.length?`<h3 class="pg">Related</h3><div class="g4" style="grid-template-columns:1fr 1fr">${rel.map(x=>card(x,false)).join("")}</div>`:""}</article>`;
+ const i=posts.indexOf(p),newer=posts[i-1],older=posts[i+1];
+ const rel=posts.filter(x=>x!==p&&x.cats.some(c=>p.cats.includes(c))).slice(0,3);
+ return `<div class="crumb"><a href="#/">홈</a> &nbsp;/&nbsp; <a href="#/all">글 목록</a> &nbsp;/&nbsp; ${esc(p.cats[0]||"")}</div>
+ <div class="cols"><article class="art">
+  ${p.cats.map(c=>`<a class="chip-s" href="#/cat/${enc(c)}">${esc(c)}</a>`).join("")}
+  <h1>${esc(p.title)}</h1>
+  <div class="meta"><span class="av">${esc((p.author||"A")[0])}</span><b style="color:var(--ink);font-weight:500">${esc(p.author)}</b><span>${fmt(p.date)}</span></div>
+  <div class="hero"><img src="${esc(p.img)}" alt=""></div>
+  <p class="lead">${esc(p.ex)}</p><div id="pbody"></div>
+  <div class="tags">${p.cats.map(c=>`<a href="#/cat/${enc(c)}">#${esc(c)}</a>`).join("")}</div>
+  <nav class="pn" aria-label="이전·다음 글">${older?`<a href="${href(older)}"><small>이전 글</small><b>${esc(older.title)}</b></a>`:"<span></span>"}${newer?`<a href="${href(newer)}" style="text-align:right"><small>다음 글</small><b>${esc(newer.title)}</b></a>`:"<span></span>"}</nav>
+ </article>
+ <aside class="side" style="flex:1 1 260px;max-width:320px;min-width:240px;display:flex;flex-direction:column;gap:28px">
+  <div class="panel about"><div class="av">${esc((C.site.name||"P")[0])}</div><b>${esc(C.site.name)}</b><p style="font-size:13px;color:var(--mut)">AI와 프로덕트 기획을 기록하는 블로그</p></div>
+  ${rel.length?`<div><h2>관련 글</h2>${rel.map(x=>`<a class="mini" href="${href(x)}"><div class="t"><img loading="lazy" src="${esc(x.img)}" alt=""></div><div><span class="date">${fmt(x.date)}</span><b>${esc(x.title)}</b></div></a>`).join("")}</div>`:""}
+ </aside></div>`;
 }
-// 본문 마크다운 뷰어(TOAST UI Viewer, XSS 필터 내장)는 글 페이지에서만 지연 로드
-const CDN="https://uicdn.toast.com/editor/3.2.2/",DEMO="Lorem ipsum dolor sit amet, ei officiis assueverit pri, duo volumus commune molestiae ad, cum at clita latine.\n\nId eam magna omnesque, ius ea rebum nostrum offendit. Per in recusabo facilisis, est ei choro veritus gloriatur.";
+// 본문은 마크다운. TOAST UI Viewer(XSS 필터 내장)를 글 페이지에서만 지연 로드
+const CDN="https://uicdn.toast.com/editor/3.2.2/",DEMO="본문이 아직 없습니다.";
 function showBody(md){
  const go=()=>{const el=$("#pbody");if(el)new toastui.Editor({el,initialValue:(md||"").trim()||DEMO})};
  if(window.toastui)return go();
@@ -150,36 +184,28 @@ function showBody(md){
  const s=document.createElement("script");s.src=CDN+"toastui-editor-viewer.min.js";s.onload=go;document.head.append(s);
 }
 function route(){
- const h=location.hash||"#/",[,k,v]=h.split("/").map(decodeURIComponent);
- let html;
- if(k==="post"&&by(v)){html=post(by(v));document.title=by(v).title+" — "+C.site.name}
- else{document.title=C.site.name+" — Blog";
-  if(k==="cat")html=list(v,inCat(v));
-  else if(k==="all")html=list("All posts",posts);
-  else if(k==="search")html=list(`Search: ${v}`,posts.filter(p=>(p.title+p.ex+p.cats).toLowerCase().includes(v.toLowerCase())));
-  else html=home();}
+ const h=location.hash||"#/",a=h.split("/").map(decodeURIComponent),k=a[1];
+ let html,on=null;
+ document.title=C.site.name;
+ if(k==="post"&&by(a[2])){const p=by(a[2]);html=post(p);document.title=p.title+" — "+C.site.name}
+ else if(k==="cat"){html=listView(a[2],inCat(a[2]),+a[3]||1,"#/cat/"+enc(a[2]),a[2])}
+ else if(k==="all"){html=listView("전체 글",posts,+a[2]||1,"#/all","")}
+ else if(k==="search"){const q=a[2]||"";html=listView(`검색: ${q}`,posts.filter(p=>(p.title+p.ex+p.cats).toLowerCase().includes(q.toLowerCase())),+a[3]||1,"#/search/"+enc(q),null)}
+ else html=home();
  $("#app").innerHTML=html;scrollTo(0,0);
- if(k==="post"&&by(v))showBody(by(v).body);
- $("#nav").innerHTML=C.nav.map(n=>`<li><a href="${esc(safe(n.url))}" class="${h===n.url?"on":""}">${esc(n.label)}</a></li>`).join("");
+ if(k==="post"&&by(a[2]))showBody(by(a[2]).body);
+ $("#nav").innerHTML=C.nav.map(n=>`<a href="${esc(safe(n.url))}" class="${h===n.url||(n.url!=="#/"&&h.startsWith(n.url+"/"))?"on":""}">${esc(n.label)}</a>`).join("");
 }
 (async()=>{
  C=await loadCfg();
- posts=[...C.posts].sort((a,b)=>b.date.localeCompare(a.date)); // stable: 같은 날짜는 입력 순서 유지
+ posts=C.posts.filter(p=>p.status!=="draft").sort((a,b)=>b.date.localeCompare(a.date)); // 같은 날짜는 입력 순서 유지
  const S=C.site;
- document.head.insertAdjacentHTML("beforeend",`<style>:root{--acc:${S.accent}}:root[data-theme=dark]{--acc:${S.accentDark}}</style>`);
- $("#logo").textContent=S.name;$("#subBtn").textContent=S.subscribe;$("#foot").textContent=S.footer;
- const T=document.documentElement;
- try{T.dataset.theme=localStorage.theme||""}catch{}
- if(!T.dataset.theme)T.dataset.theme=S.theme==="auto"?(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light"):S.theme;
- $("#theme").onclick=()=>{T.dataset.theme=T.dataset.theme==="dark"?"light":"dark";try{localStorage.theme=T.dataset.theme}catch{}};
+ document.head.insertAdjacentHTML("beforeend",`<style>:root{--acc:${S.accent};--acct:${S.accentText||S.accent}}</style>`);
+ $("#logo").textContent=S.name;$("#mk").textContent=(S.name||"P")[0];$("#foot").textContent=S.footer;
  addEventListener("hashchange",route);route();
 })();
 $("#srch").onclick=()=>{$("#q").classList.toggle("on");$("#qi").focus()};
-$("#qi").oninput=e=>{const v=e.target.value.trim();location.hash=v?"#/search/"+encodeURIComponent(v):"#/"};
-$("#menu").onclick=()=>$("#nav").scrollIntoView({behavior:"smooth"});
-// subscribe: 저장은 브라우저 localStorage뿐 (ponytail: 백엔드 없음, 이메일 서비스 연결 시 교체)
-$("#subBtn").onclick=()=>$("#dlg").showModal();
-$("#sf").onsubmit=()=>{try{const s=JSON.parse(localStorage.subs||"[]");s.push($("#em").value);localStorage.subs=JSON.stringify(s)}catch{};alert("구독해주셔서 감사합니다!")};
+$("#qi").oninput=e=>{const v=e.target.value.trim();location.hash=v?"#/search/"+enc(v):"#/all"};
 </script>
 </body>
 </html>

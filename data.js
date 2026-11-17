@@ -21,11 +21,13 @@ const P=[ // id,title,cats,date,author,excerpt,img seed
 ["vault","Enter at your peril, past the vault door",["Opinion","Politics"],"Isabella","Duo dolorum mandamus mnesarchum te. Sit ridens persius ex. Vel noluisse perpetua.","beach"],
 ];
 const DEFAULT={
- site:{name:"Plan-P",accent:"#0a6fd6",accentDark:"#4da3ff",footer:"© 2026 Plan-P · A blog for writers",subscribe:"Subscribe",theme:"light"},
+ site:{name:"Plan-P",accent:"#4F46E5",accentText:"#4338CA",footer:"© 2026 Plan-P · A blog for writers"},
  nav:[["Home","#/"],["Posts","#/all"],["Business","#/cat/Business"],["Interview","#/cat/Interview"],["Politics","#/cat/Politics"],["Travel","#/cat/Travel"],["Opinion","#/cat/Opinion"],["Books","#/cat/Books"]].map(([label,url])=>({label,url})),
- posts:P.map(([id,title,cats,author,ex,seed])=>({id,title,cats,author,ex,body:"",date:"2025-01-08",img:`https://picsum.photos/seed/${seed}/900/700`})),
- home:{feature:"when-you-tell-them-the-truth",left:["hero-half","old-man"],latest:["unwrapped","rebel","truth2","hero-half","welcome"],
-  sections:[{cat:"Business",layout:"grid"},{cat:"Travel",layout:"grid"},{cat:"Politics",layout:"feature"}]}
+ posts:[
+  {id:"editor-test",title:"에디터 테스트",cats:["Opinion"],author:"Admin",date:"2026-11-17",status:"published",img:"https://picsum.photos/seed/editor-test/900/700",ex:"관리자 에디터(TOAST UI)로 작성한 테스트 글입니다.",body:"## 소제목\n\n**굵게** 본문 *기울임*\n\n- 목록1\n- 목록2\n\n![sample](https://picsum.photos/seed/a/400/200)"},
+  ...P.map(([id,title,cats,author,ex,seed])=>({id,title,cats,author,ex,body:"",status:"published",date:"2025-01-08",img:`https://picsum.photos/seed/${seed}/900/700`}))
+ ],
+ home:{feature:"when-you-tell-them-the-truth",picks:["move-out","pakistan","rhoda"],count:6}
 };
 async function loadCfg(){
  try{const s=localStorage.planp_cfg;if(s)return JSON.parse(s)}catch{}
