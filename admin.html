@@ -53,13 +53,22 @@ td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical
 .prev{aspect-ratio:16/10;border-radius:8px;object-fit:cover;background:#fff;width:100%;display:block;margin:10px 0 0}
 .chk{display:flex;align-items:center;gap:6px;margin:0;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:13px;font-weight:500;color:var(--ink);cursor:pointer}.chk input{width:auto;height:auto;margin:0;accent-color:var(--acc)}
 dialog{margin:auto;border:0;border-radius:14px;padding:24px;width:min(440px,92vw);color:var(--ink)}dialog::backdrop{background:rgba(31,35,40,.4)}dialog h3{font-size:17px;margin-bottom:6px}dialog p{color:var(--mut);font-size:13px;margin-bottom:12px}dialog .chk{margin-top:8px}dialog select{margin-top:8px}
+.mp{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;max-width:960px}
+.mp .sec{display:flex;flex-direction:column;margin:22px 0 10px}.mp .sec b{font-size:14px}.mp .sec span{font-size:12px;color:var(--mut)}
+.auto{background:var(--surf);border:1px dashed #D5D8DC;border-radius:10px;color:var(--mut);padding:10px 14px;font-size:12px}
+.g3a{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.mid{display:grid;grid-template-columns:1fr 240px;gap:20px;align-items:start}
+.sl{border:2px solid var(--acc);border-radius:12px;overflow:hidden;background:#fff;cursor:pointer;display:flex;flex-direction:column}.sl:hover{background:var(--tint)}.sl.au{border:1px solid var(--line);cursor:default}.sl.au:hover{background:#fff}
+.sl.em{border-style:dashed}.sl .ph{position:relative;background:var(--tint);display:grid;place-items:center;color:var(--acct);font-weight:700;font-size:13px}.sl .ph img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.sl .lab{position:absolute;left:8px;top:8px;background:var(--acc);color:#fff;font-style:normal;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px}
+.sl .ti{padding:10px 12px;display:flex;flex-direction:column;gap:2px;font-size:13px}.sl .ti span{color:var(--mut);font-size:12px}.sl .hint{padding:0 12px 12px;display:flex;gap:6px}
+#pl{max-height:340px;overflow:auto;margin-top:10px;border:1px solid var(--line);border-radius:10px}.pr{display:flex;align-items:center;gap:12px;width:100%;padding:8px 12px;background:#fff;border:0;border-bottom:1px solid var(--line);text-align:left}.pr:hover{background:var(--tint)}.pr[hidden]{display:none}.pr img{width:54px;height:42px;object-fit:cover;border-radius:6px;flex:none}.pr span{flex:1;min-width:0;display:flex;flex-direction:column}.pr small{color:var(--mut);font-size:12px}.pr em{font-style:normal;flex:none}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}.bar{display:flex;gap:8px;margin-top:22px}
 .note{background:#fff;border-left:3px solid var(--acc);border-radius:6px;padding:14px 16px;font-size:13px;color:var(--mut);margin-top:16px}.note b{color:var(--ink)}
 .pv{border:1px solid var(--line);background:#fff;border-radius:12px;padding:22px;text-align:center}.pv .logo{justify-content:center;font-size:28px}.pv .btn{margin-top:12px}
 .sw{display:flex;align-items:center;gap:12px}.sw code{color:var(--mut);font-size:12px}
 #toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;opacity:0;transition:.25s;pointer-events:none}
 #toast.on{opacity:1;transform:translate(-50%,0)}
-@media(max-width:800px){aside.sb{flex-basis:100%;border:0;border-bottom:1px solid var(--line);padding:12px 0}.mn{flex-direction:row;overflow-x:auto}.mn a{white-space:nowrap}.sf{display:none}.bd{padding:20px 16px}.two,.r-menu,.r-add{grid-template-columns:1fr}.hd{display:none}}
+@media(max-width:800px){aside.sb{flex-basis:100%;border:0;border-bottom:1px solid var(--line);padding:12px 0}.mn{flex-direction:row;overflow-x:auto}.mn a{white-space:nowrap}.sf{display:none}.bd{padding:20px 16px}.two,.r-menu,.r-add,.mid,.g3a{grid-template-columns:1fr}.hd{display:none}}
 </style>
 </head>
 <body>
@@ -97,7 +106,7 @@ async function save(m="저장했습니다. 사이트에 바로 반영됩니다")
 let dirty=false;
 const mark=()=>{dirty=true;const e=$("#dirty");if(e)e.textContent="저장하지 않은 변경이 있습니다";const v=$("#pvn");if(v)v.innerHTML=navPv()};
 async function go(t){
- if(dirty){if(!confirm("카테고리 변경을 아직 저장하지 않았습니다. 저장하지 않고 이동하면 변경이 사라집니다."))return;dirty=false;C=await loadCfg(true)}
+ if(dirty){if(!confirm("변경 사항을 아직 저장하지 않았습니다. 저장하지 않고 이동하면 변경이 사라집니다."))return;dirty=false;C=await loadCfg(true)}
  tab=t;D=null;if(t==="write")newPost();render()}
 function mv(p,i,d){const a=arr(p),j=i+d;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];mark();render()}
 const mvB=(p,i)=>`<div class="acts"><button class="ib" aria-label="위로" onclick="mv('${p}',${i},-1)">↑</button><button class="ib" aria-label="아래로" onclick="mv('${p}',${i},1)">↓</button><button class="ib" aria-label="삭제" onclick="delRow('${p}',${i})">✕</button></div>`;
@@ -173,7 +182,7 @@ function catDialog(i,del){
  const c=catOf(C.nav[i]),k=catCount(c),others=cats().filter(x=>x!==c);
  if(!del&&!others.length)return toast("옮길 다른 카테고리가 없습니다");
  let d=$("#cd");if(!d){d=document.createElement("dialog");d.id="cd";document.body.append(d)}
- d.innerHTML=`<h3>${esc(c)} 카테고리 ${del?"삭제":"글 옮기기"}</h3><p>이 카테고리에 글이 ${k}개 있습니다. 글은 지워지지 않습니다.</p>
+ d.style.width="";d.innerHTML=`<h3>${esc(c)} 카테고리 ${del?"삭제":"글 옮기기"}</h3><p>이 카테고리에 글이 ${k}개 있습니다. 글은 지워지지 않습니다.</p>
   ${others.length?`<label class="chk"><input type="radio" name="cm" value="move" checked>다른 카테고리로 옮기기</label><select id="cmt" aria-label="옮길 카테고리">${others.map(o=>`<option>${esc(o)}</option>`).join("")}</select>`:""}
   ${del?`<label class="chk"><input type="radio" name="cm" value="drop" ${others.length?"":"checked"}>카테고리만 빼기 (글은 카테고리 없이 남습니다)</label>`:""}
   <div class="bar"><button class="btn o" onclick="$('#cd').close()">취소</button><button class="btn ${del?"r":""}" onclick="runCat(${i},${del})">${del?"삭제":"옮기기"}</button></div>`;
@@ -218,14 +227,45 @@ function menu(){
   ${mvB("nav",i)}</div>`}).join("")}
  <h4>사이트에서 이렇게 보입니다</h4><div class="pvnav" id="pvn">${navPv()}</div>`;
 }
-/* 메인 */
+/* 메인: 실제 메인 화면 배치를 그대로 보여 주고, 칸을 눌러 글을 꽂는다 */
+const pubPosts=()=>C.posts.filter(p=>p.status!=="draft").sort((a,b)=>b.date.localeCompare(a.date));
 function home(){
- head("메인 관리",`<button class="btn" onclick="save()">저장</button>`);
- const H=C.home,po=postOpts();H.picks=H.picks||[];
- return `<h2>메인 관리</h2><p class="lead">메인 페이지에 보여 줄 글을 정합니다.</p>
- <div class="panel" style="max-width:640px"><h3>대표 글</h3><label for="h0">가운데 큰 글</label><select id="h0" onchange="C.home.feature=this.value">${opts(po,H.feature)}</select>
-  <h3 style="margin-top:18px">추천 글 (3개)</h3>${[0,1,2].map(i=>`<label for="h${i+1}">추천 ${i+1}</label><select id="h${i+1}" onchange="C.home.picks[${i}]=this.value">${opts(po,H.picks[i])}</select>`).join("")}
-  <h3 style="margin-top:18px">최신 글</h3><label for="hc">표시 개수</label><select id="hc" onchange="C.home.count=+this.value">${opts([["3","3개"],["6","6개"],["9","9개"]],String(H.count||6))}</select></div>`;
+ head("메인 관리",`<span id="dirty" style="font-size:12px;color:var(--red)">${dirty?"저장하지 않은 변경이 있습니다":""}</span><button class="btn" onclick="save()">저장</button>`);
+ const H=C.home;H.picks=H.picks||[];
+ const pub=pubPosts(),by=id=>pub.find(p=>p.id===id);
+ const sl=(p,label,id,big)=>`<div class="sl ${p?"":"em"}" role="button" tabindex="0" onclick="pickPost('${id}')" onkeydown="if(event.key==='Enter')pickPost('${id}')" aria-label="${label} 글 고르기">
+  <div class="ph" style="aspect-ratio:${big?"16/8":"16/10"}">${p?`<img src="${esc(p.img||"placeholder.svg")}" alt="">`:`<span>+ 글 고르기</span>`}<i class="lab">${label}</i></div>
+  <div class="ti">${p?`<b>${esc(p.title)}</b>${big?`<span>${esc(p.ex)}</span>`:""}`:`<span>${id==="f"?"비어 있으면 가장 최근 글이 들어갑니다":"비어 있음 (이 칸은 사이트에 보이지 않습니다)"}</span>`}</div>
+  ${p?`<div class="hint"><button class="btn o s" onclick="event.stopPropagation();pickPost('${id}')">글 바꾸기</button><button class="btn o s" onclick="event.stopPropagation();clearSlot('${id}')">비우기</button></div>`:""}</div>`;
+ const sec=(n,t,d)=>`<div class="sec"><b>${n} ${t}</b><span>${d}</span></div>`;
+ return `<h2>메인 관리</h2><p class="lead">아래는 실제 메인 화면과 같은 배치입니다. <b>파란 테두리 칸을 누르면</b> 글 목록이 열리고, 고른 글이 그 자리에 들어갑니다. 바꾼 뒤에는 오른쪽 위 <b>저장</b>을 눌러야 사이트에 반영됩니다.</p>
+ <div class="mp">
+  <div class="auto">카테고리 버튼 (자동) · 카테고리 관리에서 만든 카테고리가 표시됩니다</div>
+  ${sec("①","추천 글","메인 맨 위에 나란히 보이는 3칸. 3칸을 모두 비우면 최신 글 3개가 자동으로 들어갑니다")}
+  <div class="g3a">${[0,1,2].map(i=>sl(by(H.picks[i]),"추천 "+(i+1),i)).join("")}</div>
+  <div class="mid"><div>${sec("②","대표 글","추천 글 아래에 크게 보이는 글 1개")}${sl(by(H.feature),"대표 글","f",true)}</div>
+   <div class="auto" style="align-self:end">소개 영역 (자동)<br>블로그 이름과 소개 문구 · 디자인 관리에서 바꿉니다</div></div>
+  ${sec("③","최신 글","새로 발행한 글이 자동으로 쌓이는 곳입니다. 직접 고르지 않습니다")}
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:13px"><label for="hc" style="margin:0">보여 줄 개수</label><select id="hc" style="width:110px;height:34px" onchange="C.home.count=+this.value;mark();render()">${opts([3,6,9,12,15,18,21].map(n=>[String(n),n+"개"]),String(H.count||6))}</select></div>
+  <div class="g3a">${pub.slice(0,H.count||6).map(p=>`<div class="sl au"><div class="ph" style="aspect-ratio:16/10"><img src="${esc(p.img||"placeholder.svg")}" alt=""></div><div class="ti"><b>${esc(p.title)}</b></div></div>`).join("")||'<div class="auto">발행한 글이 없습니다</div>'}</div>
+ </div>`;
+}
+function clearSlot(id){id==="f"?C.home.feature="":C.home.picks[+id]="";mark();render()}
+function pickPost(id){
+ const H=C.home,cur=id==="f"?H.feature:H.picks[+id],pub=pubPosts();
+ let d=$("#cd");if(!d){d=document.createElement("dialog");d.id="cd";document.body.append(d)}
+ d.style.width="min(560px,92vw)";
+ const used=pid=>H.picks.includes(pid)?"추천 "+(H.picks.indexOf(pid)+1):H.feature===pid?"대표 글":"";
+ d.innerHTML=`<h3>${id==="f"?"대표 글":"추천 "+(+id+1)} 고르기</h3><p>메인에 보여 줄 글을 누르세요. 발행한 글만 보입니다.</p>
+  <input id="ps" placeholder="제목으로 찾기" aria-label="제목 검색" oninput="const q=this.value.trim().toLowerCase();document.querySelectorAll('#pl .pr').forEach(r=>r.hidden=!r.dataset.t.includes(q))">
+  <div id="pl">${pub.map(p=>`<button class="pr" data-t="${esc(p.title.toLowerCase())}" onclick="setSlot('${id}','${esc(p.id)}')"><img src="${esc(p.img||"placeholder.svg")}" alt=""><span><b>${esc(p.title)}</b><small>${esc(p.date)} · ${esc(p.cats.join(", ")||"카테고리 없음")}</small></span>${p.id===cur?'<em class="st">현재</em>':used(p.id)?`<em class="st d">${used(p.id)}</em>`:""}</button>`).join("")||"<p>발행한 글이 없습니다</p>"}</div>
+  <div class="bar"><button class="btn o" onclick="$('#cd').close()">취소</button></div>`;
+ d.showModal();
+}
+function setSlot(id,pid){
+ const H=C.home;
+ if(id==="f")H.feature=pid;else{const j=H.picks.indexOf(pid);if(j>=0&&j!==+id)H.picks[j]=H.picks[+id]||"";H.picks[+id]=pid}
+ mark();$("#cd").close();render();
 }
 /* 디자인 */
 function design(){
