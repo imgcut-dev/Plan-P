@@ -1,0 +1,10 @@
+<!-- @dsCard group="Forms" height=250 subtitle="기본 · 포커스 · 오류" -->
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>body{margin:0;padding:24px;background:var(--surface);font-family:var(--font-sans);display:flex;gap:20px;flex-wrap:wrap}
+.f{flex:1 1 200px}label{display:block;font:500 13px var(--font-sans);color:var(--ink);margin-bottom:6px}
+input{width:100%;height:44px;padding:0 14px;border:1px solid var(--line);border-radius:var(--radius-md);font:400 14px var(--font-sans);outline:0;box-sizing:border-box;background:var(--surface);color:var(--ink)}
+.on input{border-color:var(--blue-600)}.er input{border-color:var(--danger)}.m{font:400 12px var(--font-sans);color:var(--danger);margin-top:4px}</style></head><body>
+<div class="f"><label for="a">기본</label><input id="a" placeholder="내용을 입력하세요"></div>
+<div class="f on"><label for="b">포커스</label><input id="b" value="포커스 상태"></div>
+<div class="f er"><label for="c">오류</label><input id="c" value=""><div class="m">제목을 입력하세요.</div></div>
+</body></html>
