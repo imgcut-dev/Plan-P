@@ -66,6 +66,11 @@ dialog{margin:auto;border:0;border-radius:14px;padding:24px;width:min(440px,92vw
 .skins{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;max-width:760px}.skin{text-align:left;background:#fff;border:2px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px}.skin:hover{border-color:var(--ink)}.skin.on{border-color:var(--acc);background:var(--tint)}.skin small{color:var(--mut);font-size:12px;line-height:1.4}.swc{display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--line);margin-bottom:6px}.swc i{flex:1}
 .skpv{width:100%;max-width:960px;height:560px;border:1px solid var(--line);border-radius:12px;background:#fff;display:block}
 .tg{display:inline-flex;align-items:center;gap:2px;height:28px;padding:0 4px 0 10px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:13px;margin:0 6px 6px 0}.tg button{border:0;background:none;width:20px;height:20px;border-radius:50%;color:var(--mut)}.tg button:hover{background:var(--tint)}
+.tb{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.tb input{flex:1 1 240px;width:auto;min-width:200px}.tb select{width:auto;height:40px}
+.bulk{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--tint);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-bottom:10px}
+.pgn{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:16px}.pgn .btn[disabled]{opacity:.4;cursor:default}
+td input[type=checkbox],th input[type=checkbox]{width:18px;height:18px;padding:0;accent-color:var(--acc)}
+#plist .card{overflow-x:auto}#plist td:nth-child(3){min-width:230px}#plist .acts{flex-wrap:nowrap}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}.bar{display:flex;gap:8px;margin-top:22px}
 .note{background:#fff;border-left:3px solid var(--acc);border-radius:6px;padding:14px 16px;font-size:13px;color:var(--mut);margin-top:16px}.note b{color:var(--ink)}
 .pv{border:1px solid var(--line);background:#fff;border-radius:12px;padding:22px;text-align:center}.pv .logo{justify-content:center;font-size:28px}.pv .btn{margin-top:12px}
@@ -118,15 +123,60 @@ const mvB=(p,i)=>`<div class="acts"><button class="ib" aria-label="위로" oncli
 function delRow(p,i){const r=arr(p)[i];if(p==="nav"&&catOf(r)&&catCount(catOf(r)))return catDialog(i,true);if(!confirm(p==="nav"?`"${r.label||"이 항목"}" 카테고리를 삭제할까요? (이 카테고리의 글은 지워지지 않습니다)`:`"${SECTIONS[r.type]?.name||"이"}" 섹션을 메인에서 뺄까요? (글은 지워지지 않습니다)`))return;arr(p).splice(i,1);mark();render()}
 const head=(t,act="")=>{$("#th").innerHTML=`<h1>${t}</h1><div class="ac">${act}</div>`};
 
-/* 글 관리 */
+/* 글 관리: 검색, 필터, 정렬, 전체 선택과 일괄 처리, 페이지 나누기 */
+const L={q:"",st:"",cat:"",tag:"",sort:"new",per:10,pg:1,sel:new Set()};
+const lFiltered=()=>{
+ const q=L.q.trim().toLowerCase();
+ const r=C.posts.map((p,i)=>[p,i]).filter(([p])=>(!L.st||(p.status==="draft"?"draft":"published")===L.st)&&(!L.cat||p.cats.includes(L.cat))&&(!L.tag||(p.tags||[]).includes(L.tag))
+  &&(!q||(p.title+" "+p.ex+" "+p.cats.join(" ")+" "+(p.tags||[]).join(" ")).toLowerCase().includes(q)));
+ const f={new:(a,b)=>b[0].date.localeCompare(a[0].date),old:(a,b)=>a[0].date.localeCompare(b[0].date),title:(a,b)=>a[0].title.localeCompare(b[0].title,"ko")}[L.sort];
+ return r.sort(f)};
+function setL(k,v){L[k]=k==="per"?+v:v;if(k!=="pg"){L.pg=1;L.sel.clear()}plist()}
+function lReset(){Object.assign(L,{q:"",st:"",cat:"",tag:"",sort:"new",pg:1});L.sel.clear();render()}
+function lPage(rows){return rows.slice((L.pg-1)*L.per,L.pg*L.per)}
+function lToggle(id,on){on?L.sel.add(id):L.sel.delete(id);plist()}
+function lAllPage(on){lPage(lFiltered()).forEach(([p])=>on?L.sel.add(p.id):L.sel.delete(p.id));plist()}
+function lAllResult(){lFiltered().forEach(([p])=>L.sel.add(p.id));plist()}
+function plist(){const e=$("#plist");if(e)e.innerHTML=listHtml()}
+function listHtml(){
+ const rows=lFiltered(),n=Math.max(1,Math.ceil(rows.length/L.per));L.pg=Math.min(L.pg,n);
+ const pg=lPage(rows),allOn=pg.length&&pg.every(([p])=>L.sel.has(p.id));
+ const pager=n>1?`<nav class="pgn" aria-label="페이지 이동"><button class="btn o s" ${L.pg<=1?"disabled":""} onclick="setL('pg',${L.pg-1})">‹ 이전</button>${Array.from({length:n},(_,i)=>`<button class="btn s ${i+1===L.pg?"":"o"}" onclick="setL('pg',${i+1})">${i+1}</button>`).join("")}<button class="btn o s" ${L.pg>=n?"disabled":""} onclick="setL('pg',${L.pg+1})">다음 ›</button></nav>`:"";
+ return `<p class="lead" style="margin:0 0 10px">전체 ${C.posts.length}개${rows.length!==C.posts.length?` · 검색·필터 결과 ${rows.length}개`:""} · ${L.pg}/${n} 페이지</p>
+ ${L.sel.size?`<div class="bulk"><b>${L.sel.size}개 선택됨</b><button class="btn o s" onclick="bulk('pub')">발행</button><button class="btn o s" onclick="bulk('draft')">비공개로 바꾸기</button><button class="btn r s" onclick="bulk('del')">삭제</button><button class="btn o s" onclick="L.sel.clear();plist()">선택 해제</button></div>`:""}
+ ${allOn&&rows.length>pg.length&&L.sel.size<rows.length?`<div class="note" style="margin:0 0 10px">이 페이지의 글 ${pg.length}개가 선택되었습니다. <a style="color:var(--acct);cursor:pointer;font-weight:700" onclick="lAllResult()">검색 결과 ${rows.length}개 모두 선택</a></div>`:""}
+ <div class="card"><table><tr><th style="width:36px"><input type="checkbox" aria-label="이 페이지 전체 선택" ${allOn?"checked":""} onchange="lAllPage(this.checked)"></th><th></th><th>제목</th><th>카테고리</th><th>상태</th><th>날짜</th><th></th></tr>
+ ${pg.map(([p,i])=>`<tr>
+  <td><input type="checkbox" aria-label="${esc(p.title)} 선택" ${L.sel.has(p.id)?"checked":""} onchange="lToggle('${esc(p.id)}',this.checked)"></td>
+  <td><img class="thumb" src="${esc(p.img||"placeholder.svg")}" alt=""></td><td><b>${esc(p.title)}</b>${(p.tags||[]).length?`<div style="font-size:12px;color:var(--mut);white-space:normal">${p.tags.map(t=>"#"+esc(t)).join(" ")}</div>`:""}</td><td>${esc(p.cats.join(", "))}</td>
+  <td><span class="st ${p.status==="draft"?"d":""}">${p.status==="draft"?"임시":"발행"}</span></td><td style="color:var(--mut);white-space:nowrap">${esc(p.date)}</td>
+  <td><div class="acts"><button class="btn o s" onclick="editPost(${i})">수정</button><a class="btn o s" href="index.html#/post/${encodeURIComponent(p.id)}" target="_blank">보기</a><button class="btn o s" onclick="toggle(${i})">${p.status==="draft"?"발행":"비공개"}</button><button class="btn r s" onclick="delPost(${i})">삭제</button></div></td></tr>`).join("")||`<tr><td colspan="7" style="text-align:center;color:var(--mut);padding:32px">조건에 맞는 글이 없습니다. <a style="color:var(--acct);cursor:pointer" onclick="lReset()">필터 초기화</a></td></tr>`}</table></div>${pager}`;
+}
+async function bulk(act){
+ const ps=[...L.sel].map(id=>C.posts.find(p=>p.id===id)).filter(Boolean);if(!ps.length)return;
+ if(act==="del"&&!confirm(`선택한 글 ${ps.length}개를 삭제할까요? 되돌릴 수 없습니다.`))return;
+ const st=act==="pub"?"published":"draft";
+ try{for(let i=0;i<ps.length;i+=400){const b=FB.writeBatch(FB.db);
+   ps.slice(i,i+400).forEach(p=>{const r=FB.doc(FB.db,"posts",p.id);act==="del"?b.delete(r):b.set(r,{...p,status:st})});await b.commit()}}
+ catch{return toast("실패했습니다: 로그인과 네트워크를 확인하세요")}
+ if(act==="del")C.posts=C.posts.filter(p=>!L.sel.has(p.id));else ps.forEach(p=>p.status=st);
+ const n=ps.length;L.sel.clear();
+ if(act==="pub"){const add=[...new Set(ps.flatMap(p=>p.cats))].filter(c=>!C.nav.some(x=>x.url==="#/cat/"+c));
+  if(add.length){C.nav.push(...add.map(c=>({label:c,url:"#/cat/"+c})));await save(`글 ${n}개를 발행했습니다. 새 카테고리(${add.join(", ")})를 카테고리 목록에 추가했습니다`);return render()}}
+ toast(act==="del"?`글 ${n}개를 삭제했습니다`:act==="pub"?`글 ${n}개를 발행했습니다`:`글 ${n}개를 비공개로 바꿨습니다`);render();
+}
 function posts(){
  head("글 관리",`<button class="btn" onclick="go('write')">+ 글쓰기</button>`);
- return `<h2>글 관리</h2><p class="lead">글 ${C.posts.length}개 · 최신순</p>
- <div class="card"><table><tr><th></th><th>제목</th><th>카테고리</th><th>상태</th><th>날짜</th><th></th></tr>
- ${C.posts.map((p,i)=>[p,i]).sort((a,b)=>b[0].date.localeCompare(a[0].date)).map(([p,i])=>`<tr>
-  <td><img class="thumb" src="${esc(p.img||"placeholder.svg")}" alt=""></td><td><b>${esc(p.title)}</b></td><td>${esc(p.cats.join(", "))}</td>
-  <td><span class="st ${p.status==="draft"?"d":""}">${p.status==="draft"?"임시":"발행"}</span></td><td style="color:var(--mut);white-space:nowrap">${esc(p.date)}</td>
-  <td><div class="acts"><button class="btn o s" onclick="editPost(${i})">수정</button><a class="btn o s" href="index.html#/post/${encodeURIComponent(p.id)}" target="_blank">보기</a><button class="btn o s" onclick="toggle(${i})">${p.status==="draft"?"발행":"비공개"}</button><button class="btn r s" onclick="delPost(${i})">삭제</button></div></td></tr>`).join("")}</table></div>`;
+ const tg=allTags();
+ return `<h2>글 관리</h2>
+ <div class="tb"><input id="lq" type="search" placeholder="제목, 요약, 태그로 검색" aria-label="글 검색" value="${esc(L.q)}" oninput="setL('q',this.value)">
+  <select aria-label="상태" onchange="setL('st',this.value)">${opts([["","상태: 전체"],["published","발행"],["draft","임시저장"]],L.st)}</select>
+  <select aria-label="카테고리" onchange="setL('cat',this.value)">${opts([["","카테고리: 전체"],...cats().map(c=>[c,c])],L.cat)}</select>
+  <select aria-label="태그" onchange="setL('tag',this.value)">${opts([["","태그: 전체"],...tg.map(t=>[t,"#"+t])],L.tag)}</select>
+  <select aria-label="정렬" onchange="setL('sort',this.value)">${opts([["new","최신순"],["old","오래된순"],["title","제목순"]],L.sort)}</select>
+  <select aria-label="페이지당 글 수" onchange="setL('per',this.value)">${opts([["10","10개씩"],["20","20개씩"],["50","50개씩"]],String(L.per))}</select>
+  <button class="btn o" onclick="lReset()">초기화</button></div>
+ <div id="plist">${listHtml()}</div>`;
 }
 /* 태그: 글 하나에 최대 10개, 한 태그 20자까지 */
 const tagHtml=()=>D.tags.map(t=>`<span class="tg">#${esc(t)}<button type="button" aria-label="${esc(t)} 태그 삭제" onclick="delTag(${JSON.stringify(t).replace(/"/g,"&quot;")})">✕</button></span>`).join("");
