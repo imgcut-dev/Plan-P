@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Plan-P Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/3.2.2/toastui-editor.min.css">
+<style>
+:root{--bg:#fff;--fg:#111;--mut:#666;--line:#e5e5e5;--acc:#0a6fd6;--soft:#f6f6f6;--red:#c62828}
+*{box-sizing:border-box;margin:0}
+body{font:14px/1.5 Inter,"Apple SD Gothic Neo",sans-serif;background:var(--bg);color:var(--fg)}
+a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid var(--line)}
+.logo{font-size:24px;font-weight:700;letter-spacing:.04em}.logo small{font-size:11px;color:var(--mut);letter-spacing:.06em;margin-left:10px;text-transform:uppercase;font-weight:600}
+.layout{display:grid;grid-template-columns:210px 1fr;max-width:1200px;margin:0 auto;min-height:calc(100vh - 62px)}
+aside{border-right:1px solid var(--line);padding:22px 0}
+aside h6{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);padding:14px 24px 6px}
+aside a{display:block;padding:9px 24px;font-size:13px;border-left:2px solid transparent;cursor:pointer}
+aside a.on{border-left-color:var(--fg);font-weight:700}aside a:hover{background:var(--soft)}
+main{padding:28px 32px 60px;min-width:0}
+h2{font-size:26px;line-height:1.2;margin-bottom:4px}
+.lead{color:var(--mut);font-size:13px;margin:4px 0 22px}
+h4{font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding-bottom:8px;border-bottom:1px solid var(--line);margin:26px 0 12px;display:flex;justify-content:space-between;align-items:center}
+.btn{background:var(--acc);color:#fff;padding:7px 16px;border-radius:4px;font-weight:600;font-size:12px}
+.btn.o{background:none;color:var(--fg);border:1px solid var(--line)}.btn.o:hover{border-color:var(--fg)}
+.btn.r{background:none;color:var(--red);border:1px solid var(--line)}
+.ib{width:26px;height:26px;border:1px solid var(--line);border-radius:4px;font-size:12px}.ib:hover{border-color:var(--fg)}
+input,select,textarea{font:inherit;width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--fg)}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--acc)}
+input[type=color]{padding:2px;height:36px;width:60px}
+label{display:block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin:14px 0 5px}
+.row{display:grid;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.r-menu{grid-template-columns:1fr 1.6fr auto}.r-sec{grid-template-columns:1fr 1fr auto}
+.acts{display:flex;gap:6px}
+table{width:100%;border-collapse:collapse}th{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+td{padding:11px 6px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:13px}
+td .cat{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--acc)}td .d{color:var(--mut);font-size:12px;white-space:nowrap}
+.thumb{width:54px;height:42px;object-fit:cover;background:var(--soft);display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.prev{margin-top:10px;max-width:280px;aspect-ratio:16/10;object-fit:cover;background:var(--soft);display:block}
+.note{background:var(--soft);padding:14px 16px;font-size:12px;color:var(--mut);margin-top:18px;border-left:2px solid var(--acc)}
+.note b{color:var(--fg)}
+.bar{display:flex;gap:8px;margin-top:22px}
+.sw{display:flex;align-items:center;gap:12px}.sw code{font-size:12px;color:var(--mut)}
+.pv{border:1px solid var(--line);padding:22px;text-align:center;margin-top:8px}.pv .logo{font-size:34px}.pv .btn{display:inline-block;margin-top:10px}
+#toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);background:var(--fg);color:var(--bg);padding:9px 18px;border-radius:4px;font-size:13px;opacity:0;transition:.25s;pointer-events:none}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:800px){.layout{grid-template-columns:1fr}aside{border:0;border-bottom:1px solid var(--line);display:flex;overflow-x:auto;padding:0}aside h6{display:none}aside a{white-space:nowrap;border-left:0;border-bottom:2px solid transparent}aside a.on{border-bottom-color:var(--fg)}main{padding:20px 16px}.two,.r-menu,.r-sec{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="logo" id="hl">Plan-P<small>Admin</small></div><a class="btn o" href="index.html" target="_blank">사이트 보기 ↗</a></header>
+<div class="layout">
+ <aside id="side"></aside>
+ <main id="main"></main>
+</div>
+<div id="toast"></div>
+<datalist id="dl-cats"></datalist>
+<script src="https://uicdn.toast.com/editor/3.2.2/toastui-editor-all.min.js"></script>
+<script src="https://uicdn.toast.com/editor/3.2.2/i18n/ko-kr.js"></script>
+<script src="data.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const TABS=[["posts","글 관리 · 글쓰기","CONTENT"],["menu","메뉴 관리","SITE"],["home","메인 관리","SITE"],["design","디자인 관리","SITE"],["data","데이터 · 게시","SYSTEM"]];
+let C,tab="posts",D=null,Di=-1,ED;
+const cats=()=>[...new Set(C.posts.flatMap(p=>p.cats))];
+const arr=path=>path.split(".").reduce((o,k)=>o[k],C);
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),1800)}
+function save(m="저장했습니다. 이 브라우저의 사이트에 바로 반영됩니다"){try{localStorage.planp_cfg=JSON.stringify(C);toast(m)}catch{toast("저장 실패 (브라우저 저장공간 부족?)")}}
+function go(t){tab=t;D=null;render()}
+function mv(path,i,d){const a=arr(path),j=i+d;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];render()}
+function del(path,i){arr(path).splice(i,1);render()}
+const mvBtns=(path,i)=>`<div class="acts"><button class="ib" onclick="mv('${path}',${i},-1)">↑</button><button class="ib" onclick="mv('${path}',${i},1)">↓</button><button class="ib" onclick="del('${path}',${i})">✕</button></div>`;
+const opts=(list,val)=>list.map(([v,l])=>`<option value="${esc(v)}" ${v===val?"selected":""}>${esc(l)}</option>`).join("");
+const postOpts=()=>C.posts.map(p=>[p.id,p.title]);
+
+/* ---------- 글 ---------- */
+function posts(){
+ if(D)return editor();
+ return `<h2>글 관리</h2><p class="lead">글 ${C.posts.length}개 · 최신순</p>
+ <div class="bar" style="margin:0 0 14px"><button class="btn" onclick="newPost()">+ 글쓰기</button></div>
+ <table><tr><th></th><th>제목</th><th>카테고리</th><th>작성자</th><th>날짜</th><th></th></tr>
+ ${C.posts.map((p,i)=>[p,i]).sort((a,b)=>b[0].date.localeCompare(a[0].date)).map(([p,i])=>`<tr>
+  <td><img class="thumb" src="${esc(p.img)}" alt=""></td><td><b>${esc(p.title)}</b></td><td class="cat">${esc(p.cats.join(" · "))}</td><td>${esc(p.author)}</td><td class="d">${esc(p.date)}</td>
+  <td><div class="acts"><button class="btn o" onclick="editPost(${i})">수정</button><a class="btn o" href="index.html#/post/${esc(p.id)}" target="_blank">보기</a></div></td></tr>`).join("")}</table>`;
+}
+function newPost(){D={id:"p"+Date.now().toString(36),title:"",cats:[],author:"Admin",date:new Date().toISOString().slice(0,10),img:"",ex:"",body:""};Di=-1;render()}
+function editPost(i){D=structuredClone(C.posts[i]);Di=i;render()}
+function editor(){
+ return `<a class="lead" style="cursor:pointer" onclick="D=null;render()">← 목록으로</a><h2>${Di<0?"글쓰기":"글 수정"}</h2>
+ <label>제목</label><input id="f-title" value="${esc(D.title)}">
+ <div class="two"><div><label>카테고리 (쉼표로 구분)</label><input id="f-cats" list="dl-cats" value="${esc(D.cats.join(", "))}" placeholder="Business, Interview"></div>
+ <div><label>작성자</label><input id="f-author" value="${esc(D.author)}"></div></div>
+ <div class="two"><div><label>날짜</label><input type="date" id="f-date" value="${esc(D.date)}"></div>
+ <div><label>대표 이미지 URL</label><input id="f-img" value="${esc(D.img)}" placeholder="https://…" oninput="$('#pv').src=this.value"></div></div>
+ <img id="pv" class="prev" src="${esc(D.img)}" alt="">
+ <label>요약 (카드·대표글에 표시)</label><textarea id="f-ex" rows="3">${esc(D.ex)}</textarea>
+ <label>본문</label><div id="f-body"></div>
+ <div class="bar"><button class="btn" onclick="savePost()">저장</button><button class="btn o" onclick="D=null;render()">취소</button>
+ ${Di>=0?`<button class="btn r" style="margin-left:auto" onclick="delPost()">삭제</button>`:""}</div>`;
+}
+function savePost(){
+ const g=id=>$("#"+id).value.trim();
+ if(!g("f-title"))return toast("제목을 입력하세요");
+ const p={id:D.id,title:g("f-title"),cats:g("f-cats").split(",").map(s=>s.trim()).filter(Boolean),author:g("f-author")||"Admin",date:g("f-date")||new Date().toISOString().slice(0,10),
+  img:g("f-img")||`https://picsum.photos/seed/${D.id}/900/700`,ex:g("f-ex"),body:ED.getMarkdown()};
+ Di<0?C.posts.unshift(p):C.posts[Di]=p;
+ save();D=null;render();
+}
+function delPost(){if(confirm("이 글을 삭제할까요?")){C.posts.splice(Di,1);save("삭제했습니다");D=null;render()}}
+
+// 본문 에디터: TOAST UI Editor(NHN, MIT). 본문은 마크다운으로 저장. 이미지는 URL만 허용(base64는 저장공간을 잡아먹음; Firebase Storage 연결 시 업로드 훅 교체)
+function initEditor(){
+ ED=new toastui.Editor({el:$("#f-body"),height:"520px",initialEditType:"wysiwyg",previewStyle:"vertical",language:"ko-KR",initialValue:D.body||"",
+  placeholder:"내용을 입력하세요",hooks:{addImageBlobHook:()=>toast("이미지는 'URL' 탭에 주소를 넣어주세요")}});
+}
+
+/* ---------- 메뉴 ---------- */
+function menu(){
+ return `<h2>메뉴 관리</h2><p class="lead">상단 내비게이션 메뉴입니다. 링크는 <code>#/cat/카테고리</code>, <code>#/all</code>, 또는 https:// 주소를 쓸 수 있습니다.</p>
+ <h4>메뉴 목록 <button class="btn o" onclick="C.nav.push({label:'새 메뉴',url:'#/'});render()">+ 추가</button></h4>
+ ${C.nav.map((n,i)=>`<div class="row r-menu"><input value="${esc(n.label)}" oninput="C.nav[${i}].label=this.value" placeholder="메뉴 이름">
+  <input value="${esc(n.url)}" list="dl-links" oninput="C.nav[${i}].url=this.value" placeholder="링크">${mvBtns("nav",i)}</div>`).join("")}
+ <datalist id="dl-links"><option value="#/"><option value="#/all">${cats().map(c=>`<option value="#/cat/${esc(c)}">`).join("")}</datalist>
+ <div class="bar"><button class="btn" onclick="save()">저장</button></div>`;
+}
+
+/* ---------- 메인 ---------- */
+function home(){
+ const H=C.home,po=postOpts();
+ return `<h2>메인 관리</h2><p class="lead">메인 페이지에 노출할 글과 섹션 구성을 정합니다.</p>
+ <h4>대표 글 (가운데 큰 글)</h4><select onchange="C.home.feature=this.value">${opts(po,H.feature)}</select>
+ <h4>왼쪽 작은 글 (2개)</h4><div class="two">${[0,1].map(i=>`<select onchange="C.home.left[${i}]=this.value">${opts(po,H.left[i])}</select>`).join("")}</div>
+ <h4>Latest (오른쪽 목록 5개)</h4>${[0,1,2,3,4].map(i=>`<div style="margin-bottom:8px"><select onchange="C.home.latest[${i}]=this.value">${opts(po,H.latest[i])}</select></div>`).join("")}
+ <h4>카테고리 섹션 <button class="btn o" onclick="addSec()">+ 섹션 추가</button></h4>
+ ${H.sections.map((s,i)=>`<div class="row r-sec"><select onchange="C.home.sections[${i}].cat=this.value">${opts(cats().map(c=>[c,c]),s.cat)}</select>
+  <select onchange="C.home.sections[${i}].layout=this.value">${opts([["grid","4칸 그리드"],["feature","큰 글 1 + 작은 글 4"]],s.layout)}</select>${mvBtns("home.sections",i)}</div>`).join("")}
+ <div class="bar"><button class="btn" onclick="save()">저장</button></div>`;
+}
+function addSec(){C.home.sections.push({cat:cats()[0],layout:"grid"});render()}
+
+/* ---------- 디자인 ---------- */
+function design(){
+ const S=C.site;
+ return `<h2>디자인 관리</h2><p class="lead">사이트 이름, 포인트 색, 문구를 바꿉니다.</p>
+ <label>블로그 이름 (로고)</label><input value="${esc(S.name)}" oninput="S_('name',this.value)">
+ <div class="two"><div><label>Subscribe 버튼 문구</label><input value="${esc(S.subscribe)}" oninput="S_('subscribe',this.value)"></div>
+ <div><label>기본 테마</label><select onchange="S_('theme',this.value)">${opts([["light","라이트"],["dark","다크"],["auto","시스템 설정 따라가기"]],S.theme)}</select></div></div>
+ <div class="two"><div><label>포인트 색 (라이트)</label><div class="sw"><input type="color" value="${S.accent}" oninput="S_('accent',this.value)"><code>${S.accent}</code></div></div>
+ <div><label>포인트 색 (다크)</label><div class="sw"><input type="color" value="${S.accentDark}" oninput="S_('accentDark',this.value)"><code>${S.accentDark}</code></div></div></div>
+ <label>푸터 문구</label><input value="${esc(S.footer)}" oninput="S_('footer',this.value)">
+ <label>미리보기</label><div class="pv"><div class="logo" id="pl">${esc(S.name)}</div><span class="btn" id="pb" style="background:${S.accent}">${esc(S.subscribe)}</span></div>
+ <div class="bar"><button class="btn" onclick="save()">저장</button><button class="btn o" onclick="if(confirm('디자인 설정을 기본값으로 되돌릴까요?')){C.site=structuredClone(DEFAULT.site);render()}">기본값</button></div>`;
+}
+function S_(k,v){C.site[k]=v;const l=$("#pl"),b=$("#pb");if(l){l.textContent=C.site.name;b.textContent=C.site.subscribe;b.style.background=C.site.accent}$("#hl").firstChild.textContent=C.site.name}
+
+/* ---------- 데이터 ---------- */
+function data(){
+ return `<h2>데이터 · 게시</h2><p class="lead">관리자에서 수정한 내용은 <b>이 브라우저에만</b> 저장됩니다. 방문자에게 공개하려면 아래 순서로 게시하세요.</p>
+ <div class="note"><b>게시 방법</b><br>1. “data.json 내보내기”를 눌러 파일을 받습니다.<br>2. 받은 <code>data.json</code>을 프로젝트 폴더(index.html과 같은 위치)에 덮어씁니다.<br>3. GitHub에 커밋·푸시하면 몇 분 뒤 사이트에 반영됩니다.<br><br>※ GitHub Pages는 서버가 없는 정적 호스팅이라 admin.html은 누구나 열 수 있지만, 편집 결과는 열어본 사람의 브라우저에만 저장됩니다.</div>
+ <div class="bar"><button class="btn" onclick="exp()">data.json 내보내기</button>
+ <label class="btn o" style="margin:0;text-transform:none;letter-spacing:0;font-size:12px;cursor:pointer">불러오기<input type="file" accept=".json" hidden onchange="imp(this.files[0])"></label>
+ <button class="btn r" style="margin-left:auto" onclick="reset()">이 브라우저 저장본 초기화</button></div>`;
+}
+function exp(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(C,null,1)],{type:"application/json"}));a.download="data.json";a.click()}
+function imp(f){if(!f)return;f.text().then(t=>{try{const j=JSON.parse(t);if(!j.site||!j.posts||!j.nav||!j.home)throw 0;C=j;save("불러왔습니다");render()}catch{toast("올바른 data.json이 아닙니다")}})}
+function reset(){if(confirm("이 브라우저의 편집 내용을 지우고 게시본(data.json)으로 되돌립니다.")){localStorage.removeItem("planp_cfg");location.reload()}}
+
+const V={posts,menu,home,design,data};
+function render(){
+ $("#side").innerHTML=TABS.map(([k,l,g],i)=>(i===0||TABS[i-1][2]!==g?`<h6>${g}</h6>`:"")+`<a class="${k===tab?"on":""}" onclick="go('${k}')">${l}</a>`).join("");
+ $("#dl-cats").innerHTML=cats().map(c=>`<option value="${esc(c)}">`).join("");
+ $("#main").innerHTML=V[tab]();
+ if(tab==="posts"&&D)initEditor();
+}
+loadCfg().then(c=>{C=c;render()});
+</script>
+</body>
+</html>

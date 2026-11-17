@@ -64,6 +64,10 @@ nav a.on{border-top-color:var(--fg)}
 .art .im{aspect-ratio:16/9;margin:22px 0}
 .art p.b{font-size:16px;line-height:1.8;margin-bottom:18px}
 .pg{margin:34px 0 10px;font-size:22px}
+.art .toastui-editor-contents{font:16px/1.8 Inter,"Apple SD Gothic Neo",sans-serif;color:var(--fg);margin-bottom:18px}
+.art .toastui-editor-contents p,.art .toastui-editor-contents li{font-size:16px;line-height:1.8;color:var(--fg)}
+.art .toastui-editor-contents h1,.art .toastui-editor-contents h2,.art .toastui-editor-contents h3{color:var(--fg);border-color:var(--line)}
+.art .toastui-editor-contents img{max-width:100%}.art .toastui-editor-contents a{color:var(--acc)}
 .back{color:var(--acc);font-size:13px}
 /* modal */
 dialog{border:0;border-radius:8px;padding:28px;background:var(--bg);color:var(--fg);width:min(400px,92vw);margin:auto}
@@ -85,15 +89,15 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:26px 0;color:var
 <div class="wrap">
  <header class="top">
   <div class="l"><button class="ic" id="menu" title="Menu">☰</button><button class="ic" id="srch" title="Search">⌕</button><button class="ic" id="theme" title="Theme">☼</button></div>
-  <a class="logo" href="#/">Plan-P</a>
-  <div class="r"><button class="sub" id="subBtn">Subscribe</button></div>
+  <a class="logo" href="#/" id="logo"></a>
+  <div class="r"><button class="sub" id="subBtn"></button></div>
  </header>
 </div>
 <nav><div class="wrap"><ul id="nav"></ul></div></nav>
 <div class="wrap">
  <div id="q"><input id="qi" placeholder="Search posts…"></div>
  <main id="app"></main>
- <footer>© 2026 Plan-P · A blog for writers</footer>
+ <footer id="foot"></footer>
 </div>
 <dialog id="dlg"><form method="dialog" id="sf">
  <h3>Subscribe</h3><p>새 글을 이메일로 받아보세요.</p>
@@ -101,83 +105,79 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:26px 0;color:var
  <button class="sub">Subscribe</button>
 </form></dialog>
 
+<script src="data.js"></script>
 <script>
 const $=s=>document.querySelector(s);
-const P=[ // id,title,cats,date,author,excerpt,seed
-["when-you-tell-them-the-truth","When you tell them the truth",["Opinion"],"January 8, 2025","Isabella","Ei mei scripta intellegat. Verear voluptaria eam at, consul putent eu vel. Pro saepe maluisset ne, audire maiorum forensibus eos et. Diceret detraxit vis at. Eum et iidque tollit assentior, ullum soleat usu id.","street-man"],
-["hero-half","Hero-Half Post Example",["Books"],"January 8, 2025","Lucas","Quo natum nemore putant in, his te case habemus. Nulla detraxit explicari in vim.","woman-work"],
-["move-out","I decided to move out of the house",["Books","Politics"],"January 8, 2025","Lucas","Labore incorrupte vim an. Id augue populo alienum usu, has harum consectetuer ne, ne clita fuisset dignissim quo. Semper oportere assueverit eum eu. Ex facilisi dignissim vituperata mei, ad noluisse assueverit sea. Nam no dico quas delectus.","old-man-horse"],
-["unwrapped","This is my 2024 unwrapped",["Opinion"],"January 8, 2025","Isabella","Lorem ipsum dolor sit amet, ei officiis assueverit pri.","couple"],
-["rebel","Rebel Wilson weds Ramona Agruma in Sydney – and this time it’s for real",["Interview"],"January 8, 2025","Lucas","Quo natum nemore putant in, his te case habemus.","airplane"],
-["truth2","When you tell them the truth",["Opinion"],"January 8, 2025","Isabella","Ei mei scripta intellegat verear voluptaria.","blonde"],
-["welcome","Welcome To The Finest WordPress Theme For Writers",["Books"],"January 8, 2025","Lucas","Pro saepe maluisset ne, audire maiorum molestiae ad.","joy"],
-["grad","I’m a high school graduate",["Business"],"January 8, 2025","Lucas","Quo natum nemore putant in, his te case habemus. Nulla detraxit explicari in vim. Id eam magna omnesque.","fabric"],
-["exam","My entrance exam was on a book of matches",["Business"],"January 8, 2025","Isabella","Ei mei scripta intellegat. Verear voluptaria eam at, consul putent eu vel. Pro saepe maluisset ne, audire maiorum.","mosque"],
-["rhoda","My name is Rhoda Morgenstern",["Business","Interview"],"January 8, 2025","Lucas","Lorem ipsum dolor sit amet, ei officiis assueverit pri, duo volumus commune molestiae ad, cum at clita latine.","oilrig"],
-["tonight","Tonight what heights we’ll hit, on with the show this is it",["Business"],"January 8, 2025","Isabella","Labores incorrupte vim an. Id augue populo alienum usu, has harum consectetuer ne, ne clita fuisset dignissim quo.","underwater"],
-["first-thing","The first thing I remember liking that liked me back was food",["Travel"],"January 8, 2025","Lucas","Ius ea rebum nostrum offendit. Per in recusabo facilisis, est ei choro veritus gloriatur. Has ut dicant fuisset.","workshop"],
-["pakistan","Last Trip to Pakistan",["Travel"],"January 8, 2025","Isabella","Justo fabulas singulis at pri, saepe luptatum mei an. Duo idque solet scribentur eu, natum iudico labore te.","temple"],
-["gallery","Post Gallery – Slider",["Travel"],"January 8, 2025","Lucas","Patrioque assentior ea vim. Volutpat salutandi ex his, cu sea soluta melius gubergren, has latine reprehendunt ea.","forest-soldier"],
-["vote","We vote for our rights",["Travel"],"January 8, 2025","Isabella","Hey there. This is an excerpt.","vote"],
-["ny","New York, this is your last chance",["Politics"],"January 8, 2025","Lucas","Quo natum nemore putant in, his te case habemus. Nulla detraxit explicari.","factory"],
-["okavango","Helping to Protect the Okavango Basin",["Politics"],"January 8, 2025","Isabella","Labore nonumes te vel, vis id errem tantas tempor. Solet quidam salutatus.","speech"],
-["old-man","An Old Man Telling Me about Wars",["Politics"],"January 8, 2025","Lucas","Ius ea rebum nostrum offendit. Per in recusabo facilisis, est ei choro.","desk-man"],
-["vault","Enter at your peril, past the vault door",["Opinion","Politics"],"January 8, 2025","Isabella","Duo dolorum mandamus mnesarchum te. Sit ridens persius ex. Vel noluisse perpetua.","beach"],
-];
-const posts=P.map(([id,title,cats,date,author,ex,seed])=>({id,title,cats,date,author,ex,img:`https://picsum.photos/seed/${seed}/900/700`}));
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=d=>{const t=new Date(d+"T00:00:00");return isNaN(t)?esc(d):t.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})};
+const safe=u=>/^(#|https?:|\/|[\w.-]+\.html)/.test(u)?u:"#/";
+let C,posts;
 const by=id=>posts.find(p=>p.id===id), inCat=c=>posts.filter(p=>p.cats.includes(c));
-const cats=ps=>`<div class="cat">${ps.cats.map(c=>`<a href="#/cat/${c}">${c}</a>`).join("")}</div>`;
-const img=p=>`<div class="im"><img loading="lazy" src="${p.img}" alt=""></div>`;
-const link=(p,h)=>`<a href="#/post/${p.id}">${h}</a>`;
-const card=(p,ex=true)=>`<article class="card">${link(p,img(p))}${cats(p)}<h3>${link(p,p.title)}</h3>${ex?`<p>${p.ex}</p>`:""}<div class="date">${p.date}</div></article>`;
-const sec=(c,body)=>`<section class="sec"><h4>${c}<a href="#/cat/${c}">View all »</a></h4>${body}</section>`;
+const cats=p=>`<div class="cat">${p.cats.map(c=>`<a href="#/cat/${esc(c)}">${esc(c)}</a>`).join("")}</div>`;
+const img=p=>`<div class="im"><img loading="lazy" src="${esc(p.img)}" alt=""></div>`;
+const link=(p,h)=>`<a href="#/post/${esc(p.id)}">${h}</a>`;
+const card=(p,ex=true)=>`<article class="card">${link(p,img(p))}${cats(p)}<h3>${link(p,esc(p.title))}</h3>${ex?`<p>${esc(p.ex)}</p>`:""}<div class="date">${fmt(p.date)}</div></article>`;
+const sec=(c,body)=>`<section class="sec"><h4>${esc(c)}<a href="#/cat/${esc(c)}">View all »</a></h4>${body}</section>`;
+const pick=ids=>(ids||[]).map(by).filter(Boolean);
 
 function home(){
- const f=by("when-you-tell-them-the-truth"),l=["hero-half","move-out"].map(by),
-  late=["unwrapped","rebel","truth2","hero-half","welcome"].map(by),big=by("move-out");
+ const H=C.home,f=by(H.feature)||posts[0];if(!f)return`<p style="padding:60px 0;text-align:center;color:var(--mut)">아직 글이 없습니다.</p>`;
+ const left=pick(H.left),late=pick(H.latest);
  return `<section class="hero">
-  <div class="stack">${["hero-half","old-man"].map(i=>{const p=by(i);return `<article class="card">${link(p,img(p))}${cats(p)}<h3>${link(p,p.title)}</h3><div class="date">${p.date}</div></article>`}).join("")}</div>
-  <article class="feat">${link(f,img(f))}<div class="cat">${f.cats[0]}</div><h2>${link(f,f.title)}</h2><p>${f.ex}</p><div class="date">${f.date} · <b>${f.author}</b> and <b>Lucas</b></div></article>
-  <aside class="latest"><h4>Latest</h4>${late.map(p=>`<a class="li" href="#/post/${p.id}"><div><h5>${p.title}</h5><div class="date">${p.date}</div></div><div class="im">${`<img loading="lazy" src="${p.img}" alt="">`}</div></a>`).join("")}</aside>
+  <div class="stack">${left.map(p=>`<article class="card">${link(p,img(p))}${cats(p)}<h3>${link(p,esc(p.title))}</h3><div class="date">${fmt(p.date)}</div></article>`).join("")}</div>
+  <article class="feat">${link(f,img(f))}<div class="cat">${esc(f.cats[0]||"")}</div><h2>${link(f,esc(f.title))}</h2><p>${esc(f.ex)}</p><div class="date">${fmt(f.date)} · <b>${esc(f.author)}</b></div></article>
+  <aside class="latest"><h4>Latest</h4>${late.map(p=>`<a class="li" href="#/post/${esc(p.id)}"><div><h5>${esc(p.title)}</h5><div class="date">${fmt(p.date)}</div></div><div class="im"><img loading="lazy" src="${esc(p.img)}" alt=""></div></a>`).join("")}</aside>
  </section>
- ${sec("Business",`<div class="g4">${inCat("Business").map(p=>card(p)).join("")}</div>`)}
- ${sec("Travel",`<div class="g4">${inCat("Travel").map(p=>card(p)).join("")}</div>`)}
- ${sec("Politics",`<div class="pol"><article class="card big">${link(big,img(big))}<div class="cat">${big.cats.map(c=>`<a href="#/cat/${c}">${c}</a>`).join("")}</div><h3>${link(big,big.title)}</h3><p>${big.ex}</p><div class="by"><span class="date">${big.date}</span><i>${big.author[0]}</i>by ${big.author}</div></article>
-  <div class="side">${["ny","okavango","old-man","vault"].map(i=>card(by(i))).join("")}</div></div>`)}`;
+ ${H.sections.map(s=>{
+  const ps=inCat(s.cat);if(!ps.length)return"";
+  if(s.layout==="feature"){const b=ps[0];return sec(s.cat,`<div class="pol"><article class="card big">${link(b,img(b))}${cats(b)}<h3>${link(b,esc(b.title))}</h3><p>${esc(b.ex)}</p><div class="by"><span class="date">${fmt(b.date)}</span><i>${esc(b.author[0]||"A")}</i>by ${esc(b.author)}</div></article><div class="side">${ps.slice(1,5).map(p=>card(p)).join("")}</div></div>`)}
+  return sec(s.cat,`<div class="g4">${ps.slice(0,4).map(p=>card(p)).join("")}</div>`)}).join("")}`;
 }
-function list(title,ps){return sec(title,ps.length?`<div class="g4">${ps.map(p=>card(p)).join("")}</div>`:`<p style="padding:30px 0;color:var(--mut)">결과가 없습니다.</p>`)}
+const list=(t,ps)=>sec(t,ps.length?`<div class="g4">${ps.map(p=>card(p)).join("")}</div>`:`<p style="padding:30px 0;color:var(--mut)">결과가 없습니다.</p>`);
 function post(p){
  const rel=posts.filter(x=>x!==p&&x.cats.some(c=>p.cats.includes(c))).slice(0,4);
- return `<article class="art"><a class="back" href="#/">← Back</a>${cats(p)}<h1>${p.title}</h1>
-  <div class="by"><i>${p.author[0]}</i>by ${p.author} · <span class="date">${p.date}</span></div>${img(p)}
-  <p class="b"><b>${p.ex}</b></p>
-  <p class="b">Lorem ipsum dolor sit amet, ei officiis assueverit pri, duo volumus commune molestiae ad, cum at clita latine. Quo natum nemore putant in, his te case habemus. Nulla detraxit explicari in vim.</p>
-  <p class="b">Id eam magna omnesque, ius ea rebum nostrum offendit. Per in recusabo facilisis, est ei choro veritus gloriatur. Has ut dicant fuisset, labore incorrupte vim an. Semper oportere assueverit eum eu.</p>
-  <p class="b">Ex facilisi dignissim vituperata mei, ad noluisse assueverit sea. Nam no dico quas delectus, duo dolorum mandamus mnesarchum te.</p>
+ return `<article class="art"><a class="back" href="#/">← Back</a>${cats(p)}<h1>${esc(p.title)}</h1>
+  <div class="by"><i>${esc(p.author[0]||"A")}</i>by ${esc(p.author)} · <span class="date">${fmt(p.date)}</span></div>${img(p)}
+  <p class="b"><b>${esc(p.ex)}</b></p><div id="pbody"></div>
   ${rel.length?`<h3 class="pg">Related</h3><div class="g4" style="grid-template-columns:1fr 1fr">${rel.map(x=>card(x,false)).join("")}</div>`:""}</article>`;
 }
-const NAV=[["Home","#/"],["Posts","#/all"],["Business","#/cat/Business"],["Interview","#/cat/Interview"],["Politics","#/cat/Politics"],["Travel","#/cat/Travel"],["Opinion","#/cat/Opinion"],["Books","#/cat/Books"]];
+// 본문 마크다운 뷰어(TOAST UI Viewer, XSS 필터 내장)는 글 페이지에서만 지연 로드
+const CDN="https://uicdn.toast.com/editor/3.2.2/",DEMO="Lorem ipsum dolor sit amet, ei officiis assueverit pri, duo volumus commune molestiae ad, cum at clita latine.\n\nId eam magna omnesque, ius ea rebum nostrum offendit. Per in recusabo facilisis, est ei choro veritus gloriatur.";
+function showBody(md){
+ const go=()=>{const el=$("#pbody");if(el)new toastui.Editor({el,initialValue:(md||"").trim()||DEMO})};
+ if(window.toastui)return go();
+ document.head.insertAdjacentHTML("beforeend",`<link rel="stylesheet" href="${CDN}toastui-editor-viewer.min.css">`);
+ const s=document.createElement("script");s.src=CDN+"toastui-editor-viewer.min.js";s.onload=go;document.head.append(s);
+}
 function route(){
  const h=location.hash||"#/",[,k,v]=h.split("/").map(decodeURIComponent);
  let html;
- if(k==="post"&&by(v))html=post(by(v));
- else if(k==="cat")html=list(v,inCat(v));
- else if(k==="all")html=list("All posts",posts);
- else if(k==="search")html=list(`Search: ${v}`,posts.filter(p=>(p.title+p.ex+p.cats).toLowerCase().includes(v.toLowerCase())));
- else html=home();
+ if(k==="post"&&by(v)){html=post(by(v));document.title=by(v).title+" — "+C.site.name}
+ else{document.title=C.site.name+" — Blog";
+  if(k==="cat")html=list(v,inCat(v));
+  else if(k==="all")html=list("All posts",posts);
+  else if(k==="search")html=list(`Search: ${v}`,posts.filter(p=>(p.title+p.ex+p.cats).toLowerCase().includes(v.toLowerCase())));
+  else html=home();}
  $("#app").innerHTML=html;scrollTo(0,0);
- $("#nav").innerHTML=NAV.map(([n,u])=>`<li><a href="${u}" class="${h===u?"on":""}">${n}</a></li>`).join("");
+ if(k==="post"&&by(v))showBody(by(v).body);
+ $("#nav").innerHTML=C.nav.map(n=>`<li><a href="${esc(safe(n.url))}" class="${h===n.url?"on":""}">${esc(n.label)}</a></li>`).join("");
 }
-addEventListener("hashchange",route);route();
-// search
+(async()=>{
+ C=await loadCfg();
+ posts=[...C.posts].sort((a,b)=>b.date.localeCompare(a.date)); // stable: 같은 날짜는 입력 순서 유지
+ const S=C.site;
+ document.head.insertAdjacentHTML("beforeend",`<style>:root{--acc:${S.accent}}:root[data-theme=dark]{--acc:${S.accentDark}}</style>`);
+ $("#logo").textContent=S.name;$("#subBtn").textContent=S.subscribe;$("#foot").textContent=S.footer;
+ const T=document.documentElement;
+ try{T.dataset.theme=localStorage.theme||""}catch{}
+ if(!T.dataset.theme)T.dataset.theme=S.theme==="auto"?(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light"):S.theme;
+ $("#theme").onclick=()=>{T.dataset.theme=T.dataset.theme==="dark"?"light":"dark";try{localStorage.theme=T.dataset.theme}catch{}};
+ addEventListener("hashchange",route);route();
+})();
 $("#srch").onclick=()=>{$("#q").classList.toggle("on");$("#qi").focus()};
 $("#qi").oninput=e=>{const v=e.target.value.trim();location.hash=v?"#/search/"+encodeURIComponent(v):"#/"};
 $("#menu").onclick=()=>$("#nav").scrollIntoView({behavior:"smooth"});
-// theme
-const T=document.documentElement;
-try{T.dataset.theme=localStorage.theme||""}catch{}
-$("#theme").onclick=()=>{T.dataset.theme=T.dataset.theme==="dark"?"light":"dark";try{localStorage.theme=T.dataset.theme}catch{}};
-// subscribe (stored locally; ponytail: no backend, wire to an email service later)
+// subscribe: 저장은 브라우저 localStorage뿐 (ponytail: 백엔드 없음, 이메일 서비스 연결 시 교체)
 $("#subBtn").onclick=()=>$("#dlg").showModal();
 $("#sf").onsubmit=()=>{try{const s=JSON.parse(localStorage.subs||"[]");s.push($("#em").value);localStorage.subs=JSON.stringify(s)}catch{};alert("구독해주셔서 감사합니다!")};
 </script>
