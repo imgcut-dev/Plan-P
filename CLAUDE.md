@@ -7,8 +7,10 @@
 
 ## 정한 것
 - 관리자 로그인은 Google 로그인(Firebase Auth)만 쓴다. DB는 Firestore.
+- 정책의 이유와 날짜는 `docs/decisions.md`에 적는다. 새 결정이 생기면 그 파일 맨 위에 추가한다.
 - 보안 규칙(읽기 공개, 쓰기 관리자 이메일만)을 먼저 설정한 뒤에 쓰기 코드를 배포한다.
-- 관리자 이메일, 비밀 값은 커밋하지 않는다.
+- 관리자 이메일, 비밀 값은 커밋하지 않는다. 그래서 `firestore.rules`(관리자 이메일 포함)는 `.gitignore`에 있고 이 PC에만 있다. 배포: `firebase deploy --only firestore:rules`.
+- 데이터: `site/config`(설정·메뉴·메인) + `posts/{id}`. 임시저장 글은 규칙이 막는다. `fb.js`의 웹 앱 설정값은 공개용이라 커밋해도 된다.
 - 글 본문은 마크다운, 에디터는 TOAST UI. `status: draft`는 사이트에 안 보인다.
 
 ## 디자인

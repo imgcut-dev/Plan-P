@@ -1,4 +1,4 @@
-// 사이트 데이터 로더. 우선순위: 이 브라우저의 관리자 저장본(localStorage) → data.json(게시본) → DEFAULT
+// 사이트 데이터 로더. Firestore(site/config + posts)에서 읽고, 실패하거나 비어 있으면 DEFAULT
 const P=[ // id,title,cats,date,author,excerpt,img seed
 ["when-you-tell-them-the-truth","When you tell them the truth",["Opinion"],"Isabella","Ei mei scripta intellegat. Verear voluptaria eam at, consul putent eu vel. Pro saepe maluisset ne, audire maiorum forensibus eos et. Diceret detraxit vis at. Eum et iidque tollit assentior, ullum soleat usu id.","street-man"],
 ["hero-half","Hero-Half Post Example",["Books"],"Lucas","Quo natum nemore putant in, his te case habemus. Nulla detraxit explicari in vim.","woman-work"],
@@ -29,8 +29,12 @@ const DEFAULT={
  ],
  home:{feature:"when-you-tell-them-the-truth",picks:["move-out","pakistan","rhoda"],count:6}
 };
-async function loadCfg(){
- try{const s=localStorage.planp_cfg;if(s)return JSON.parse(s)}catch{}
- try{const r=await fetch("data.json",{cache:"no-store"});if(r.ok)return await r.json()}catch{}
+// all=true: 임시저장 글까지 (관리자 전용, 규칙이 막음)
+async function loadCfg(all){
+ try{
+  const F=await import("./fb.js"),{db,doc,getDoc,getDocs,collection,query,where}=F;
+  const [c,ps]=await Promise.all([getDoc(doc(db,"site","config")),getDocs(all?collection(db,"posts"):query(collection(db,"posts"),where("status","==","published")))]);
+  if(c.exists())return {...c.data(),posts:ps.docs.map(d=>d.data())};
+ }catch(e){console.warn("Firestore 읽기 실패, 기본 데이터 사용",e)}
  return structuredClone(DEFAULT);
 }

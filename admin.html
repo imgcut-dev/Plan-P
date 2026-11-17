@@ -15,6 +15,7 @@ a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;cursor:po
 .logo{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700;letter-spacing:.02em}
 .mark{width:30px;height:30px;border-radius:8px;background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:700}
 .badge{height:20px;padding:0 7px;border-radius:5px;background:var(--tint);color:var(--acct);font-size:10px;font-weight:700;display:flex;align-items:center}
+#app[hidden]{display:none}
 /* app */
 #app{display:flex;flex-wrap:wrap;min-height:100vh}
 aside.sb{flex:0 0 232px;background:#fff;border-right:1px solid var(--line);padding:20px 0;display:flex;flex-direction:column}
@@ -60,10 +61,12 @@ td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical
 </head>
 <body>
 
-<div id="app" class="on">
+<div id="login" style="display:grid;place-items:center;min-height:100vh;padding:16px"><div class="pv" style="width:360px;max-width:100%"><div class="logo"><span class="mark">P</span><span>Plan-P</span><span class="badge">ADMIN</span></div>
+ <p id="lmsg" class="lead" style="margin:14px 0 0">관리자 계정으로 로그인하세요</p><button class="btn" id="lbtn" onclick="login()" disabled>Google로 로그인</button></div></div>
+<div id="app" hidden>
  <aside class="sb"><a class="logo" href="index.html"><span class="mark">P</span><span class="nm">Plan-P</span><span class="badge">ADMIN</span></a>
   <nav class="mn" id="side" aria-label="관리 메뉴"></nav>
-  <div class="sf"><a href="index.html" target="_blank" style="color:var(--acct);font-weight:500">사이트 보기 ↗</a><span>Google 로그인 연동 예정</span></div>
+  <div class="sf"><a href="index.html" target="_blank" style="color:var(--acct);font-weight:500">사이트 보기 ↗</a><a onclick="FB.signOut(FB.auth)" style="cursor:pointer">로그아웃</a></div>
  </aside>
  <div class="ct"><div class="th" id="th"></div><div class="bd" id="main"></div></div>
 </div>
@@ -84,7 +87,8 @@ const arr=p=>p.split(".").reduce((o,k)=>o[k],C);
 const opts=(l,v)=>l.map(([a,b])=>`<option value="${esc(a)}" ${a===v?"selected":""}>${esc(b)}</option>`).join("");
 const postOpts=()=>C.posts.map(p=>[p.id,p.title]);
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),1800)}
-function save(m="저장했습니다. 이 브라우저의 사이트에 바로 반영됩니다"){try{localStorage.planp_cfg=JSON.stringify(C);toast(m)}catch{toast("저장 실패 (브라우저 저장공간 부족?)")}}
+const cfgRef=()=>FB.doc(FB.db,"site","config"),cfgData=()=>({site:C.site,nav:C.nav,home:C.home});
+async function save(m="저장했습니다. 사이트에 바로 반영됩니다"){try{await FB.setDoc(cfgRef(),cfgData());toast(m)}catch{toast("저장 실패: 로그인과 네트워크를 확인하세요")}}
 function go(t){tab=t;D=null;if(t==="write")newPost();render()}
 function mv(p,i,d){const a=arr(p),j=i+d;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];render()}
 const mvB=(p,i)=>`<div class="acts"><button class="ib" aria-label="위로" onclick="mv('${p}',${i},-1)">↑</button><button class="ib" aria-label="아래로" onclick="mv('${p}',${i},1)">↓</button><button class="ib" aria-label="삭제" onclick="arr('${p}').splice(${i},1);render()">✕</button></div>`;
@@ -130,15 +134,18 @@ function initEditor(){
  ED=new toastui.Editor({el:$("#f-body"),height:"520px",initialEditType:"wysiwyg",previewStyle:"vertical",language:"ko-KR",initialValue:D.body||"",
   placeholder:"내용을 입력하세요",hooks:{addImageBlobHook:()=>toast("이미지는 'URL' 탭에 주소를 넣어주세요")}});
 }
-function savePost(status){
+async function savePost(status){
  const g=id=>$("#"+id).value.trim();
  if(!g("f-title"))return toast("제목을 입력하세요");
  const p={id:D.id,title:g("f-title"),cats:g("f-cats").split(",").map(s=>s.trim()).filter(Boolean),author:g("f-author")||"Admin",date:g("f-date")||today(),
   status,img:g("f-img")||`https://picsum.photos/seed/${D.id}/900/700`,ex:g("f-ex"),body:ED.getMarkdown()};
+ try{await FB.setDoc(FB.doc(FB.db,"posts",p.id),p)}catch{return toast("저장 실패: 로그인과 네트워크를 확인하세요")}
  Di<0?C.posts.unshift(p):C.posts[Di]=p;
- save(status==="draft"?"임시저장했습니다":"발행했습니다");D=null;tab="posts";render();
+ toast(status==="draft"?"임시저장했습니다":"발행했습니다");D=null;tab="posts";render();
 }
-function delPost(){if(confirm("이 글을 삭제할까요?")){C.posts.splice(Di,1);save("삭제했습니다");D=null;tab="posts";render()}}
+async function delPost(){if(!confirm("이 글을 삭제할까요? 되돌릴 수 없습니다."))return;
+ try{await FB.deleteDoc(FB.doc(FB.db,"posts",D.id))}catch{return toast("삭제 실패: 로그인과 네트워크를 확인하세요")}
+ C.posts.splice(Di,1);toast("삭제했습니다");D=null;tab="posts";render()}
 
 /* 메뉴 */
 function menu(){
@@ -171,16 +178,18 @@ function design(){
 function S_(k,v){C.site[k]=v;const l=$("#pl");if(l){l.textContent=C.site.name;$("#pm").textContent=(C.site.name||"P")[0];$("#pm").style.background=$("#pb").style.background=C.site.accent;$("#pt").style.color=C.site.accentText||C.site.accent}document.querySelectorAll(".nm").forEach(e=>e.textContent=C.site.name)}
 /* 데이터 */
 function data(){
- head("데이터 · 게시");
- return `<h2>데이터 · 게시</h2><p class="lead">관리자에서 수정한 내용은 <b>이 브라우저에만</b> 저장됩니다. 공개하려면 아래 순서로 게시하세요. Firebase를 연동하면 이 과정이 필요 없습니다.</p>
- <div class="note" style="margin-top:0"><b>게시 방법</b><br>1. “data.json 내보내기”로 파일을 받습니다.<br>2. 받은 <code>data.json</code>을 프로젝트 폴더(index.html과 같은 위치)에 덮어씁니다.<br>3. GitHub에 커밋·푸시(또는 Firebase 배포)하면 사이트에 반영됩니다.</div>
- <div class="bar"><button class="btn" onclick="exp()">data.json 내보내기</button>
- <label class="btn o" style="margin:0;color:var(--ink);font-size:13px;cursor:pointer">불러오기<input type="file" accept=".json" hidden onchange="imp(this.files[0])"></label>
- <button class="btn r" style="margin-left:auto" onclick="reset()">이 브라우저 저장본 초기화</button></div>`;
+ head("데이터");
+ return `<h2>데이터</h2><p class="lead">글과 설정은 Firebase(Firestore)에 저장됩니다. 처음 한 번 샘플 데이터를 올릴 수 있습니다.</p>
+ <div class="note" style="margin-top:0"><b>샘플 데이터 올리기</b><br>샘플 글 ${DEFAULT.posts.length}개와 사이트 설정을 저장합니다. 같은 id의 글과 사이트 설정은 덮어씁니다.</div>
+ <div class="bar"><button class="btn" onclick="seed()">샘플 데이터 올리기</button><button class="btn o" onclick="exp()">data.json 내보내기 (백업)</button></div>`;
 }
 function exp(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(C,null,1)],{type:"application/json"}));a.download="data.json";a.click()}
-function imp(f){if(!f)return;f.text().then(t=>{try{const j=JSON.parse(t);if(!j.site||!j.posts||!j.nav||!j.home)throw 0;C=j;save("불러왔습니다");render()}catch{toast("올바른 data.json이 아닙니다")}})}
-function reset(){if(confirm("이 브라우저의 편집 내용을 지우고 게시본(data.json)으로 되돌립니다.")){localStorage.removeItem("planp_cfg");location.reload()}}
+async function seed(){
+ if(!confirm("샘플 데이터를 올립니다. 같은 id의 글과 사이트 설정은 덮어씁니다."))return;
+ try{const d=structuredClone(DEFAULT),b=FB.writeBatch(FB.db);
+  b.set(cfgRef(),{site:d.site,nav:d.nav,home:d.home});d.posts.forEach(p=>b.set(FB.doc(FB.db,"posts",p.id),p));await b.commit();
+  C=await loadCfg(true);render();toast("올렸습니다")}catch{toast("올리기 실패: 로그인과 네트워크를 확인하세요")}
+}
 
 const V={posts,write,menu,home,design,data};
 function render(){
@@ -191,8 +200,18 @@ function render(){
  if(tab==="write")initEditor();
  document.querySelectorAll(".nm").forEach(e=>e.textContent=C.site.name);
 }
-// 관리자 인증: Firebase Auth(Google 로그인) 연동 시 render() 호출 전에 로그인 상태를 확인하도록 교체
-loadCfg().then(c=>{C=c;render()});
+// 관리자 인증: Google 로그인 → site/admin 읽기가 통과하면(규칙: 관리자 이메일만) 관리자
+let FB;
+const show=on=>{$("#app").hidden=!on;$("#login").hidden=on;$("#login").style.display=on?"none":"grid"};
+const login=()=>FB.signInWithPopup(FB.auth,new FB.GoogleAuthProvider()).catch(()=>toast("로그인을 취소했거나 실패했습니다"));
+import("./fb.js").then(m=>{FB=m;$("#lbtn").disabled=false;
+ FB.onAuthStateChanged(FB.auth,async u=>{
+  if(!u)return show(false);
+  try{await FB.getDoc(FB.doc(FB.db,"site","admin"))}
+  catch{$("#lmsg").textContent="관리자 계정이 아닙니다. 다른 계정으로 로그인하세요";return FB.signOut(FB.auth)}
+  C=await loadCfg(true);show(true);render();
+ });
+});
 </script>
 </body>
 </html>
