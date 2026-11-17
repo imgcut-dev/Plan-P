@@ -41,7 +41,7 @@ input[type=color]{width:60px;padding:2px}
 label{display:block;font-size:12px;font-weight:700;color:var(--mut);margin:14px 0 5px}
 .panel{background:var(--panel);border-radius:8px;padding:18px}.panel h3{font-size:14px;margin-bottom:2px}
 .row{display:grid;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
-.r-menu,.hd{grid-template-columns:1fr 1.6fr 96px}.hd{display:grid;gap:10px;font-size:12px;font-weight:700;color:var(--mut);padding:0 0 6px}.r-add{display:grid;grid-template-columns:1fr 1.6fr auto;gap:10px;align-items:end}.r-add label{margin:0 0 5px}
+.r-menu,.hd{grid-template-columns:1fr 1.6fr 96px}.hd{display:grid;gap:10px;font-size:12px;font-weight:700;color:var(--mut);padding:0 0 6px}.r-add{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}.r-add label{margin:0 0 5px}
 .pvnav{display:flex;gap:22px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:10px;padding:0 20px;min-height:48px;align-items:center;font-weight:500}.pvnav span:first-child{color:var(--acct);font-weight:700;box-shadow:0 3px 0 var(--acc)}.acts{display:flex;gap:6px}
 .card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
 table{width:100%;border-collapse:collapse}th{font-size:11px;letter-spacing:.06em;color:var(--mut);text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);background:#FBFBFA}
@@ -52,6 +52,7 @@ td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical
 .ed{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}.ed>.m{flex:999 1 560px;min-width:0}.ed>aside{flex:1 1 260px;max-width:320px;min-width:240px;display:flex;flex-direction:column;gap:16px}
 .prev{aspect-ratio:16/10;border-radius:8px;object-fit:cover;background:#fff;width:100%;display:block;margin:10px 0 0}
 .chk{display:flex;align-items:center;gap:6px;margin:0;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:13px;font-weight:500;color:var(--ink);cursor:pointer}.chk input{width:auto;height:auto;margin:0;accent-color:var(--acc)}
+dialog{margin:auto;border:0;border-radius:14px;padding:24px;width:min(440px,92vw);color:var(--ink)}dialog::backdrop{background:rgba(31,35,40,.4)}dialog h3{font-size:17px;margin-bottom:6px}dialog p{color:var(--mut);font-size:13px;margin-bottom:12px}dialog .chk{margin-top:8px}dialog select{margin-top:8px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}.bar{display:flex;gap:8px;margin-top:22px}
 .note{background:#fff;border-left:3px solid var(--acc);border-radius:6px;padding:14px 16px;font-size:13px;color:var(--mut);margin-top:16px}.note b{color:var(--ink)}
 .pv{border:1px solid var(--line);background:#fff;border-radius:12px;padding:22px;text-align:center}.pv .logo{justify-content:center;font-size:28px}.pv .btn{margin-top:12px}
@@ -100,7 +101,7 @@ async function go(t){
  tab=t;D=null;if(t==="write")newPost();render()}
 function mv(p,i,d){const a=arr(p),j=i+d;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];mark();render()}
 const mvB=(p,i)=>`<div class="acts"><button class="ib" aria-label="위로" onclick="mv('${p}',${i},-1)">↑</button><button class="ib" aria-label="아래로" onclick="mv('${p}',${i},1)">↓</button><button class="ib" aria-label="삭제" onclick="delRow('${p}',${i})">✕</button></div>`;
-function delRow(p,i){const r=arr(p)[i];if(!confirm(`"${r.label||r.title||"이 항목"}" 카테고리를 삭제할까요? (이 카테고리의 글은 지워지지 않습니다)`))return;arr(p).splice(i,1);mark();render()}
+function delRow(p,i){const r=arr(p)[i];if(p==="nav"&&catOf(r)&&catCount(catOf(r)))return catDialog(i,true);if(!confirm(`"${r.label||r.title||"이 항목"}" 카테고리를 삭제할까요? (이 카테고리의 글은 지워지지 않습니다)`))return;arr(p).splice(i,1);mark();render()}
 const head=(t,act="")=>{$("#th").innerHTML=`<h1>${t}</h1><div class="ac">${act}</div>`};
 
 /* 글 관리 */
@@ -165,30 +166,55 @@ async function toggle(i){const p=C.posts[i],st=p.status==="draft"?"published":"d
  p.status=st;toast(st==="draft"?"비공개로 바꿨습니다":"발행했습니다");render()}
 
 /* 메뉴 */
+const catOf=n=>n.url.startsWith("#/cat/")?n.url.slice(6):null;
+const catCount=c=>C.posts.filter(p=>p.cats.includes(c)).length;
+// 카테고리에 글이 있을 때: 삭제(del) 또는 글 옮기기. 글은 Firestore에 바로 반영된다
+function catDialog(i,del){
+ const c=catOf(C.nav[i]),k=catCount(c),others=cats().filter(x=>x!==c);
+ if(!del&&!others.length)return toast("옮길 다른 카테고리가 없습니다");
+ let d=$("#cd");if(!d){d=document.createElement("dialog");d.id="cd";document.body.append(d)}
+ d.innerHTML=`<h3>${esc(c)} 카테고리 ${del?"삭제":"글 옮기기"}</h3><p>이 카테고리에 글이 ${k}개 있습니다. 글은 지워지지 않습니다.</p>
+  ${others.length?`<label class="chk"><input type="radio" name="cm" value="move" checked>다른 카테고리로 옮기기</label><select id="cmt" aria-label="옮길 카테고리">${others.map(o=>`<option>${esc(o)}</option>`).join("")}</select>`:""}
+  ${del?`<label class="chk"><input type="radio" name="cm" value="drop" ${others.length?"":"checked"}>카테고리만 빼기 (글은 카테고리 없이 남습니다)</label>`:""}
+  <div class="bar"><button class="btn o" onclick="$('#cd').close()">취소</button><button class="btn ${del?"r":""}" onclick="runCat(${i},${del})">${del?"삭제":"옮기기"}</button></div>`;
+ d.showModal();
+}
+async function runCat(i,del){
+ const c=catOf(C.nav[i]),r=document.querySelector("#cd input[name=cm]:checked"),t=(!del||r?.value==="move")?$("#cmt")?.value:null;
+ const ps=C.posts.filter(p=>p.cats.includes(c)).map(p=>({...p,cats:[...new Set(p.cats.filter(x=>x!==c).concat(t||[]))]}));
+ try{const b=FB.writeBatch(FB.db);ps.forEach(p=>b.set(FB.doc(FB.db,"posts",p.id),p));await b.commit()}
+ catch{return toast("실패했습니다: 로그인과 네트워크를 확인하세요")}
+ ps.forEach(p=>{C.posts[C.posts.findIndex(x=>x.id===p.id)]=p});
+ if(del)C.nav.splice(i,1);
+ if(t&&!C.nav.some(n=>n.url==="#/cat/"+t))C.nav.push({label:t,url:"#/cat/"+t});
+ $("#cd").close();await save(del?`삭제했습니다. 글 ${ps.length}개는 ${t?`"${t}"로 옮겼습니다`:"카테고리 없이 남겼습니다"}`:`글 ${ps.length}개를 "${t}"로 옮겼습니다`);render();
+}
 const isCat=u=>cats().some(c=>u==="#/cat/"+c),isKnown=u=>u==="#/"||u==="#/all"||isCat(u);
 const linkOpts=v=>`<option value="#/" ${v==="#/"?"selected":""}>홈 (메인 화면)</option><option value="#/all" ${v==="#/all"?"selected":""}>전체 글 목록</option>
- <optgroup label="카테고리별 글 목록">${cats().map(c=>`<option value="#/cat/${esc(c)}" ${v==="#/cat/"+c?"selected":""}>${esc(c)} 카테고리 글</option>`).join("")}</optgroup>
+ <optgroup label="카테고리별 글 목록"><option value="newcat" ${v==="newcat"?"selected":""}>이 이름의 카테고리 글 (새 카테고리 만들기)</option>${cats().map(c=>`<option value="#/cat/${esc(c)}" ${v==="#/cat/"+c?"selected":""}>${esc(c)} 카테고리 글</option>`).join("")}</optgroup>
  <optgroup label="기타"><option value="custom" ${v==="custom"?"selected":""}>다른 사이트 주소 직접 입력</option></optgroup>`;
 const navPv=()=>C.nav.map(n=>`<span>${esc(n.label||"(이름 없음)")}</span>`).join("");
-function setLink(i,v){C.nav[i].url=v==="custom"?"https://":v;mark();render()}
-function autoName(){const n=$("#nn"),v=$("#nl").value;if(!n.value.trim()&&v.startsWith("#/cat/"))n.value=decodeURIComponent(v.slice(6))}
+function setLink(i,v){
+ if(v==="newcat"){const n=C.nav[i].label.trim();if(!n){toast("먼저 카테고리 이름을 입력하세요");return render()}v="#/cat/"+n}
+ C.nav[i].url=v==="custom"?"https://":v;mark();render()}
+const dest=u=>u==="#/"?"홈 (메인 화면)":u==="#/all"?"전체 글 목록":u.startsWith("#/cat/")?`${u.slice(6)} 카테고리 글`:u;
 function addNav(){
- const label=$("#nn").value.trim(),v=$("#nl").value;
+ const label=$("#nn").value.trim();
  if(!label)return toast("카테고리 이름을 입력하세요");
- C.nav.push({label,url:v==="custom"?"https://":v});mark();render();
- toast(v==="custom"?"아래 목록에서 이동할 주소를 입력하세요":"카테고리를 추가했습니다. 저장을 눌러야 사이트에 반영됩니다");
+ if(C.nav.some(n=>n.label===label))return toast("같은 이름의 카테고리가 이미 있습니다");
+ C.nav.push({label,url:"#/cat/"+label});mark();render();
+ toast("추가했습니다. 오른쪽 위 저장을 눌러야 사이트에 반영됩니다");
 }
 function menu(){
  head("카테고리 관리",`<span id="dirty" style="font-size:12px;color:var(--red)">${dirty?"저장하지 않은 변경이 있습니다":""}</span><button class="btn" onclick="save()">저장</button>`);
- return `<h2>카테고리 관리</h2><p class="lead">사이트 맨 위에 보이는 카테고리입니다. 글을 쓸 때 고르는 카테고리와 같습니다. 홈과 전체 글 링크의 순서도 여기서 정합니다. 이름을 정하고, 누르면 어디로 갈지 고르세요. 바꾼 뒤에는 오른쪽 위 <b>저장</b>을 눌러야 사이트에 반영됩니다.</p>
- <div class="panel"><h3>새 카테고리 만들기</h3><div class="r-add" style="margin-top:12px">
+ return `<h2>카테고리 관리</h2><p class="lead">사이트 맨 위에 보이는 카테고리입니다. 글을 쓸 때 고르는 카테고리와 같습니다. 홈과 전체 글 링크의 순서도 여기서 정합니다. 이름만 정하면 됩니다. 바꾼 뒤에는 오른쪽 위 <b>저장</b>을 눌러야 사이트에 반영됩니다.</p>
+ <div class="panel"><h3>새 카테고리 만들기</h3><p style="font-size:13px;color:var(--mut)">이름만 입력하면 됩니다. 같은 이름의 카테고리 글 목록으로 자동 연결됩니다.</p><div class="r-add" style="margin-top:12px">
   <div><label for="nn">카테고리 이름 (사이트에 보이는 글자)</label><input id="nn" placeholder="예: 여행 이야기"></div>
-  <div><label for="nl">누르면 이동할 곳</label><select id="nl" onchange="autoName()">${linkOpts("#/")}</select></div>
   <button class="btn" style="height:40px" onclick="addNav()">+ 카테고리 추가</button></div></div>
  <h4>카테고리 목록 <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--mut)">위에서부터 사이트에 보이는 순서입니다</span></h4>
- <div class="hd"><span>카테고리 이름</span><span>누르면 이동할 곳</span><span></span></div>
+ <div class="hd"><span>카테고리 이름</span><span>연결된 곳</span><span></span></div>
  ${C.nav.map((n,i)=>{const ext=!isKnown(n.url);return `<div class="row r-menu"><input aria-label="카테고리 이름" value="${esc(n.label)}" oninput="C.nav[${i}].label=this.value;mark()">
-  <div><select aria-label="이동할 곳" onchange="setLink(${i},this.value)">${linkOpts(ext?"custom":n.url)}</select>${ext?`<input style="margin-top:6px" aria-label="이동할 주소" placeholder="https://" value="${esc(n.url)}" oninput="C.nav[${i}].url=this.value;mark()">`:""}</div>
+  <div><details ${ext?"open":""}><summary style="cursor:pointer;color:var(--mut);padding:9px 0">${esc(dest(n.url))}${catOf(n)?` · 글 ${catCount(catOf(n))}개`:""} <span style="color:var(--acct)">· 바꾸기</span></summary><select aria-label="연결할 곳" onchange="setLink(${i},this.value)">${linkOpts(ext?"custom":n.url)}</select>${ext?`<input style="margin-top:6px" aria-label="연결할 주소" placeholder="https://" value="${esc(n.url)}" oninput="C.nav[${i}].url=this.value;mark()">`:""}</details>${catOf(n)&&catCount(catOf(n))?`<button class="btn o s" onclick="catDialog(${i},false)">글 다른 카테고리로 옮기기</button>`:""}</div>
   ${mvB("nav",i)}</div>`}).join("")}
  <h4>사이트에서 이렇게 보입니다</h4><div class="pvnav" id="pvn">${navPv()}</div>`;
 }
