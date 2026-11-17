@@ -34,7 +34,9 @@ async function loadCfg(all){
  try{
   const F=await import("./fb.js"),{db,doc,getDoc,getDocs,collection,query,where}=F;
   const [c,ps]=await Promise.all([getDoc(doc(db,"site","config")),getDocs(all?collection(db,"posts"):query(collection(db,"posts"),where("status","==","published")))]);
-  if(c.exists())return {...c.data(),posts:ps.docs.map(d=>d.data())};
+  const posts=ps.docs.map(d=>d.data());
+  // 설정 문서가 아직 없어도 올린 글이 있으면 보여 준다 (설정·메뉴·메인은 기본값)
+  if(c.exists()||posts.length)return {...structuredClone(DEFAULT),...(c.exists()?c.data():{}),posts};
  }catch(e){console.warn("Firestore 읽기 실패, 기본 데이터 사용",e)}
  return structuredClone(DEFAULT);
 }
