@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan-P — Blog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--fg:#111;--mut:#666;--line:#e5e5e5;--acc:#0a6fd6;--ph:#e9e9e9}
+:root[data-theme=dark]{--bg:#121212;--fg:#f2f2f2;--mut:#a0a0a0;--line:#2c2c2c;--acc:#4da3ff;--ph:#222}
+*{box-sizing:border-box;margin:0}
+body{font:14px/1.5 Inter,"Apple SD Gothic Neo",sans-serif;background:var(--bg);color:var(--fg)}
+a{color:inherit;text-decoration:none;cursor:pointer}
+img{display:block;width:100%;height:100%;object-fit:cover;background:var(--ph)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+/* header */
+.top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:22px 0}
+.top .l{display:flex;gap:14px}.top .r{text-align:right}
+.logo{font-size:40px;font-weight:700;letter-spacing:.04em}
+.ic{width:20px;height:20px;display:grid;place-items:center;font-size:15px;opacity:.75}
+.sub{background:var(--acc);color:#fff;padding:6px 14px;border-radius:4px;font-weight:600;font-size:12px}
+nav{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+nav ul{list-style:none;display:flex;justify-content:center;gap:28px;padding:0;flex-wrap:wrap}
+nav a{display:block;padding:10px 2px;font-size:12px;border-top:2px solid transparent;margin-top:-1px}
+nav a.on{border-top-color:var(--fg)}
+/* cards */
+.cat{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--acc)}
+.cat a+a:before{content:" · ";color:var(--mut)}
+.date{font-size:11px;color:var(--mut)}
+.card h3{font-size:15px;line-height:1.25;margin:4px 0 6px;font-weight:700}
+.card p{font-size:12px;color:var(--mut);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card .im{aspect-ratio:5/4;overflow:hidden;margin-bottom:10px}
+.card .im img{transition:transform .4s}.card:hover .im img{transform:scale(1.04)}
+.card:hover h3{color:var(--acc)}
+/* hero */
+.hero{display:grid;grid-template-columns:210px 1fr 250px;gap:22px;padding:22px 0 26px}
+.hero>*+*{border-left:1px solid var(--line);padding-left:22px}
+.stack{display:flex;flex-direction:column;gap:32px}
+.stack .im{aspect-ratio:1/.9}
+.feat .im{aspect-ratio:16/10;overflow:hidden}
+.feat{text-align:center}.feat .cat{display:block;margin:14px 0 8px}
+.feat h2{font-size:28px;line-height:1.2;margin-bottom:12px}
+.feat p{color:var(--mut);max-width:480px;margin:0 auto 10px;font-size:13px}
+.feat .date b{font-weight:500;color:var(--fg)}
+.latest h4,.sec h4{font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding-bottom:8px;border-bottom:1px solid var(--line);margin-bottom:6px;display:flex;justify-content:space-between}
+.sec h4 a{color:var(--acc);text-transform:none;font-weight:500;letter-spacing:0}
+.li{display:grid;grid-template-columns:1fr 62px;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.li:last-child{border:0}.li h5{font-size:12px;line-height:1.3}.li .im{aspect-ratio:1;overflow:hidden}
+.li:hover h5{color:var(--acc)}
+/* sections */
+.sec{padding:22px 0 14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:14px}
+.pol{display:grid;grid-template-columns:2fr 1fr;gap:22px;margin-top:14px}
+.pol .big .im{aspect-ratio:16/10}.pol .big h3{font-size:24px}.pol .big p{font-size:13px;-webkit-line-clamp:2}
+.pol .side{display:grid;grid-template-columns:1fr 1fr;gap:22px;border-left:1px solid var(--line);padding-left:22px}
+.pol .side .im{aspect-ratio:5/4}
+.by{display:flex;align-items:center;gap:8px;font-size:12px}
+.by i{width:24px;height:24px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-style:normal;font-size:11px}
+/* article */
+.art{max-width:720px;margin:36px auto}
+.art h1{font-size:40px;line-height:1.15;margin:10px 0}
+.art .im{aspect-ratio:16/9;margin:22px 0}
+.art p.b{font-size:16px;line-height:1.8;margin-bottom:18px}
+.pg{margin:34px 0 10px;font-size:22px}
+.back{color:var(--acc);font-size:13px}
+/* modal */
+dialog{border:0;border-radius:8px;padding:28px;background:var(--bg);color:var(--fg);width:min(400px,92vw);margin:auto}
+dialog::backdrop{background:#0008}
+dialog h3{margin-bottom:6px}dialog p{color:var(--mut);margin-bottom:14px}
+dialog input{width:100%;padding:10px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--fg);margin-bottom:10px}
+dialog .sub{width:100%;padding:10px}
+#q{display:none;border-bottom:1px solid var(--line);padding:10px 0}
+#q.on{display:block}#q input{width:100%;border:0;outline:0;font-size:18px;background:none;color:var(--fg)}
+footer{border-top:1px solid var(--line);margin-top:40px;padding:26px 0;color:var(--mut);font-size:12px;text-align:center}
+@media(max-width:900px){
+ .hero{grid-template-columns:1fr}.hero>*+*{border:0;padding:0}.stack{flex-direction:row}.stack>*{flex:1}
+ .g4{grid-template-columns:1fr 1fr}.pol{grid-template-columns:1fr}.pol .side{border:0;padding:0}
+ .logo{font-size:30px}nav ul{gap:16px;overflow-x:auto;flex-wrap:nowrap}nav a{white-space:nowrap}.art h1{font-size:30px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <header class="top">
+  <div class="l"><button class="ic" id="menu" title="Menu">☰</button><button class="ic" id="srch" title="Search">⌕</button><button class="ic" id="theme" title="Theme">☼</button></div>
+  <a class="logo" href="#/">Plan-P</a>
+  <div class="r"><button class="sub" id="subBtn">Subscribe</button></div>
+ </header>
+</div>
+<nav><div class="wrap"><ul id="nav"></ul></div></nav>
+<div class="wrap">
+ <div id="q"><input id="qi" placeholder="Search posts…"></div>
+ <main id="app"></main>
+ <footer>© 2026 Plan-P · A blog for writers</footer>
+</div>
+<dialog id="dlg"><form method="dialog" id="sf">
+ <h3>Subscribe</h3><p>새 글을 이메일로 받아보세요.</p>
+ <input type="email" id="em" placeholder="you@example.com" required>
+ <button class="sub">Subscribe</button>
+</form></dialog>
+
+<script>
+const $=s=>document.querySelector(s);
+const P=[ // id,title,cats,date,author,excerpt,seed
+["when-you-tell-them-the-truth","When you tell them the truth",["Opinion"],"January 8, 2025","Isabella","Ei mei scripta intellegat. Verear voluptaria eam at, consul putent eu vel. Pro saepe maluisset ne, audire maiorum forensibus eos et. Diceret detraxit vis at. Eum et iidque tollit assentior, ullum soleat usu id.","street-man"],
+["hero-half","Hero-Half Post Example",["Books"],"January 8, 2025","Lucas","Quo natum nemore putant in, his te case habemus. Nulla detraxit explicari in vim.","woman-work"],
+["move-out","I decided to move out of the house",["Books","Politics"],"January 8, 2025","Lucas","Labore incorrupte vim an. Id augue populo alienum usu, has harum consectetuer ne, ne clita fuisset dignissim quo. Semper oportere assueverit eum eu. Ex facilisi dignissim vituperata mei, ad noluisse assueverit sea. Nam no dico quas delectus.","old-man-horse"],
+["unwrapped","This is my 2024 unwrapped",["Opinion"],"January 8, 2025","Isabella","Lorem ipsum dolor sit amet, ei officiis assueverit pri.","couple"],
+["rebel","Rebel Wilson weds Ramona Agruma in Sydney – and this time it’s for real",["Interview"],"January 8, 2025","Lucas","Quo natum nemore putant in, his te case habemus.","airplane"],
+["truth2","When you tell them the truth",["Opinion"],"January 8, 2025","Isabella","Ei mei scripta intellegat verear voluptaria.","blonde"],
+["welcome","Welcome To The Finest WordPress Theme For Writers",["Books"],"January 8, 2025","Lucas","Pro saepe maluisset ne, audire maiorum molestiae ad.","joy"],
+["grad","I’m a high school graduate",["Business"],"January 8, 2025","Lucas","Quo natum nemore putant in, his te case habemus. Nulla detraxit explicari in vim. Id eam magna omnesque.","fabric"],
+["exam","My entrance exam was on a book of matches",["Business"],"January 8, 2025","Isabella","Ei mei scripta intellegat. Verear voluptaria eam at, consul putent eu vel. Pro saepe maluisset ne, audire maiorum.","mosque"],
+["rhoda","My name is Rhoda Morgenstern",["Business","Interview"],"January 8, 2025","Lucas","Lorem ipsum dolor sit amet, ei officiis assueverit pri, duo volumus commune molestiae ad, cum at clita latine.","oilrig"],
+["tonight","Tonight what heights we’ll hit, on with the show this is it",["Business"],"January 8, 2025","Isabella","Labores incorrupte vim an. Id augue populo alienum usu, has harum consectetuer ne, ne clita fuisset dignissim quo.","underwater"],
+["first-thing","The first thing I remember liking that liked me back was food",["Travel"],"January 8, 2025","Lucas","Ius ea rebum nostrum offendit. Per in recusabo facilisis, est ei choro veritus gloriatur. Has ut dicant fuisset.","workshop"],
+["pakistan","Last Trip to Pakistan",["Travel"],"January 8, 2025","Isabella","Justo fabulas singulis at pri, saepe luptatum mei an. Duo idque solet scribentur eu, natum iudico labore te.","temple"],
+["gallery","Post Gallery – Slider",["Travel"],"January 8, 2025","Lucas","Patrioque assentior ea vim. Volutpat salutandi ex his, cu sea soluta melius gubergren, has latine reprehendunt ea.","forest-soldier"],
+["vote","We vote for our rights",["Travel"],"January 8, 2025","Isabella","Hey there. This is an excerpt.","vote"],
+["ny","New York, this is your last chance",["Politics"],"January 8, 2025","Lucas","Quo natum nemore putant in, his te case habemus. Nulla detraxit explicari.","factory"],
+["okavango","Helping to Protect the Okavango Basin",["Politics"],"January 8, 2025","Isabella","Labore nonumes te vel, vis id errem tantas tempor. Solet quidam salutatus.","speech"],
+["old-man","An Old Man Telling Me about Wars",["Politics"],"January 8, 2025","Lucas","Ius ea rebum nostrum offendit. Per in recusabo facilisis, est ei choro.","desk-man"],
+["vault","Enter at your peril, past the vault door",["Opinion","Politics"],"January 8, 2025","Isabella","Duo dolorum mandamus mnesarchum te. Sit ridens persius ex. Vel noluisse perpetua.","beach"],
+];
+const posts=P.map(([id,title,cats,date,author,ex,seed])=>({id,title,cats,date,author,ex,img:`https://picsum.photos/seed/${seed}/900/700`}));
+const by=id=>posts.find(p=>p.id===id), inCat=c=>posts.filter(p=>p.cats.includes(c));
+const cats=ps=>`<div class="cat">${ps.cats.map(c=>`<a href="#/cat/${c}">${c}</a>`).join("")}</div>`;
+const img=p=>`<div class="im"><img loading="lazy" src="${p.img}" alt=""></div>`;
+const link=(p,h)=>`<a href="#/post/${p.id}">${h}</a>`;
+const card=(p,ex=true)=>`<article class="card">${link(p,img(p))}${cats(p)}<h3>${link(p,p.title)}</h3>${ex?`<p>${p.ex}</p>`:""}<div class="date">${p.date}</div></article>`;
+const sec=(c,body)=>`<section class="sec"><h4>${c}<a href="#/cat/${c}">View all »</a></h4>${body}</section>`;
+
+function home(){
+ const f=by("when-you-tell-them-the-truth"),l=["hero-half","move-out"].map(by),
+  late=["unwrapped","rebel","truth2","hero-half","welcome"].map(by),big=by("move-out");
+ return `<section class="hero">
+  <div class="stack">${["hero-half","old-man"].map(i=>{const p=by(i);return `<article class="card">${link(p,img(p))}${cats(p)}<h3>${link(p,p.title)}</h3><div class="date">${p.date}</div></article>`}).join("")}</div>
+  <article class="feat">${link(f,img(f))}<div class="cat">${f.cats[0]}</div><h2>${link(f,f.title)}</h2><p>${f.ex}</p><div class="date">${f.date} · <b>${f.author}</b> and <b>Lucas</b></div></article>
+  <aside class="latest"><h4>Latest</h4>${late.map(p=>`<a class="li" href="#/post/${p.id}"><div><h5>${p.title}</h5><div class="date">${p.date}</div></div><div class="im">${`<img loading="lazy" src="${p.img}" alt="">`}</div></a>`).join("")}</aside>
+ </section>
+ ${sec("Business",`<div class="g4">${inCat("Business").map(p=>card(p)).join("")}</div>`)}
+ ${sec("Travel",`<div class="g4">${inCat("Travel").map(p=>card(p)).join("")}</div>`)}
+ ${sec("Politics",`<div class="pol"><article class="card big">${link(big,img(big))}<div class="cat">${big.cats.map(c=>`<a href="#/cat/${c}">${c}</a>`).join("")}</div><h3>${link(big,big.title)}</h3><p>${big.ex}</p><div class="by"><span class="date">${big.date}</span><i>${big.author[0]}</i>by ${big.author}</div></article>
+  <div class="side">${["ny","okavango","old-man","vault"].map(i=>card(by(i))).join("")}</div></div>`)}`;
+}
+function list(title,ps){return sec(title,ps.length?`<div class="g4">${ps.map(p=>card(p)).join("")}</div>`:`<p style="padding:30px 0;color:var(--mut)">결과가 없습니다.</p>`)}
+function post(p){
+ const rel=posts.filter(x=>x!==p&&x.cats.some(c=>p.cats.includes(c))).slice(0,4);
+ return `<article class="art"><a class="back" href="#/">← Back</a>${cats(p)}<h1>${p.title}</h1>
+  <div class="by"><i>${p.author[0]}</i>by ${p.author} · <span class="date">${p.date}</span></div>${img(p)}
+  <p class="b"><b>${p.ex}</b></p>
+  <p class="b">Lorem ipsum dolor sit amet, ei officiis assueverit pri, duo volumus commune molestiae ad, cum at clita latine. Quo natum nemore putant in, his te case habemus. Nulla detraxit explicari in vim.</p>
+  <p class="b">Id eam magna omnesque, ius ea rebum nostrum offendit. Per in recusabo facilisis, est ei choro veritus gloriatur. Has ut dicant fuisset, labore incorrupte vim an. Semper oportere assueverit eum eu.</p>
+  <p class="b">Ex facilisi dignissim vituperata mei, ad noluisse assueverit sea. Nam no dico quas delectus, duo dolorum mandamus mnesarchum te.</p>
+  ${rel.length?`<h3 class="pg">Related</h3><div class="g4" style="grid-template-columns:1fr 1fr">${rel.map(x=>card(x,false)).join("")}</div>`:""}</article>`;
+}
+const NAV=[["Home","#/"],["Posts","#/all"],["Business","#/cat/Business"],["Interview","#/cat/Interview"],["Politics","#/cat/Politics"],["Travel","#/cat/Travel"],["Opinion","#/cat/Opinion"],["Books","#/cat/Books"]];
+function route(){
+ const h=location.hash||"#/",[,k,v]=h.split("/").map(decodeURIComponent);
+ let html;
+ if(k==="post"&&by(v))html=post(by(v));
+ else if(k==="cat")html=list(v,inCat(v));
+ else if(k==="all")html=list("All posts",posts);
+ else if(k==="search")html=list(`Search: ${v}`,posts.filter(p=>(p.title+p.ex+p.cats).toLowerCase().includes(v.toLowerCase())));
+ else html=home();
+ $("#app").innerHTML=html;scrollTo(0,0);
+ $("#nav").innerHTML=NAV.map(([n,u])=>`<li><a href="${u}" class="${h===u?"on":""}">${n}</a></li>`).join("");
+}
+addEventListener("hashchange",route);route();
+// search
+$("#srch").onclick=()=>{$("#q").classList.toggle("on");$("#qi").focus()};
+$("#qi").oninput=e=>{const v=e.target.value.trim();location.hash=v?"#/search/"+encodeURIComponent(v):"#/"};
+$("#menu").onclick=()=>$("#nav").scrollIntoView({behavior:"smooth"});
+// theme
+const T=document.documentElement;
+try{T.dataset.theme=localStorage.theme||""}catch{}
+$("#theme").onclick=()=>{T.dataset.theme=T.dataset.theme==="dark"?"light":"dark";try{localStorage.theme=T.dataset.theme}catch{}};
+// subscribe (stored locally; ponytail: no backend, wire to an email service later)
+$("#subBtn").onclick=()=>$("#dlg").showModal();
+$("#sf").onsubmit=()=>{try{const s=JSON.parse(localStorage.subs||"[]");s.push($("#em").value);localStorage.subs=JSON.stringify(s)}catch{};alert("구독해주셔서 감사합니다!")};
+</script>
+</body>
+</html>
