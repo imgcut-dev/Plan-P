@@ -13,6 +13,12 @@
       "tools/**",
       "DESIGN.md",
       "firestore.rules"
+    ],
+    "rewrites": [
+      {
+        "source": "/post/**",
+        "destination": "/index.html"
+      }
     ]
   },
   "firestore": {

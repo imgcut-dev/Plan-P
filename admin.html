@@ -239,7 +239,7 @@ async function savePost(status){
  // 발행하는 글의 카테고리가 카테고리 목록(상단 메뉴)에 없으면 자동 추가
  const add=status==="published"?p.cats.filter(c=>!C.nav.some(n=>n.url==="#/cat/"+c)):[];
  if(add.length){C.nav.push(...add.map(c=>({label:c,url:"#/cat/"+c})));await save(`발행했습니다. 새 카테고리(${add.join(", ")})를 카테고리 목록에 추가했습니다`)}
- else toast(status==="draft"?"임시저장했습니다":"발행했습니다");
+ else toast(status==="draft"?"임시저장했습니다":"발행했습니다. 링크 공유 미리보기는 배포한 뒤에 반영됩니다");
  D=null;tab="posts";render();
 }
 async function delPost(i=Di){const p=C.posts[i];if(!confirm(`"${p.title}" 글을 삭제할까요? 되돌릴 수 없습니다.`))return;

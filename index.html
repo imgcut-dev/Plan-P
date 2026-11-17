@@ -2,6 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<script>if(/^\/post\//.test(location.pathname)&&!document.querySelector("base"))document.write('<base href="/">')</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="AI와 프로덕트 기획을 기록하는 블로그">
 <link rel="canonical" href="https://plan-p-1b255.web.app/">
@@ -120,6 +121,8 @@ h2.sh{font-size:16px;font-weight:700;margin-bottom:14px}
 /* 데이터를 받기 전에는 빈 틀 대신 안내만 보여 준다 */
 body:not(.ready) header,body:not(.ready) main,body:not(.ready) footer{visibility:hidden}
 body:not(.ready)::before{content:"불러오는 중…";position:fixed;inset:0;display:grid;place-items:center;color:var(--mut);font-size:14px}
+.share{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:28px}.share b{font-size:14px;margin-right:4px}
+.share .btn-l{cursor:pointer;background:none;color:var(--ink)}.share .btn-l:hover{border-color:var(--acc);color:var(--acct)}
 /* 추천·댓글 (comments.js) */
 .cm{margin-top:40px;border-top:1px solid var(--line);padding-top:24px}
 .cm-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
@@ -217,10 +220,11 @@ function post(p){
  <div class="cols"><article class="art">
   ${p.cats.map(c=>`<a class="chip-s" href="#/cat/${enc(c)}">${esc(c)}</a>`).join("")}
   <h1>${esc(p.title)}</h1>
-  <div class="meta"><span class="av">${esc((p.author||"A")[0])}</span><b style="color:var(--ink);font-weight:500">${esc(p.author)}</b><span>${fmt(p.date)}</span><button class="btn-l shr" id="shr" type="button" style="margin-left:auto">링크 복사</button></div>
+  <div class="meta"><span class="av">${esc((p.author||"A")[0])}</span><b style="color:var(--ink);font-weight:500">${esc(p.author)}</b><span>${fmt(p.date)}</span></div>
   <div class="hero"><img src="${esc(p.img||"placeholder.svg")}" alt=""></div>
   <p class="lead">${esc(p.ex)}</p><div id="pbody"></div>
   ${(p.tags||[]).length?`<div class="tags">${p.tags.map(t=>`<a href="#/tag/${enc(t)}">#${esc(t)}</a>`).join("")}</div>`:""}
+  <div class="share" id="share"><b>공유하기</b>${shareBtns(p)}</div>
   <div id="cmt"></div>
   <nav class="pn" aria-label="이전·다음 글">${older?`<a href="${href(older)}"><small>이전 글</small><b>${esc(older.title)}</b></a>`:"<span></span>"}${newer?`<a href="${href(newer)}" style="text-align:right"><small>다음 글</small><b>${esc(newer.title)}</b></a>`:"<span></span>"}</nav>
  </article>
@@ -240,9 +244,32 @@ function showBody(md){
 // 검색·공유용 메타를 화면에 맞게 바꾼다 (JS를 실행하는 검색엔진용). 공유 미리보기는 글 전용 주소(/post/글ID/)의 정적 메타를 본다
 const setM=(sel,attr,v)=>{const e=document.querySelector(sel);if(e)e.setAttribute(attr,v)};
 const shareUrl=p=>`${SITE_URL}/post/${enc(p.id)}/`;
-function seo(p){
+// 글 공유: 링크 복사, X, Facebook, LinkedIn, 네이버, (지원하는 기기에서) 기기 공유창. 모두 글 전용 주소(/post/글ID/)를 공유한다
+const shareBtns=p=>{
+ const U=enc(shareUrl(p)),T=enc(p.title),a=(m,l,h)=>`<a class="btn-l" data-sh="${m}" href="${h}" target="_blank" rel="noopener noreferrer">${l}</a>`;
+ return `<button class="btn-l" id="shr" data-sh="copy" type="button">링크 복사</button>`
+  +(navigator.share?`<button class="btn-l" data-sh="native" type="button">기기로 공유</button>`:"")
+  +a("x","X",`https://twitter.com/intent/tweet?url=${U}&text=${T}`)
+  +a("facebook","Facebook",`https://www.facebook.com/sharer/sharer.php?u=${U}`)
+  +a("linkedin","LinkedIn",`https://www.linkedin.com/sharing/share-offsite/?url=${U}`)
+  +a("naver","네이버",`https://share.naver.com/web/shareView?url=${U}&title=${T}`);
+};
+async function onShare(e,p){
+ const b=e.target.closest("[data-sh]");if(!b)return;const m=b.dataset.sh,u=shareUrl(p);
+ if(m==="copy"){try{await navigator.clipboard.writeText(u);b.textContent="복사했습니다"}catch{prompt("링크를 복사하세요",u)}}
+ else if(m==="native"){try{await navigator.share({title:p.title,text:p.ex,url:u})}catch{return}}
+ gaEvent("share",{method:m==="copy"?"copy_link":m,content_type:"post",item_id:p.id});
+}
+// 주소창을 공유할 수 있는 주소로 맞춘다: 글은 /post/글ID/, 나머지는 /#/…. 미리보기(?demo, ?skin)와 다른 호스트(예: GitHub Pages)에서는 건드리지 않는다
+function cleanUrl(h,p){
+ if(/[?&](demo|skin)=/.test(location.search)||!(location.origin===SITE_URL||location.hostname==="localhost"))return;
+ const want=p?`/post/${enc(p.id)}/`:(location.pathname.startsWith("/post/")?"/":location.pathname)+(h==="#/"?"":h);
+ if(location.pathname+location.hash!==want)history.replaceState(null,"",want+location.search);
+}
+function seo(p,miss){
  const url=p?shareUrl(p):SITE_URL+"/",t=p?p.title+" — "+C.site.name:C.site.name,d=(p&&p.ex)||SITE_DESC;
  const img=p&&/^https?:\/\//.test(p.img||"")?p.img:SITE_URL+"/og-default.png";
+ let rb=document.querySelector("meta[name=robots]");if(miss){if(!rb){rb=document.createElement("meta");rb.name="robots";document.head.append(rb)}rb.content="noindex"}else if(rb&&rb.content==="noindex")rb.remove();
  setM("meta[name=description]","content",d);setM("link[rel=canonical]","href",url);
  for(const [k,v] of [["og:title",t],["og:description",d],["og:url",url],["og:image",img],["og:type",p?"article":"website"]])setM(`meta[property="${k}"]`,"content",v);
 }
@@ -265,8 +292,10 @@ function route(){
  else if(k==="search"){const q=a[2]||"";html=listView(`검색: ${q}`,posts.filter(p=>(p.title+p.ex+p.cats+(p.tags||[])).toLowerCase().includes(q.toLowerCase())),+a[3]||1,"#/search/"+enc(q),null)}
  else html=home();
  $("#app").innerHTML=html;scrollTo(0,0);
- if(k==="post"&&by(a[2])){const sp=by(a[2]);$("#shr").onclick=async()=>{const u=shareUrl(sp);try{await navigator.clipboard.writeText(u);$("#shr").textContent="복사했습니다"}catch{prompt("링크를 복사하세요",u)}gaEvent("share",{method:"copy_link",content_type:"post",item_id:sp.id})};showBody(by(a[2]).body);gaRead(by(a[2]).id);import("./comments.js").then(m=>m.mount($("#cmt"),by(a[2]).id)).catch(e=>console.warn("댓글 로드 실패",e))}
- seo(k==="post"&&by(a[2])?by(a[2]):null);
+ if(k==="post"&&by(a[2])){const sp=by(a[2]);$("#share").onclick=e=>onShare(e,sp);showBody(by(a[2]).body);gaRead(by(a[2]).id);import("./comments.js").then(m=>m.mount($("#cmt"),by(a[2]).id)).catch(e=>console.warn("댓글 로드 실패",e))}
+ const pp=k==="post"&&by(a[2])?by(a[2]):null,miss=k==="post"&&!pp&&location.pathname.startsWith("/post/"); // 없는 글 주소는 색인하지 않는다
+ cleanUrl(h,pp);
+ seo(pp,miss);
  gaView();
  $("#nav").innerHTML=C.nav.map(n=>`<a href="${esc(safe(n.url))}" class="${h===n.url||(n.url!=="#/"&&h.startsWith(n.url+"/"))?"on":""}">${esc(n.label)}</a>`).join("");
  navHint();
@@ -285,7 +314,12 @@ setTimeout(()=>document.body.classList.add("ready"),6000); // 불러오기가 �
  $("#logo").textContent=S.name;$("#mk").textContent=(S.name||"P")[0];$("#foot").textContent=S.footer;
  if(gaOn())$("#foot").insertAdjacentHTML("beforeend",`<div style="margin-top:6px;font-size:12px">이 사이트는 방문 통계를 위해 Google Analytics를 사용합니다.</div>`);
  gaInit();gaBind();
- addEventListener("hashchange",route);route();document.body.classList.add("ready");
+ const at=()=>location.pathname+location.search+location.hash;let last="";
+ const nav=()=>{if(at()===last)return;route();last=at()};
+ addEventListener("hashchange",nav);addEventListener("popstate",nav);
+ // 글 전용 주소(기준 주소가 루트)에서도 #/ 링크가 페이지를 새로 읽지 않고 화면만 바꾸게 한다
+ document.addEventListener("click",e=>{const l=e.target.closest&&e.target.closest('a[href^="#/"]');if(!l||e.defaultPrevented||e.button||e.metaKey||e.ctrlKey||e.shiftKey||l.target)return;e.preventDefault();location.hash=l.getAttribute("href")});
+ nav();document.body.classList.add("ready");
 })();
 $("#srch").onclick=()=>{$("#q").classList.toggle("on");$("#qi").focus()};
 $("#qi").oninput=e=>{const v=e.target.value.trim();location.hash=v?"#/search/"+enc(v):"#/all"};

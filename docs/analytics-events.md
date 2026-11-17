@@ -39,7 +39,7 @@
 | `select_content` | 메인 화면 섹션 안에서 글 클릭 | `content_type=home_section`, `content_id=섹션 종류`(`picks`/`feature`/`latest`/`category`/`text`), `post_id` | `gaBind` | 코드 완료, 배포 전 |
 | `comment_submit` | 댓글·답글 등록 성공 | `post_id`, `is_reply`(true/false) | `comments.js` | 코드 완료, 배포 전 |
 | `like_click` | 추천을 눌러 추가했을 때(취소는 보내지 않음) | `target`(`post`/`comment`), `post_id` | `comments.js` | 코드 완료, 배포 전 |
-| `share` | 글 화면의 "링크 복사"를 눌렀을 때 | `method=copy_link`, `content_type=post`, `item_id=글ID` | `index.html` | 코드 완료, 배포 전 |
+| `share` | 글 아래 "공유하기" 버튼을 눌렀을 때 | `method`(`copy_link`/`x`/`facebook`/`linkedin`/`naver`/`native`), `content_type=post`, `item_id=글ID` | `index.html` | 코드 완료, 배포 전 |
 
 ### 2-3. GA 생성 이벤트 (화면 종류)
 소스 이벤트는 모두 `page_view`다. GA에서 **관리 > 데이터 표시 > 이벤트 > 이벤트 만들기 > 코드 없이 만들기**로 만든다.

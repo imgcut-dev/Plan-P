@@ -1,5 +1,5 @@
 {
- "ranAt": "2026-11-17T08:38:56.064Z",
+ "ranAt": "2026-11-17T08:46:37.348Z",
  "results": [
   {
    "id": "TC-U-001",
@@ -414,7 +414,7 @@
   {
    "id": "TC-I-103",
    "result": "Pass",
-   "actual": "{\"uid\":\"u1\",\"name\":\"홍길동\",\"photo\":null,\"text\":\"안녕하세요\",\"createdAt\":{\"seconds\":1794904730},\"parentId\":null,\"status\":\"visible\"}"
+   "actual": "{\"uid\":\"u1\",\"name\":\"홍길동\",\"photo\":null,\"text\":\"안녕하세요\",\"createdAt\":{\"seconds\":1794905190},\"parentId\":null,\"status\":\"visible\"}"
   },
   {
    "id": "TC-I-104",
@@ -712,6 +712,51 @@
    "actual": "기대한 대로 동작"
   },
   {
+   "id": "TC-S-117",
+   "result": "Pass",
+   "actual": "글 → /post/editor-test/, 카테고리 → /#/cat/Opinion"
+  },
+  {
+   "id": "TC-S-118",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-119",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-120",
+   "result": "Pass",
+   "actual": "복사·X·Facebook·LinkedIn·네이버, 모두 /post/글ID/ 주소"
+  },
+  {
+   "id": "TC-S-121",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-122",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-123",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-124",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-125",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
    "id": "TC-D-001",
    "result": "Pass",
    "actual": "/index.html 200, /admin.html 200, /comments.js 200, /analytics.js 200, /skins.css 200, /data.js 200, /fb.js 200"
@@ -725,6 +770,11 @@
    "id": "TC-D-003",
    "result": "Pass",
    "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-D-004",
+   "result": "Fail",
+   "actual": "아직 만들지 않은 글 주소가 404 (사이트 화면으로 열려야 함)"
   },
   {
    "id": "TC-S-001",

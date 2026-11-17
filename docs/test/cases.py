@@ -205,6 +205,7 @@ add(
 ("TC-D-001","배포","호스팅","주요 파일 제공","운영 배포됨","index.html, admin.html, comments.js, analytics.js 요청","모두 200","P1","자동(curl)"),
 ("TC-D-002","배포","호스팅 보안","숨겨야 할 파일은 404","운영 배포됨","/.git/config, /firestore.rules, /docs/decisions.md, /DESIGN.md, /CLAUDE.md, /tests/package.json 요청","모두 404","P1","자동(curl)"),
 ("TC-D-003","배포","호스팅 보안","존재하지 않는 주소는 404.html","-","/없는페이지 요청","404","P3","자동(curl)"),
+("TC-D-004","배포","호스팅","아직 생성하지 않은 글 주소도 사이트 화면으로 열린다","운영 배포됨","/post/zzz-not-built/ 요청","200, index.html과 기준 주소 보정 스크립트","P1","자동(curl)"),
 )
 
 # ---------------- SEO ----------------
@@ -235,6 +236,15 @@ add(
 ("TC-S-114","SEO","화면","복사가 막히면 주소를 보여 주는 창으로 대체","클립보드 거부","링크 복사 클릭","주소 안내창 표시","P2",SEOG),
 ("TC-S-115","SEO","화면","글 전용 주소로 열어도 GA는 /post/글ID로 집계","주소 /post/ID/","gaView()","page_path=/post/ID","P1",SEOG),
 ("TC-S-116","SEO","화면","정적 메타·robots.txt·관리자 색인 제외","-","index.html, admin.html, robots.txt 확인","메타 존재, 관리자 noindex, robots에 Disallow·Sitemap","P1",SEOG),
+("TC-S-117","SEO","화면","주소창을 공유 가능한 주소로 정리한다","보통 모드(미리보기 아님)","글 열기 → 카테고리 → 글","글은 /post/글ID/(해시 없음), 다른 화면은 /#/…","P1",SEOG),
+("TC-S-118","SEO","화면","미리보기(?demo, ?skin)는 주소를 바꾸지 않는다","?demo=1","글 열기","주소·쿼리 유지","P2",SEOG),
+("TC-S-119","SEO","화면","popstate와 hashchange가 겹쳐도 한 번만 그리고 page_view도 한 번","글 화면","두 이벤트를 연달아 발생, 이후 다른 화면 이동","중복 없음, 이동하면 page_view 1회","P1",SEOG),
+("TC-S-120","SEO","공유 버튼","공유 영역: 링크 복사, X, Facebook, LinkedIn, 네이버","글 화면","버튼과 링크 확인","5개 버튼, 링크는 글 전용 주소와 제목을 인코딩해 담음, 새 창·noopener, 기기 공유는 지원 기기에서만","P1",SEOG),
+("TC-S-121","SEO","공유 버튼","공유 버튼을 누르면 share 이벤트(method별)","-","X, 네이버 클릭","share(method=x, naver, content_type=post, item_id) 각 1회","P1",SEOG),
+("TC-S-122","SEO","공유 버튼","기기 공유: 공유창 호출, 취소하면 이벤트 없음","navigator.share 지원","기기로 공유 클릭","글 주소·제목 전달, 취소 시 이벤트 0회","P2",SEOG),
+("TC-S-123","SEO","화면","해시 링크는 현재 주소 기준으로 화면만 바꾼다(기준 주소가 루트여도)","-","메뉴 클릭, Ctrl+클릭","기본 동작을 막고 화면 전환, Ctrl+클릭은 새 탭 동작 유지","P1",SEOG),
+("TC-S-124","SEO","화면","없는 글 주소는 noindex","/post/없는글/","화면 그림","robots noindex 추가, 정상 글에서는 제거","P2",SEOG),
+("TC-S-125","SEO","설정","호스팅 설정: /post/** 대체 응답, 제외 목록","-","index.html, firebase.json 확인","글 주소 보정 스크립트, rewrites, tests/tools/docs 제외","P1",SEOG),
 )
 
 # ---------------- 수동 ----------------
