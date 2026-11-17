@@ -100,6 +100,31 @@ h2.sh{font-size:16px;font-weight:700;margin-bottom:14px}
 .tags a{height:32px;padding:0 14px;border-radius:999px;background:var(--surf);font-size:13px;display:flex;align-items:center;color:var(--acct);font-weight:500}
 .pn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:28px}
 .pn a{background:var(--panel);border-radius:var(--r3);padding:16px 18px}.pn small{display:block;font-size:12px;color:var(--mut)}.pn b{font-weight:500}
+/* 추천·댓글 (comments.js) */
+.cm{margin-top:40px;border-top:1px solid var(--line);padding-top:24px}
+.cm-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.cm-h2{font-size:16px;font-weight:700;flex:1}
+.cm button{cursor:pointer;background:none;border:0;color:var(--mut);font-size:13px;padding:4px 6px;border-radius:var(--r4)}
+.cm button:hover{color:var(--acct)}
+.cm .cm-k.on{color:var(--acct);font-weight:700}
+.cm .cm-big{height:40px;padding:0 18px;border:1px solid var(--line);border-radius:999px;font-size:14px;color:var(--ink)}
+.cm .cm-big.on{border-color:var(--acc);background:var(--tint)}
+.cm-f textarea{width:100%;border:1px solid var(--line);border-radius:var(--r3);padding:12px;font:inherit;line-height:1.6;background:var(--bg);color:var(--ink);resize:vertical}
+.cm-f textarea:focus{outline:2px solid var(--acc);outline-offset:-1px}
+.cm-r{display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px;font-size:12px;color:var(--mut)}
+.cm-c{margin-right:10px}
+.cm .cm-b{height:36px;padding:0 18px;background:var(--acc);color:#fff;font-weight:700;border-radius:var(--r3)}
+.cm .cm-b:hover{color:#fff;opacity:.9}.cm .cm-b[disabled]{opacity:.5}
+.cm .cm-login{height:44px;width:100%;border:1px dashed var(--line);border-radius:var(--r3);color:var(--acct);font-weight:500;font-size:14px}
+.cm-l{list-style:none;padding:0;margin:0}
+.cm-i{padding:18px 0;border-bottom:1px solid var(--line)}
+.cm-re{margin-left:28px;padding:14px 0 0;border-bottom:0;border-left:2px solid var(--line);padding-left:16px;margin-top:10px}
+.cm-h{display:flex;align-items:center;gap:8px;font-size:14px}.cm-h b{font-weight:500}.cm-d{font-size:12px;color:var(--mut)}
+.cm-av{width:28px;height:28px;border-radius:50%;background:var(--tile);color:var(--acc);display:grid;place-items:center;font-size:12px;font-weight:700;object-fit:cover}
+.cm-t{margin:8px 0 4px;white-space:pre-wrap;word-break:break-word;line-height:1.7}
+.cm-a{display:flex;gap:4px;margin-left:-6px}
+.cm-m{color:var(--mut);font-size:14px;padding:16px 0}
+.cm .cm-i .cm-f{margin:8px 0 0}
 footer{border-top:1px solid var(--line);background:var(--surf);margin-top:64px}
 footer .wrap{padding:28px 24px;font-size:13px;color:var(--mut)}
 @media(max-width:900px){.picks,.g3{grid-template-columns:1fr 1fr}nav{gap:16px;flex-wrap:nowrap;overflow-x:auto}nav a{white-space:nowrap}.art h1{font-size:28px}}
@@ -153,7 +178,7 @@ const SEC={
 };
 function home(){
  if(!posts.length)return`<p class="empty">아직 글이 없습니다.</p>`;
- return homeSections(C.home).map(s=>(SEC[s.type]||(()=>""))(s)).join("");
+ return homeSections(C.home).map(s=>`<div data-sec="${esc(s.type)}" style="display:contents">${(SEC[s.type]||(()=>""))(s)}</div>`).join("");
 }
 function listView(title,ps,pg,base,on){
  const n=Math.max(1,Math.ceil(ps.length/PS)),pgNo=Math.min(Math.max(pg,1),n);
@@ -176,6 +201,7 @@ function post(p){
   <div class="hero"><img src="${esc(p.img||"placeholder.svg")}" alt=""></div>
   <p class="lead">${esc(p.ex)}</p><div id="pbody"></div>
   ${(p.tags||[]).length?`<div class="tags">${p.tags.map(t=>`<a href="#/tag/${enc(t)}">#${esc(t)}</a>`).join("")}</div>`:""}
+  <div id="cmt"></div>
   <nav class="pn" aria-label="이전·다음 글">${older?`<a href="${href(older)}"><small>이전 글</small><b>${esc(older.title)}</b></a>`:"<span></span>"}${newer?`<a href="${href(newer)}" style="text-align:right"><small>다음 글</small><b>${esc(newer.title)}</b></a>`:"<span></span>"}</nav>
  </article>
  <aside class="side" style="flex:1 1 260px;max-width:320px;min-width:240px;display:flex;flex-direction:column;gap:28px">
@@ -192,6 +218,7 @@ function showBody(md){
  const s=document.createElement("script");s.src=CDN+"toastui-editor-viewer.min.js";s.onload=go;document.head.append(s);
 }
 function route(){
+ gaReadStop();
  const h=location.hash||"#/",a=h.split("/").map(decodeURIComponent),k=a[1];
  let html,on=null;
  document.title=C.site.name;
@@ -202,7 +229,7 @@ function route(){
  else if(k==="search"){const q=a[2]||"";html=listView(`검색: ${q}`,posts.filter(p=>(p.title+p.ex+p.cats+(p.tags||[])).toLowerCase().includes(q.toLowerCase())),+a[3]||1,"#/search/"+enc(q),null)}
  else html=home();
  $("#app").innerHTML=html;scrollTo(0,0);
- if(k==="post"&&by(a[2]))showBody(by(a[2]).body);
+ if(k==="post"&&by(a[2])){showBody(by(a[2]).body);gaRead(by(a[2]).id);import("./comments.js").then(m=>m.mount($("#cmt"),by(a[2]).id)).catch(e=>console.warn("댓글 로드 실패",e))}
  gaView();
  $("#nav").innerHTML=C.nav.map(n=>`<a href="${esc(safe(n.url))}" class="${h===n.url||(n.url!=="#/"&&h.startsWith(n.url+"/"))?"on":""}">${esc(n.label)}</a>`).join("");
 }
@@ -218,7 +245,7 @@ function route(){
  document.head.insertAdjacentHTML("beforeend",`<style>:root{--acc:${ac};--acct:${act}}</style>`);
  $("#logo").textContent=S.name;$("#mk").textContent=(S.name||"P")[0];$("#foot").textContent=S.footer;
  if(gaOn())$("#foot").insertAdjacentHTML("beforeend",`<div style="margin-top:6px;font-size:12px">이 사이트는 방문 통계를 위해 Google Analytics를 사용합니다.</div>`);
- gaInit();
+ gaInit();gaBind();
  addEventListener("hashchange",route);route();
 })();
 $("#srch").onclick=()=>{$("#q").classList.toggle("on");$("#qi").focus()};

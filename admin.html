@@ -101,7 +101,7 @@ td input[type=checkbox],th input[type=checkbox]{width:18px;height:18px;padding:0
 addEventListener("error",e=>{const i=e.target;if(i.tagName==="IMG"&&!i.src.endsWith("placeholder.svg"))i.src="placeholder.svg"},true);
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const TABS=[["posts","글 관리"],["write","글쓰기"],["menu","카테고리 관리"],["home","메인 관리"],["design","디자인 관리"],["data","데이터 · 게시"]];
+const TABS=[["posts","글 관리"],["write","글쓰기"],["menu","카테고리 관리"],["cmts","댓글 관리"],["home","메인 관리"],["design","디자인 관리"],["data","데이터 · 게시"]];
 let C,tab="posts",D=null,Di=-1,ED;
 const today=()=>new Date().toISOString().slice(0,10);
 // 카테고리 후보 = 카테고리 목록(nav)의 #/cat/이름 링크 + 글에 쓰인 카테고리
@@ -375,6 +375,25 @@ function data(){
  <h4>태그 채우기</h4><div class="note" style="margin-top:0">태그가 없는 글 <b>${C.posts.filter(p=>!(p.tags||[]).length).length}개</b>에 태그 4개를 자동으로 넣습니다. 카테고리를 바탕으로 임의의 단어를 고르며, 태그가 이미 있는 글은 건드리지 않습니다. 글쓰기에서 언제든 고칠 수 있습니다.</div>
  <div class="bar"><button class="btn" onclick="fillTags()">태그 없는 글에 태그 채우기</button></div>`;
 }
+// 댓글 관리: collectionGroup으로 모든 글의 댓글을 읽는다 (규칙: 관리자만)
+let CM=null,CMf="";
+function cmts(){
+ head("댓글 관리");
+ if(!CM){cmLoad();return `<h2>댓글 관리</h2><p class="lead">불러오는 중입니다…</p>`}
+ const ts=p=>(p.createdAt&&p.createdAt.seconds)||0,ti=id=>(C.posts.find(p=>p.id===id)||{}).title||id;
+ const rows=CM.filter(c=>!CMf||c.status===CMf).sort((a,b)=>ts(b)-ts(a));
+ return `<h2>댓글 관리</h2><p class="lead">댓글은 바로 공개됩니다. 문제가 있는 댓글은 숨기거나 삭제하세요. 숨긴 댓글은 사이트에서 보이지 않습니다.</p>
+ <div class="tb"><select aria-label="상태" onchange="CMf=this.value;render()">${opts([["","상태: 전체"],["visible","공개"],["hidden","숨김"]],CMf)}</select><button class="btn o" onclick="CM=null;render()">새로 고침</button><span class="lead" style="margin:0">총 ${rows.length}개</span></div>
+ <div class="card" style="overflow-x:auto"><table><tr><th>댓글</th><th>글</th><th>작성자</th><th>상태</th><th></th></tr>
+ ${rows.map(c=>`<tr><td style="min-width:260px;white-space:pre-wrap;word-break:break-word">${c.parentId?"↳ ":""}${esc(c.text)}<br><small style="color:var(--mut)">${c.createdAt&&c.createdAt.toDate?c.createdAt.toDate().toLocaleString("ko-KR"):""}</small></td><td>${esc(ti(c.pid))}</td><td>${esc(c.name)}</td><td><span class="st ${c.status==="hidden"?"d":""}">${c.status==="hidden"?"숨김":"공개"}</span></td>
+ <td><div class="acts"><button class="btn o s" onclick="cmHide('${esc(c.pid)}','${esc(c.id)}','${c.status==="hidden"?"visible":"hidden"}')">${c.status==="hidden"?"공개":"숨기기"}</button><a class="btn o s" href="index.html#/post/${encodeURIComponent(c.pid)}" target="_blank">보기</a><button class="btn r s" onclick="cmDel('${esc(c.pid)}','${esc(c.id)}')">삭제</button></div></td></tr>`).join("")||`<tr><td colspan="5" style="text-align:center;color:var(--mut);padding:32px">댓글이 없습니다.</td></tr>`}</table></div>`;
+}
+async function cmLoad(){
+ try{const q=await FB.getDocs(FB.collectionGroup(FB.db,"comments"));CM=q.docs.map(d=>({id:d.id,pid:d.ref.parent.parent.id,...d.data()}))}
+ catch(e){CM=[];toast("댓글을 읽지 못했습니다: 규칙 배포와 로그인을 확인하세요")}
+ if(tab==="cmts")render()}
+async function cmHide(pid,id,st){try{await FB.updateDoc(FB.doc(FB.db,"posts",pid,"comments",id),{status:st});CM.find(c=>c.id===id).status=st;toast(st==="hidden"?"숨겼습니다":"공개했습니다");render()}catch{toast("처리하지 못했습니다")}}
+async function cmDel(pid,id){if(!confirm("이 댓글을 삭제할까요? 되돌릴 수 없습니다. 이 댓글에 달린 답글은 사이트에 보이지 않게 되며, 이 목록에서 따로 삭제할 수 있습니다."))return;try{await FB.deleteDoc(FB.doc(FB.db,"posts",pid,"comments",id));CM=CM.filter(c=>c.id!==id);toast("삭제했습니다");render()}catch{toast("삭제하지 못했습니다")}}
 function exp(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(C,null,1)],{type:"application/json"}));a.download="data.json";a.click()}
 const FILL=["일상","기록","아이디어","회고","메모","생각","정리","이야기","관찰","배움"];
 function autoTags(p){ // 카테고리 이름 + 글 id로 고른 임의 단어, 합쳐서 4개
@@ -398,7 +417,7 @@ async function seed(){
   C=await loadCfg(true);render();toast("올렸습니다")}catch{toast("올리기 실패: 로그인과 네트워크를 확인하세요")}
 }
 
-const V={posts,write,menu,home,design,data};
+const V={posts,write,menu,cmts,home,design,data};
 function render(){
  $("#side").innerHTML=TABS.map(([k,l])=>`<a class="${k===tab?"on":""}" onclick="go('${k}')">${l}</a>`).join("");
  $("#dl-tags").innerHTML=allTags().map(t=>`<option value="${esc(t)}">`).join("");
