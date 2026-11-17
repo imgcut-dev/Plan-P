@@ -1,5 +1,5 @@
 {
- "ranAt": "2026-11-17T08:30:47.790Z",
+ "ranAt": "2026-11-17T08:34:57.281Z",
  "results": [
   {
    "id": "TC-U-001",
@@ -414,7 +414,7 @@
   {
    "id": "TC-I-103",
    "result": "Pass",
-   "actual": "{\"uid\":\"u1\",\"name\":\"홍길동\",\"photo\":null,\"text\":\"안녕하세요\",\"createdAt\":{\"seconds\":1794904242},\"parentId\":null,\"status\":\"visible\"}"
+   "actual": "{\"uid\":\"u1\",\"name\":\"홍길동\",\"photo\":null,\"text\":\"안녕하세요\",\"createdAt\":{\"seconds\":1794904487},\"parentId\":null,\"status\":\"visible\"}"
   },
   {
    "id": "TC-I-104",
@@ -728,43 +728,43 @@
   },
   {
    "id": "TC-S-001",
-   "result": "Fail",
-   "actual": "<head>에 meta description이 없음"
+   "result": "Pass",
+   "actual": "AI와 프로덕트 기획을 기록하는 블로그"
   },
   {
    "id": "TC-S-002",
-   "result": "Fail",
-   "actual": "없는 og 태그: og:title, og:description, og:image, og:url, og:type"
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
   },
   {
    "id": "TC-S-003",
-   "result": "Fail",
-   "actual": "사이트맵에 글 주소가 2개 이상 있어야 함 (0개)"
+   "result": "Pass",
+   "actual": "에디터 테스트 — Plan-P / 안녕하세요 테스트 입니다. — Plan-P"
   },
   {
    "id": "TC-S-004",
-   "result": "Fail",
-   "actual": "홈에 twitter:card 없음"
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
   },
   {
    "id": "TC-S-005",
-   "result": "Fail",
-   "actual": "홈에 canonical 없음"
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
   },
   {
    "id": "TC-S-006",
-   "result": "Fail",
-   "actual": "robots.txt 404"
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
   },
   {
    "id": "TC-S-007",
-   "result": "Fail",
-   "actual": "글 전용 주소가 없음"
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
   },
   {
    "id": "TC-S-008",
-   "result": "Fail",
-   "actual": "글 페이지 없음"
+   "result": "Pass",
+   "actual": "에디터 테스트 — Plan-P / 안녕하세요 테스트 입니다. — Plan-P"
   }
  ]
 }
