@@ -1,5 +1,5 @@
 {
- "ranAt": "2026-11-17T08:52:36.719Z",
+ "ranAt": "2026-11-17T08:56:19.660Z",
  "results": [
   {
    "id": "TC-U-001",
@@ -414,7 +414,7 @@
   {
    "id": "TC-I-103",
    "result": "Pass",
-   "actual": "{\"uid\":\"u1\",\"name\":\"홍길동\",\"photo\":null,\"text\":\"안녕하세요\",\"createdAt\":{\"seconds\":1794905549},\"parentId\":null,\"status\":\"visible\"}"
+   "actual": "{\"uid\":\"u1\",\"name\":\"홍길동\",\"photo\":null,\"text\":\"안녕하세요\",\"createdAt\":{\"seconds\":1794905767},\"parentId\":null,\"status\":\"visible\"}"
   },
   {
    "id": "TC-I-104",
@@ -778,13 +778,13 @@
   },
   {
    "id": "TC-D-004",
-   "result": "Fail",
-   "actual": "아직 만들지 않은 글 주소가 404 (사이트 화면으로 열려야 함)"
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
   },
   {
    "id": "TC-D-005",
-   "result": "Fail",
-   "actual": "/favicon.ico 404"
+   "result": "Pass",
+   "actual": "/favicon.ico 200 image/x-icon, /favicon.svg 200 image/svg+xml, /favicon-32.png 200 image/png, /apple-touch-icon.png 200 image/png"
   },
   {
    "id": "TC-S-001",
