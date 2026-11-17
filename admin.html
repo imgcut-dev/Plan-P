@@ -36,6 +36,7 @@ h4{font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding-bottom:8
 .ib{width:28px;height:28px;border:1px solid var(--line);border-radius:6px;background:#fff}.ib:hover{border-color:var(--ink)}
 input,select,textarea{font:inherit;width:100%;padding:0 12px;height:40px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
 select{appearance:none;-webkit-appearance:none;padding-right:34px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%235B6470' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1.5 1.5l4.5 4.5 4.5-4.5'/%3E%3C/svg%3E") no-repeat right 12px center}
+a.tl{cursor:pointer}a.tl:hover b{color:var(--acct);text-decoration:underline}.cmn{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;background:var(--tint);color:var(--acct);font-weight:700;font-size:12px}.cmn:hover{background:var(--acct);color:#fff}
 textarea{height:auto;padding:10px 12px;resize:vertical}
 input:focus,select:focus,textarea:focus{outline:0;border-color:var(--acc)}
 input[type=color]{width:60px;padding:2px}
@@ -118,7 +119,7 @@ let dirty=false;
 const mark=()=>{dirty=true;const e=$("#dirty");if(e)e.textContent="저장하지 않은 변경이 있습니다";const v=$("#pvn");if(v)v.innerHTML=navPv()};
 async function go(t){
  if(dirty){if(!confirm("변경 사항을 아직 저장하지 않았습니다. 저장하지 않고 이동하면 변경이 사라집니다."))return;dirty=false;C=await loadCfg(true)}
- tab=t;D=null;if(t==="write")newPost();render()}
+ tab=t;D=null;if(t==="cmts")CMp="";if(t==="write")newPost();render()}
 function mv(p,i,d){const a=arr(p),j=i+d;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];mark();render()}
 const mvB=(p,i)=>`<div class="acts"><button class="ib" aria-label="위로" onclick="mv('${p}',${i},-1)">↑</button><button class="ib" aria-label="아래로" onclick="mv('${p}',${i},1)">↓</button><button class="ib" aria-label="삭제" onclick="delRow('${p}',${i})">✕</button></div>`;
 function delRow(p,i){const r=arr(p)[i];if(p==="nav"&&catOf(r)&&catCount(catOf(r)))return catDialog(i,true);if(!confirm(p==="nav"?`"${r.label||"이 항목"}" 카테고리를 삭제할까요? (이 카테고리의 글은 지워지지 않습니다)`:`"${SECTIONS[r.type]?.name||"이"}" 섹션을 메인에서 뺄까요? (글은 지워지지 않습니다)`))return;arr(p).splice(i,1);mark();render()}
@@ -146,12 +147,12 @@ function listHtml(){
  return `<p class="lead" style="margin:0 0 10px">전체 ${C.posts.length}개${rows.length!==C.posts.length?` · 검색·필터 결과 ${rows.length}개`:""} · ${L.pg}/${n} 페이지</p>
  ${L.sel.size?`<div class="bulk"><b>${L.sel.size}개 선택됨</b><button class="btn o s" onclick="bulk('pub')">발행</button><button class="btn o s" onclick="bulk('draft')">비공개로 바꾸기</button><button class="btn r s" onclick="bulk('del')">삭제</button><button class="btn o s" onclick="L.sel.clear();plist()">선택 해제</button></div>`:""}
  ${allOn&&rows.length>pg.length&&L.sel.size<rows.length?`<div class="note" style="margin:0 0 10px">이 페이지의 글 ${pg.length}개가 선택되었습니다. <a style="color:var(--acct);cursor:pointer;font-weight:700" onclick="lAllResult()">검색 결과 ${rows.length}개 모두 선택</a></div>`:""}
- <div class="card"><table><tr><th style="width:36px"><input type="checkbox" aria-label="이 페이지 전체 선택" ${allOn?"checked":""} onchange="lAllPage(this.checked)"></th><th></th><th>제목</th><th>카테고리</th><th>상태</th><th>날짜</th><th></th></tr>
+ <div class="card"><table><tr><th style="width:36px"><input type="checkbox" aria-label="이 페이지 전체 선택" ${allOn?"checked":""} onchange="lAllPage(this.checked)"></th><th></th><th>제목</th><th>댓글</th><th>카테고리</th><th>상태</th><th>날짜</th><th></th></tr>
  ${pg.map(([p,i])=>`<tr>
   <td><input type="checkbox" aria-label="${esc(p.title)} 선택" ${L.sel.has(p.id)?"checked":""} onchange="lToggle('${esc(p.id)}',this.checked)"></td>
-  <td><img class="thumb" src="${esc(p.img||"placeholder.svg")}" alt=""></td><td><b>${esc(p.title)}</b>${(p.tags||[]).length?`<div style="font-size:12px;color:var(--mut);white-space:normal">${p.tags.map(t=>"#"+esc(t)).join(" ")}</div>`:""}</td><td>${esc(p.cats.join(", "))}</td>
+  <td><img class="thumb" src="${esc(p.img||"placeholder.svg")}" alt=""></td><td><a class="tl" onclick="editPost(${i})" title="수정하기"><b>${esc(p.title)}</b></a>${(p.tags||[]).length?`<div style="font-size:12px;color:var(--mut);white-space:normal">${p.tags.map(t=>"#"+esc(t)).join(" ")}</div>`:""}</td><td>${cmCount(p.id)}</td><td>${esc(p.cats.join(", "))}</td>
   <td><span class="st ${p.status==="draft"?"d":""}">${p.status==="draft"?"임시":"발행"}</span></td><td style="color:var(--mut);white-space:nowrap">${esc(p.date)}</td>
-  <td><div class="acts"><button class="btn o s" onclick="editPost(${i})">수정</button><a class="btn o s" href="index.html#/post/${encodeURIComponent(p.id)}" target="_blank">보기</a><button class="btn o s" onclick="toggle(${i})">${p.status==="draft"?"발행":"비공개"}</button><button class="btn r s" onclick="delPost(${i})">삭제</button></div></td></tr>`).join("")||`<tr><td colspan="7" style="text-align:center;color:var(--mut);padding:32px">조건에 맞는 글이 없습니다. <a style="color:var(--acct);cursor:pointer" onclick="lReset()">필터 초기화</a></td></tr>`}</table></div>${pager}`;
+  <td><div class="acts"><button class="btn o s" onclick="editPost(${i})">수정</button><a class="btn o s" href="index.html#/post/${encodeURIComponent(p.id)}" target="_blank">보기</a><button class="btn o s" onclick="toggle(${i})">${p.status==="draft"?"발행":"비공개"}</button><button class="btn r s" onclick="delPost(${i})">삭제</button></div></td></tr>`).join("")||`<tr><td colspan="8" style="text-align:center;color:var(--mut);padding:32px">조건에 맞는 글이 없습니다. <a style="color:var(--acct);cursor:pointer" onclick="lReset()">필터 초기화</a></td></tr>`}</table></div>${pager}`;
 }
 async function bulk(act){
  const ps=[...L.sel].map(id=>C.posts.find(p=>p.id===id)).filter(Boolean);if(!ps.length)return;
@@ -377,22 +378,27 @@ function data(){
  <div class="bar"><button class="btn" onclick="fillTags()">태그 없는 글에 태그 채우기</button></div>`;
 }
 // 댓글 관리: collectionGroup으로 모든 글의 댓글을 읽는다 (규칙: 관리자만)
-let CM=null,CMf="";
+let CM=null,CMf="",CMp="";
+const cmCount=id=>{if(!CM)return"…";const n=CM.filter(c=>c.pid===id).length;return n?`<a class="cmn" href="admin.html#cmts/${encodeURIComponent(id)}" target="_blank" title="이 글의 댓글 관리를 새 창으로 엽니다">${n}</a>`:`<span style="color:var(--mut)">-</span>`};
 function cmts(){
  head("댓글 관리");
  if(!CM){cmLoad();return `<h2>댓글 관리</h2><p class="lead">불러오는 중입니다…</p>`}
  const ts=p=>(p.createdAt&&p.createdAt.seconds)||0,ti=id=>(C.posts.find(p=>p.id===id)||{}).title||id;
- const rows=CM.filter(c=>!CMf||c.status===CMf).sort((a,b)=>ts(b)-ts(a));
+ const rows=CM.filter(c=>(!CMf||c.status===CMf)&&(!CMp||c.pid===CMp)).sort((a,b)=>ts(b)-ts(a));
  return `<h2>댓글 관리</h2><p class="lead">댓글은 바로 공개됩니다. 문제가 있는 댓글은 숨기거나 삭제하세요. 숨긴 댓글은 사이트에서 보이지 않습니다.</p>
+ ${CMp?`<div class="note" style="margin:0 0 10px"><b>${esc(ti(CMp))}</b> 글의 댓글만 보는 중입니다. <a style="color:var(--acct);cursor:pointer;font-weight:700" onclick="CMp='';render()">전체 댓글 보기</a></div>`:""}
  <div class="tb"><select aria-label="상태" onchange="CMf=this.value;render()">${opts([["","상태: 전체"],["visible","공개"],["hidden","숨김"]],CMf)}</select><button class="btn o" onclick="CM=null;render()">새로 고침</button><span class="lead" style="margin:0">총 ${rows.length}개</span></div>
  <div class="card" style="overflow-x:auto"><table><tr><th>댓글</th><th>글</th><th>작성자</th><th>상태</th><th></th></tr>
  ${rows.map(c=>`<tr><td style="min-width:260px;white-space:pre-wrap;word-break:break-word">${c.parentId?"↳ ":""}${esc(c.text)}<br><small style="color:var(--mut)">${c.createdAt&&c.createdAt.toDate?c.createdAt.toDate().toLocaleString("ko-KR"):""}</small></td><td>${esc(ti(c.pid))}</td><td>${esc(c.name)}</td><td><span class="st ${c.status==="hidden"?"d":""}">${c.status==="hidden"?"숨김":"공개"}</span></td>
  <td><div class="acts"><button class="btn o s" onclick="cmHide('${esc(c.pid)}','${esc(c.id)}','${c.status==="hidden"?"visible":"hidden"}')">${c.status==="hidden"?"공개":"숨기기"}</button><a class="btn o s" href="index.html#/post/${encodeURIComponent(c.pid)}" target="_blank">보기</a><button class="btn r s" onclick="cmDel('${esc(c.pid)}','${esc(c.id)}')">삭제</button></div></td></tr>`).join("")||`<tr><td colspan="5" style="text-align:center;color:var(--mut);padding:32px">댓글이 없습니다.</td></tr>`}</table></div>`;
 }
+let CMb=false;
 async function cmLoad(){
+ if(CMb)return;CMb=true;
  try{const q=await FB.getDocs(FB.collectionGroup(FB.db,"comments"));CM=q.docs.map(d=>({id:d.id,pid:d.ref.parent.parent.id,...d.data()}))}
  catch(e){CM=[];toast("댓글을 읽지 못했습니다: 규칙 배포와 로그인을 확인하세요")}
- if(tab==="cmts")render()}
+ CMb=false;
+ if(tab==="cmts")render();else if(tab==="posts"&&$("#plist"))plist()}
 async function cmHide(pid,id,st){try{await FB.updateDoc(FB.doc(FB.db,"posts",pid,"comments",id),{status:st});CM.find(c=>c.id===id).status=st;toast(st==="hidden"?"숨겼습니다":"공개했습니다");render()}catch{toast("처리하지 못했습니다")}}
 async function cmDel(pid,id){if(!confirm("이 댓글을 삭제할까요? 되돌릴 수 없습니다. 이 댓글에 달린 답글은 사이트에 보이지 않게 되며, 이 목록에서 따로 삭제할 수 있습니다."))return;try{await FB.deleteDoc(FB.doc(FB.db,"posts",pid,"comments",id));CM=CM.filter(c=>c.id!==id);toast("삭제했습니다");render()}catch{toast("삭제하지 못했습니다")}}
 function exp(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(C,null,1)],{type:"application/json"}));a.download="data.json";a.click()}
@@ -437,7 +443,10 @@ import("./fb.js").then(m=>{FB=m;$("#lbtn").disabled=false;
   if(!u)return show(false);
   try{await FB.getDoc(FB.doc(FB.db,"site","admin"))}
   catch{$("#lmsg").textContent="관리자 계정이 아닙니다. 다른 계정으로 로그인하세요";return FB.signOut(FB.auth)}
-  C=await loadCfg(true);show(true);render();
+  C=await loadCfg(true);
+  const hm=location.hash.match(/^#cmts\/(.+)$/); // 글 관리의 댓글 수를 누르면 새 창에서 그 글의 댓글만 연다
+  if(hm){tab="cmts";CMp=decodeURIComponent(hm[1])}
+  show(true);render();cmLoad();
  });
 });
 </script>
