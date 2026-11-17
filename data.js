@@ -20,13 +20,13 @@ const P=[ // id,title,cats,date,author,excerpt,img seed
 ["old-man","An Old Man Telling Me about Wars",["Politics"],"Lucas","Ius ea rebum nostrum offendit. Per in recusabo facilisis, est ei choro.","desk-man"],
 ["vault","Enter at your peril, past the vault door",["Opinion","Politics"],"Isabella","Duo dolorum mandamus mnesarchum te. Sit ridens persius ex. Vel noluisse perpetua.","beach"],
 ];
-// 샘플 글 태그 (id → 태그)
-const TAGS={"when-you-tell-them-the-truth":["진실","대화","에세이"],"hero-half":["예시","레이아웃"],"move-out":["독립","일상","에세이"],"vault":["미스터리","여행"]};
+// 샘플 글 태그 (id → 태그 4개). editor-test는 글 데이터에 직접 있다
+const TAGS={"when-you-tell-them-the-truth": ["진실", "대화", "에세이", "관계"], "hero-half": ["예시", "레이아웃", "디자인", "샘플"], "move-out": ["독립", "일상", "에세이", "집"], "unwrapped": ["회고", "2024", "정리", "기록"], "rebel": ["인터뷰", "결혼", "뉴스", "시드니"], "truth2": ["진실", "솔직함", "에세이", "생각"], "welcome": ["워드프레스", "테마", "글쓰기", "도구"], "grad": ["졸업", "학교", "성장", "이야기"], "exam": ["시험", "추억", "학창시절", "에세이"], "rhoda": ["인터뷰", "인물", "이야기", "프로필"], "tonight": ["공연", "무대", "에너지", "음악"], "first-thing": ["음식", "기억", "여행", "에세이"], "pakistan": ["여행", "파키스탄", "사진", "기록"], "gallery": ["갤러리", "슬라이더", "사진", "예시"], "vote": ["투표", "권리", "사회", "의견"], "ny": ["뉴욕", "도시", "정치", "마지막기회"], "okavango": ["환경", "보호", "아프리카", "자연"], "old-man": ["전쟁", "역사", "노인", "인터뷰"], "vault": ["미스터리", "모험", "여행", "상상"]};
 const DEFAULT={
  site:{name:"Plan-P",skin:"plan-p",accent:"#4F46E5",accentText:"#4338CA",footer:"© 2026 Plan-P · A blog for writers"},
  nav:[["Home","#/"],["Posts","#/all"],["Business","#/cat/Business"],["Interview","#/cat/Interview"],["Politics","#/cat/Politics"],["Travel","#/cat/Travel"],["Opinion","#/cat/Opinion"],["Books","#/cat/Books"]].map(([label,url])=>({label,url})),
  posts:[
-  {id:"editor-test",title:"에디터 테스트",cats:["Opinion"],author:"Admin",date:"2026-11-17",status:"published",img:"https://picsum.photos/seed/editor-test/900/700",tags:["에디터","테스트","TOAST UI"],ex:"관리자 에디터(TOAST UI)로 작성한 테스트 글입니다.",body:"## 소제목\n\n**굵게** 본문 *기울임*\n\n- 목록1\n- 목록2\n\n![sample](https://picsum.photos/seed/a/400/200)"},
+  {id:"editor-test",title:"에디터 테스트",cats:["Opinion"],author:"Admin",date:"2026-11-17",status:"published",img:"https://picsum.photos/seed/editor-test/900/700",tags:["에디터","테스트","TOAST UI","마크다운"],ex:"관리자 에디터(TOAST UI)로 작성한 테스트 글입니다.",body:"## 소제목\n\n**굵게** 본문 *기울임*\n\n- 목록1\n- 목록2\n\n![sample](https://picsum.photos/seed/a/400/200)"},
   ...P.map(([id,title,cats,author,ex,seed])=>({id,title,cats,author,ex,tags:TAGS[id]||[],body:"",status:"published",date:"2025-01-08",img:`https://picsum.photos/seed/${seed}/900/700`}))
  ],
  home:{feature:"when-you-tell-them-the-truth",picks:["move-out","pakistan","rhoda"],count:6}

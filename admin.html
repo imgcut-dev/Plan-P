@@ -321,9 +321,26 @@ function data(){
  head("데이터");
  return `<h2>데이터</h2><p class="lead">글과 설정은 Firebase(Firestore)에 저장됩니다. 처음 한 번 샘플 데이터를 올릴 수 있습니다.</p>
  <div class="note" style="margin-top:0"><b>샘플 데이터 올리기</b><br>샘플 글 ${DEFAULT.posts.length}개와 사이트 설정을 저장합니다. 같은 id의 글과 사이트 설정은 덮어씁니다.</div>
- <div class="bar"><button class="btn" onclick="seed()">샘플 데이터 올리기</button><button class="btn o" onclick="exp()">data.json 내보내기 (백업)</button></div>`;
+ <div class="bar"><button class="btn" onclick="seed()">샘플 데이터 올리기</button><button class="btn o" onclick="exp()">data.json 내보내기 (백업)</button></div>
+ <h4>태그 채우기</h4><div class="note" style="margin-top:0">태그가 없는 글 <b>${C.posts.filter(p=>!(p.tags||[]).length).length}개</b>에 태그 4개를 자동으로 넣습니다. 카테고리를 바탕으로 임의의 단어를 고르며, 태그가 이미 있는 글은 건드리지 않습니다. 글쓰기에서 언제든 고칠 수 있습니다.</div>
+ <div class="bar"><button class="btn" onclick="fillTags()">태그 없는 글에 태그 채우기</button></div>`;
 }
 function exp(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(C,null,1)],{type:"application/json"}));a.download="data.json";a.click()}
+const FILL=["일상","기록","아이디어","회고","메모","생각","정리","이야기","관찰","배움"];
+function autoTags(p){ // 카테고리 이름 + 글 id로 고른 임의 단어, 합쳐서 4개
+ let h=0;for(const c of p.id)h=(h*31+c.charCodeAt(0))>>>0;
+ const out=[...p.cats.slice(0,2)];
+ for(let i=0;out.length<4;i++){const w=FILL[(h+i*3)%FILL.length];if(!out.includes(w))out.push(w)}
+ return out}
+async function fillTags(){
+ const ps=C.posts.filter(p=>!(p.tags||[]).length);
+ if(!ps.length)return toast("태그가 없는 글이 없습니다");
+ if(!confirm(`태그가 없는 글 ${ps.length}개에 태그 4개씩 자동으로 넣습니다. 계속할까요?`))return;
+ const up=ps.map(p=>({...p,tags:autoTags(p)}));
+ try{const b=FB.writeBatch(FB.db);up.forEach(p=>b.set(FB.doc(FB.db,"posts",p.id),p));await b.commit()}
+ catch{return toast("실패했습니다: 로그인과 네트워크를 확인하세요")}
+ up.forEach(p=>{C.posts[C.posts.findIndex(x=>x.id===p.id)]=p});
+ toast(`글 ${up.length}개에 태그를 넣었습니다`);render()}
 async function seed(){
  if(!confirm("샘플 데이터를 올립니다. 같은 id의 글과 사이트 설정은 덮어씁니다."))return;
  try{const d=structuredClone(DEFAULT),b=FB.writeBatch(FB.db);
