@@ -50,6 +50,7 @@ td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical
 .st{height:22px;padding:0 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;background:var(--tint);color:var(--acct)}.st.d{background:#EEE;color:var(--mut)}
 .ed{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}.ed>.m{flex:999 1 560px;min-width:0}.ed>aside{flex:1 1 260px;max-width:320px;min-width:240px;display:flex;flex-direction:column;gap:16px}
 .prev{aspect-ratio:16/10;border-radius:8px;object-fit:cover;background:#fff;width:100%;display:block;margin:10px 0 0}
+.chk{display:flex;align-items:center;gap:6px;margin:0;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:13px;font-weight:500;color:var(--ink);cursor:pointer}.chk input{width:auto;height:auto;margin:0;accent-color:var(--acc)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}.bar{display:flex;gap:8px;margin-top:22px}
 .note{background:#fff;border-left:3px solid var(--acc);border-radius:6px;padding:14px 16px;font-size:13px;color:var(--mut);margin-top:16px}.note b{color:var(--ink)}
 .pv{border:1px solid var(--line);background:#fff;border-radius:12px;padding:22px;text-align:center}.pv .logo{justify-content:center;font-size:28px}.pv .btn{margin-top:12px}
@@ -83,7 +84,8 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const TABS=[["posts","글 관리"],["write","글쓰기"],["menu","메뉴 관리"],["home","메인 관리"],["design","디자인 관리"],["data","데이터 · 게시"]];
 let C,tab="posts",D=null,Di=-1,ED;
 const today=()=>new Date().toISOString().slice(0,10);
-const cats=()=>[...new Set(C.posts.flatMap(p=>p.cats))];
+// 카테고리 후보 = 메뉴의 #/cat/이름 링크 + 글에 쓰인 카테고리
+const cats=()=>[...new Set([...C.nav.map(n=>(n.url.match(/^#\/cat\/(.+)$/)||[])[1]).filter(Boolean).map(decodeURIComponent),...C.posts.flatMap(p=>p.cats)])];
 const arr=p=>p.split(".").reduce((o,k)=>o[k],C);
 const opts=(l,v)=>l.map(([a,b])=>`<option value="${esc(a)}" ${a===v?"selected":""}>${esc(b)}</option>`).join("");
 const postOpts=()=>C.posts.map(p=>[p.id,p.title]);
@@ -124,7 +126,8 @@ function write(){
    <label for="f-date">발행일</label><input type="date" id="f-date" value="${esc(D.date)}">
    <label for="f-author">작성자</label><input id="f-author" value="${esc(D.author)}"></div>
   <div class="panel"><h3>카테고리</h3>
-   <label for="f-cats">쉼표로 구분</label><input id="f-cats" list="dl-cats" value="${esc(D.cats.join(", "))}" placeholder="Business, Interview"></div>
+   <div id="f-catbox" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">${cats().map(c=>`<label class="chk"><input type="checkbox" value="${esc(c)}" ${D.cats.includes(c)?"checked":""}>${esc(c)}</label>`).join("")}</div>
+   <label for="f-cats">새 카테고리 추가 (쉼표로 구분)</label><input id="f-cats" placeholder="예: Review"></div>
   <div class="panel"><h3>대표 이미지</h3>
    <img id="pv" class="prev" src="${esc(D.img||"placeholder.svg")}" alt="">
    <label for="f-img">이미지 URL</label><input id="f-img" value="${esc(D.img)}" placeholder="https://" oninput="$('#pv').src=this.value||'placeholder.svg'"></div>
@@ -138,7 +141,7 @@ function initEditor(){
 async function savePost(status){
  const g=id=>$("#"+id).value.trim();
  if(!g("f-title"))return toast("제목을 입력하세요");
- const p={id:D.id,title:g("f-title"),cats:g("f-cats").split(",").map(s=>s.trim()).filter(Boolean),author:g("f-author")||"Admin",date:g("f-date")||today(),
+ const p={id:D.id,title:g("f-title"),cats:[...new Set([...document.querySelectorAll("#f-catbox input:checked")].map(i=>i.value).concat(g("f-cats").split(",").map(s=>s.trim())).filter(Boolean))],author:g("f-author")||"Admin",date:g("f-date")||today(),
   status,img:g("f-img"),ex:g("f-ex"),body:ED.getMarkdown()};
  try{await FB.setDoc(FB.doc(FB.db,"posts",p.id),p)}catch{return toast("저장 실패: 로그인과 네트워크를 확인하세요")}
  Di<0?C.posts.unshift(p):C.posts[Di]=p;
