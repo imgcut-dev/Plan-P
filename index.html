@@ -21,7 +21,7 @@ header{border-bottom:1px solid var(--line)}
 .bar{display:flex;align-items:center;gap:32px;min-height:64px;flex-wrap:wrap}
 .logo{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:700;letter-spacing:.02em}
 .mark{width:30px;height:30px;border-radius:var(--r3);background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:700;font-size:16px}
-nav{display:flex;gap:26px;flex-grow:1;flex-wrap:wrap}
+nav{display:flex;gap:26px;flex:1 1 0;min-width:0;flex-wrap:wrap}
 nav a{padding:20px 0 17px;font-size:14px;font-weight:500;border-bottom:3px solid transparent}
 nav a.on{color:var(--acct);border-bottom-color:var(--acc)}
 .tools{display:flex;align-items:center;gap:8px}
@@ -100,6 +100,11 @@ h2.sh{font-size:16px;font-weight:700;margin-bottom:14px}
 .tags a{height:32px;padding:0 14px;border-radius:999px;background:var(--surf);font-size:13px;display:flex;align-items:center;color:var(--acct);font-weight:500}
 .pn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:28px}
 .pn a{background:var(--panel);border-radius:var(--r3);padding:16px 18px}.pn small{display:block;font-size:12px;color:var(--mut)}.pn b{font-weight:500}
+/* 글씨 세로 가운데: 측정 결과 한글 라벨은 이미 가운데(±0.5px)이고, 영문 라벨은 약 0.05em 아래로 앉는다. 영문 라벨만 보정한다 */
+.lb{padding-bottom:1px}
+/* 데이터를 받기 전에는 빈 틀 대신 안내만 보여 준다 */
+body:not(.ready) header,body:not(.ready) main,body:not(.ready) footer{visibility:hidden}
+body:not(.ready)::before{content:"불러오는 중…";position:fixed;inset:0;display:grid;place-items:center;color:var(--mut);font-size:14px}
 /* 추천·댓글 (comments.js) */
 .cm{margin-top:40px;border-top:1px solid var(--line);padding-top:24px}
 .cm-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
@@ -233,6 +238,7 @@ function route(){
  gaView();
  $("#nav").innerHTML=C.nav.map(n=>`<a href="${esc(safe(n.url))}" class="${h===n.url||(n.url!=="#/"&&h.startsWith(n.url+"/"))?"on":""}">${esc(n.label)}</a>`).join("");
 }
+setTimeout(()=>document.body.classList.add("ready"),6000); // 불러오기가 오래 걸려도 빈 화면으로 두지 않는다
 (async()=>{
  const qp=new URLSearchParams(location.search);
  C=qp.has("demo")?structuredClone(DEFAULT):await loadCfg(); // ?demo=1 샘플 데이터, ?skin=이름 스킨 미리보기
@@ -246,7 +252,7 @@ function route(){
  $("#logo").textContent=S.name;$("#mk").textContent=(S.name||"P")[0];$("#foot").textContent=S.footer;
  if(gaOn())$("#foot").insertAdjacentHTML("beforeend",`<div style="margin-top:6px;font-size:12px">이 사이트는 방문 통계를 위해 Google Analytics를 사용합니다.</div>`);
  gaInit();gaBind();
- addEventListener("hashchange",route);route();
+ addEventListener("hashchange",route);route();document.body.classList.add("ready");
 })();
 $("#srch").onclick=()=>{$("#q").classList.toggle("on");$("#qi").focus()};
 $("#qi").oninput=e=>{const v=e.target.value.trim();location.hash=v?"#/search/"+enc(v):"#/all"};

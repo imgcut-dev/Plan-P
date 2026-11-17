@@ -19,7 +19,7 @@ html[data-skin=reader] .card h3,html[data-skin=reader] .row h2{font-weight:700}
  html[data-skin=reader] header{position:fixed;left:0;top:0;bottom:0;width:272px;border:0;border-right:1px solid var(--line);overflow:auto;background:var(--bg);z-index:5}
  html[data-skin=reader] header .wrap{max-width:none;margin:0;padding:44px 32px}
  html[data-skin=reader] .bar{flex-direction:column;align-items:flex-start;gap:28px;min-height:0}
- html[data-skin=reader] nav{flex-direction:column;gap:4px;flex-grow:0;overflow:visible}
+ html[data-skin=reader] nav{flex:0 0 auto;flex-direction:column;gap:4px;overflow:visible}
  html[data-skin=reader] nav a{padding:3px 0;border-bottom:1px solid transparent;font-size:15px;font-weight:400}
  html[data-skin=reader] nav a.on{border-bottom-color:var(--ink);color:var(--ink)}
  html[data-skin=reader] .tools{margin-top:4px}
@@ -33,7 +33,7 @@ html[data-skin=studio] body{background:radial-gradient(70% 45% at 8% -5%,#FFE9F3
 html[data-skin=studio] h1,html[data-skin=studio] h2,html[data-skin=studio] h3{letter-spacing:-.02em;font-weight:700}
 html[data-skin=studio] header{border-bottom:0}
 html[data-skin=studio] nav{gap:6px}
-html[data-skin=studio] nav a{padding:7px 14px;border:0;border-radius:999px}
+html[data-skin=studio] nav a{padding:6.5px 14px 7.5px;border:0;border-radius:999px}
 html[data-skin=studio] nav a.on{background:#FDF800;color:var(--ink)}
 html[data-skin=studio] .mark{border-radius:var(--r4)}
 html[data-skin=studio] .chip,html[data-skin=studio] .btn,html[data-skin=studio] .btn-o,html[data-skin=studio] .btn-l,html[data-skin=studio] .tags a{border-radius:999px}
