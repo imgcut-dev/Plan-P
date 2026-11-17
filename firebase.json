@@ -9,6 +9,7 @@
       "design-system/**",
       "CLAUDE.md",
       "docs/**",
+      "DESIGN.md",
       "firestore.rules"
     ]
   },

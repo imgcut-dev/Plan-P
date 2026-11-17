@@ -1,0 +1,50 @@
+/* 스킨: 색·글꼴·모서리를 변수로 바꾼다. 기본(plan-p)은 index.html의 :root 값. 포인트색은 사이트 설정이 덮어쓴다 */
+html[data-skin=journal]{--bg:#FAF8F3;--ink:#2A2622;--mut:#6F675B;--line:#E4DFD2;--surf:#F1EDE2;--panel:#EFE9DB;--pline:#E0D8C5;--tile:#ECE6D6;--tint:#F3EBDA;--hfont:"Noto Serif KR",Georgia,serif;--r1:4px;--r2:4px;--r3:3px;--r4:2px}
+html[data-skin=journal] header{border-bottom:2px solid var(--ink)}
+html[data-skin=journal] .chip,html[data-skin=journal] .tags a,html[data-skin=journal] .pg a{border-radius:3px}
+html[data-skin=journal] .mark{border-radius:3px}
+html[data-skin=dark]{color-scheme:dark;--bg:#14161A;--ink:#E8EAED;--mut:#9AA3AF;--line:#2A2E35;--surf:#101216;--panel:#1C2027;--pline:#2A2F38;--tile:#232830;--tint:#232830}
+html[data-skin=dark] nav a.on{border-bottom-color:var(--acct)}
+html[data-skin=dark] .chip{background:var(--surf)}
+html[data-skin=dark] .chip.on{background:var(--acc);border-color:var(--acc)}
+
+/* reader: 왼쪽 고정 사이드바(900px 이상), 세리프, 가는 선, 각진 모서리 */
+html[data-skin=reader]{--bg:#FCFBF8;--ink:#1B1B1A;--mut:#6A675F;--line:#E4E1D8;--surf:#F5F3EE;--panel:#F3F0E8;--pline:#E4E0D3;--tile:#ECE8DD;--tint:#F0EDE4;--font:"Noto Serif KR",Georgia,serif;--hfont:"Noto Serif KR",Georgia,serif;--r1:2px;--r2:2px;--r3:2px;--r4:1px}
+html[data-skin=reader] header{border-bottom:1px solid var(--line)}
+html[data-skin=reader] .chip,html[data-skin=reader] .tags a,html[data-skin=reader] .pg a,html[data-skin=reader] .mark{border-radius:0}
+html[data-skin=reader] .mark{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+html[data-skin=reader] .btn-o{border-color:var(--ink)}
+html[data-skin=reader] .card h3,html[data-skin=reader] .row h2{font-weight:700}
+@media(min-width:900px){
+ html[data-skin=reader] header{position:fixed;left:0;top:0;bottom:0;width:272px;border:0;border-right:1px solid var(--line);overflow:auto;background:var(--bg);z-index:5}
+ html[data-skin=reader] header .wrap{max-width:none;margin:0;padding:44px 32px}
+ html[data-skin=reader] .bar{flex-direction:column;align-items:flex-start;gap:28px;min-height:0}
+ html[data-skin=reader] nav{flex-direction:column;gap:4px;flex-grow:0;overflow:visible}
+ html[data-skin=reader] nav a{padding:3px 0;border-bottom:1px solid transparent;font-size:15px;font-weight:400}
+ html[data-skin=reader] nav a.on{border-bottom-color:var(--ink);color:var(--ink)}
+ html[data-skin=reader] .tools{margin-top:4px}
+ html[data-skin=reader] main.wrap{margin-left:272px;margin-right:0;max-width:1100px;padding:0 56px}
+ html[data-skin=reader] footer{margin-left:272px}
+}
+
+/* studio: 굵고 큰 제목, 파스텔 그라데이션 바탕, 노란 형광펜, 둥근 버튼 */
+html[data-skin=studio]{--bg:#fff;--ink:#0D0D0D;--mut:#5E5E5E;--line:#E7E7E7;--surf:#F6F6F4;--panel:#FFFBD0;--pline:#EFE9A6;--tile:#F1F1EC;--tint:#F4F4F0;--r1:24px;--r2:18px;--r3:20px;--r4:8px}
+html[data-skin=studio] body{background:radial-gradient(70% 45% at 8% -5%,#FFE9F3 0,transparent 70%),radial-gradient(60% 45% at 95% 0,#E3F7FB 0,transparent 70%),radial-gradient(50% 40% at 60% 110%,#FFFBD0 0,transparent 70%),#fff;background-attachment:fixed}
+html[data-skin=studio] h1,html[data-skin=studio] h2,html[data-skin=studio] h3{letter-spacing:-.02em;font-weight:700}
+html[data-skin=studio] header{border-bottom:0}
+html[data-skin=studio] nav{gap:6px}
+html[data-skin=studio] nav a{padding:7px 14px;border:0;border-radius:999px}
+html[data-skin=studio] nav a.on{background:#FDF800;color:var(--ink)}
+html[data-skin=studio] .mark{border-radius:var(--r4)}
+html[data-skin=studio] .chip,html[data-skin=studio] .btn,html[data-skin=studio] .btn-o,html[data-skin=studio] .btn-l,html[data-skin=studio] .tags a{border-radius:999px}
+html[data-skin=studio] .chip{border-color:#CFCFCF}
+html[data-skin=studio] .chip.on{background:#FDF800;color:var(--ink);border-color:var(--ink)}
+html[data-skin=studio] .btn{background:var(--ink);color:#fff}
+html[data-skin=studio] .btn:hover{background:#FDF800;color:var(--ink)}
+html[data-skin=studio] .btn-o{border-color:var(--ink);color:var(--ink)}
+html[data-skin=studio] .lb{background:#FDF800;color:var(--ink)}
+html[data-skin=studio] .av{background:#FDF800;color:var(--ink)}
+html[data-skin=studio] .head h2,html[data-skin=studio] h2.sh{display:inline-block;background:linear-gradient(transparent 62%,#FDF800 62%)}
+html[data-skin=studio] .pick:hover h3,html[data-skin=studio] .card:hover h3,html[data-skin=studio] .row:hover h2{color:var(--ink);text-decoration:underline;text-decoration-color:#FDF800;text-decoration-thickness:6px;text-underline-offset:-2px}
+html[data-skin=studio] .pick h3{font-size:20px}
+html[data-skin=studio] .art .toastui-editor-contents a{text-decoration:underline;text-decoration-color:#FDF800;text-decoration-thickness:3px}
