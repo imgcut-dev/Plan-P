@@ -12,7 +12,7 @@ function gaInit(){
 let gaTimer;
 function gaView(){
  if(!window.gtag)return;
- const path=gaDec((location.hash||"#/").slice(1)||"/"); // 한글 주소는 읽기 좋게 풀어서 보낸다
+ const path=gaDec((typeof routeHash==="function"?routeHash():(location.hash||"#/")).slice(1)||"/"); // 한글 주소는 읽기 좋게 풀어서 보낸다
  const send=()=>{gtag("event","page_view",{page_location:location.origin+path,page_path:path,page_title:document.title});
   if(path.startsWith("/search/"))gaEvent("search",{search_term:gaDec(path.split("/")[2]||"")})};
  clearTimeout(gaTimer);

@@ -3,6 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AI와 프로덕트 기획을 기록하는 블로그">
+<link rel="canonical" href="https://plan-p-1b255.web.app/">
+<meta property="og:site_name" content="Plan-P">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Plan-P">
+<meta property="og:description" content="AI와 프로덕트 기획을 기록하는 블로그">
+<meta property="og:url" content="https://plan-p-1b255.web.app/">
+<meta property="og:image" content="https://plan-p-1b255.web.app/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <title>Plan-P</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
@@ -34,7 +46,7 @@ nav a.on{color:var(--acct);border-bottom-color:var(--acc)}
 .chips{display:flex;gap:8px;flex-wrap:wrap;padding:24px 0 8px}
 .chip{height:34px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:500;display:flex;align-items:center;border:1px solid var(--line);background:var(--bg)}
 .chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
-.lb{height:22px;padding:0 9px;border-radius:var(--r4);background:var(--bg);color:var(--acct);font-size:11px;font-weight:700;display:flex;align-items:center;position:absolute;left:12px;bottom:12px}
+.lb{height:22px;padding:0 9px;border-radius:var(--r4);background:var(--bg);color:var(--acct);font-size:12px;font-weight:700;display:flex;align-items:center;position:absolute;left:12px;bottom:12px}
 .date{font-size:12px;color:var(--mut)}
 .tag{font-size:12px;color:var(--acct);font-weight:500}
 .panel{background:var(--panel);border-radius:var(--r3);padding:22px}
@@ -64,6 +76,7 @@ h2.sh{font-size:16px;font-weight:700;margin-bottom:14px}
 .more{display:flex;justify-content:center;padding-top:36px}
 /* list */
 .crumb{font-size:13px;color:var(--mut);margin:32px 0 8px}
+.crumb a,.head a{display:inline-block;padding:4px 7px;margin:-4px -7px} /* 누르는 영역을 24px 이상으로 (보이는 크기는 그대로) */
 .lh{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;padding-bottom:20px;border-bottom:1px solid var(--line)}
 .lh h1{font-size:30px;line-height:1.3}.lh p{color:var(--mut);font-size:14px}
 .cols{display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start}
@@ -202,7 +215,7 @@ function post(p){
  <div class="cols"><article class="art">
   ${p.cats.map(c=>`<a class="chip-s" href="#/cat/${enc(c)}">${esc(c)}</a>`).join("")}
   <h1>${esc(p.title)}</h1>
-  <div class="meta"><span class="av">${esc((p.author||"A")[0])}</span><b style="color:var(--ink);font-weight:500">${esc(p.author)}</b><span>${fmt(p.date)}</span></div>
+  <div class="meta"><span class="av">${esc((p.author||"A")[0])}</span><b style="color:var(--ink);font-weight:500">${esc(p.author)}</b><span>${fmt(p.date)}</span><button class="btn-l shr" id="shr" type="button" style="margin-left:auto">링크 복사</button></div>
   <div class="hero"><img src="${esc(p.img||"placeholder.svg")}" alt=""></div>
   <p class="lead">${esc(p.ex)}</p><div id="pbody"></div>
   ${(p.tags||[]).length?`<div class="tags">${p.tags.map(t=>`<a href="#/tag/${enc(t)}">#${esc(t)}</a>`).join("")}</div>`:""}
@@ -222,9 +235,18 @@ function showBody(md){
  document.head.insertAdjacentHTML("beforeend",`<link rel="stylesheet" href="${CDN}toastui-editor-viewer.min.css">`);
  const s=document.createElement("script");s.src=CDN+"toastui-editor-viewer.min.js";s.onload=go;document.head.append(s);
 }
+// 검색·공유용 메타를 화면에 맞게 바꾼다 (JS를 실행하는 검색엔진용). 공유 미리보기는 글 전용 주소(/post/글ID/)의 정적 메타를 본다
+const setM=(sel,attr,v)=>{const e=document.querySelector(sel);if(e)e.setAttribute(attr,v)};
+const shareUrl=p=>`${SITE_URL}/post/${enc(p.id)}/`;
+function seo(p){
+ const url=p?shareUrl(p):SITE_URL+"/",t=p?p.title+" — "+C.site.name:C.site.name,d=(p&&p.ex)||SITE_DESC;
+ const img=p&&/^https?:\/\//.test(p.img||"")?p.img:SITE_URL+"/og-default.png";
+ setM("meta[name=description]","content",d);setM("link[rel=canonical]","href",url);
+ for(const [k,v] of [["og:title",t],["og:description",d],["og:url",url],["og:image",img],["og:type",p?"article":"website"]])setM(`meta[property="${k}"]`,"content",v);
+}
 function route(){
  gaReadStop();
- const h=location.hash||"#/",a=h.split("/").map(decodeURIComponent),k=a[1];
+ const h=routeHash(),a=h.split("/").map(decodeURIComponent),k=a[1];
  let html,on=null;
  document.title=C.site.name;
  if(k==="post"&&by(a[2])){const p=by(a[2]);html=post(p);document.title=p.title+" — "+C.site.name}
@@ -234,7 +256,8 @@ function route(){
  else if(k==="search"){const q=a[2]||"";html=listView(`검색: ${q}`,posts.filter(p=>(p.title+p.ex+p.cats+(p.tags||[])).toLowerCase().includes(q.toLowerCase())),+a[3]||1,"#/search/"+enc(q),null)}
  else html=home();
  $("#app").innerHTML=html;scrollTo(0,0);
- if(k==="post"&&by(a[2])){showBody(by(a[2]).body);gaRead(by(a[2]).id);import("./comments.js").then(m=>m.mount($("#cmt"),by(a[2]).id)).catch(e=>console.warn("댓글 로드 실패",e))}
+ if(k==="post"&&by(a[2])){const sp=by(a[2]);$("#shr").onclick=async()=>{const u=shareUrl(sp);try{await navigator.clipboard.writeText(u);$("#shr").textContent="복사했습니다"}catch{prompt("링크를 복사하세요",u)}gaEvent("share",{method:"copy_link",content_type:"post",item_id:sp.id})};showBody(by(a[2]).body);gaRead(by(a[2]).id);import("./comments.js").then(m=>m.mount($("#cmt"),by(a[2]).id)).catch(e=>console.warn("댓글 로드 실패",e))}
+ seo(k==="post"&&by(a[2])?by(a[2]):null);
  gaView();
  $("#nav").innerHTML=C.nav.map(n=>`<a href="${esc(safe(n.url))}" class="${h===n.url||(n.url!=="#/"&&h.startsWith(n.url+"/"))?"on":""}">${esc(n.label)}</a>`).join("");
 }

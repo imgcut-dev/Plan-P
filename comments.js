@@ -33,13 +33,13 @@ export function mount(el,pid){
  };
  function draw(){
   const top=cs.filter(c=>!c.parentId).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-  const keep=el.querySelector(".cm-f:not([data-pa]) textarea")?.value||"";
+  const keep=el.querySelector('.cm-f[data-pa=""] textarea')?.value||"";
   el.innerHTML=`<section class="cm" aria-label="추천과 댓글">
    <div class="cm-top"><button class="cm-k cm-big${mine(null)?" on":""}" data-a="like" aria-pressed="${mine(null)}">♥ 추천 ${L(null).length}</button><h2 class="cm-h2">댓글 ${cs.length}</h2>${U?`<button class="cm-out" data-a="out">로그아웃</button>`:""}</div>
    ${el.dataset.err?`<p class="cm-m">댓글을 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요.</p>`:""}
    ${form("","댓글을 입력하세요 (최대 "+MAX+"자)")}
    <ul class="cm-l">${top.map(c=>item(c)).join("")||'<li class="cm-m">첫 댓글을 남겨 보세요.</li>'}</ul></section>`;
-  const t=el.querySelector(".cm-f:not([data-pa]) textarea");if(t&&keep)t.value=keep;
+  const t=el.querySelector('.cm-f[data-pa=""] textarea');if(t&&keep)t.value=keep;
  }
  async function like(cid){
   if(!U)return login();

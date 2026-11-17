@@ -1,0 +1,38 @@
+// SEO 생성기(tools/build-seo.mjs)와 화면의 메타 갱신(seo, routeHash, 링크 복사) 테스트 — 네트워크·파일 쓰기 없음
+import assert from "node:assert/strict";
+import {tc,loadSite,sleep,text,plain} from "./lib.mjs";
+import {build,renderPost,renderSitemap,mdText,siteUrl,siteDesc} from "../tools/build-seo.mjs";
+import {readFileSync} from "node:fs";
+import {ROOT} from "./lib.mjs";
+import path from "node:path";
+
+const site={name:"Plan-P"},URL=siteUrl();
+const mk=(id,o={})=>({id,title:"제목 "+id,ex:"요약 "+id,body:"",cats:["A"],tags:[],author:"작성자",date:"2026-01-02",status:"published",img:"https://img.example/"+id+".jpg",...o});
+const meta=(h,k)=>(h.match(new RegExp(`<meta (?:property|name)="${k}" content="([^"]*)"`))||[])[1];
+const run=async posts=>(await build({posts,site,write:false}));
+const page=async(p)=>(await run([p])).pages[0].html;
+
+export default async function(){
+ await tc("TC-S-101",async()=>{const r=await run([mk("a"),mk("b")]);const [a,b]=r.pages.map(p=>p.html);assert.notEqual(meta(a,"og:title"),meta(b,"og:title"));assert.notEqual(meta(a,"og:image"),meta(b,"og:image"));assert.equal(meta(a,"og:url"),URL+"/post/a/");assert.equal(meta(b,"og:url"),URL+"/post/b/");assert.equal(meta(a,"og:image"),"https://img.example/a.jpg");assert.equal(meta(a,"og:type"),"article");assert.ok(a.includes("<title>제목 a — Plan-P</title>"));return "글 a/b의 제목·주소·이미지가 서로 다름"});
+ await tc("TC-S-102",async()=>{const none=await page(mk("n",{img:""}));assert.equal(meta(none,"og:image"),URL+"/og-default.png");assert.ok(none.includes('og:image:width'));const rel=await page(mk("r",{img:"placeholder.svg"}));assert.equal(meta(rel,"og:image"),URL+"/og-default.png","상대 주소는 기본 이미지로");const own=await page(mk("o"));assert.ok(!own.includes("og:image:width"),"글 이미지는 크기를 모르므로 크기 태그를 뺌")});
+ await tc("TC-S-103",async()=>{const h=await page(mk("x",{title:'<script>alert(1)</script>"&',ex:'"><img src=x onerror=1>',author:"</script><b>",tags:["<i>t</i>"]}));assert.ok(!h.includes("<script>alert"));assert.ok(!h.includes('"><img src=x'));const ld=h.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1];assert.doesNotThrow(()=>JSON.parse(ld));assert.ok(!ld.includes("</script>")&&!ld.includes("<"),"JSON-LD가 script를 닫을 수 없음");assert.ok(!h.includes("<i>t</i>"))});
+ await tc("TC-S-104",async()=>{const h=await page(mk("m",{body:"# 큰제목\n\n본문 **굵게** [링크](http://x.y) ![그림](a.png)\n\n```js\ncode()\n```\n\n둘째 문단"}));const main=h.match(/<main class="wrap" id="app">([\s\S]*?)<\/main>/)[1];assert.ok(main.includes("<h1>제목 m</h1>"));assert.ok(main.includes("본문 굵게 링크"));assert.ok(main.includes("둘째 문단"));assert.ok(!main.includes("**")&&!main.includes("a.png")&&!main.includes("code()")&&!main.includes("](")); return text({textContent:main.replace(/<[^>]+>/g," ")}).slice(0,60)});
+ await tc("TC-S-105",async()=>{const r=await run([mk("old",{date:"2025-01-01"}),mk("new",{date:"2026-05-05"}),mk("한글"),mk("../x"),mk("ok2",{title:""})]);const sm=r.sitemap;assert.ok(sm.startsWith("<?xml"));const locs=[...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1]);assert.deepEqual(plain(locs),[URL+"/",URL+"/post/new/",URL+"/post/old/"],"홈 → 최신순 글만");assert.ok(sm.includes("<lastmod>2026-05-05</lastmod>"));assert.ok(!sm.includes("admin"));return locs.join(" ")});
+ await tc("TC-S-106",async()=>{const r=await run([mk("한글"),mk("../x"),mk("a b"),mk("ok")]);assert.deepEqual(plain(r.skipped),["한글","../x","a b"]);assert.equal(r.pages.length,1)});
+ await tc("TC-S-107",async()=>{const a=await page(mk("d1",{ex:"",body:"본문에서 가져온 설명입니다."}));assert.equal(meta(a,"description"),"본문에서 가져온 설명입니다.");const b=await page(mk("d2",{ex:"",body:""}));assert.equal(meta(b,"description"),siteDesc());const c=await page(mk("d3",{ex:"가".repeat(300)}));assert.ok(meta(c,"description").length<=160);assert.ok(meta(c,"description").endsWith("…"))});
+ await tc("TC-S-108",async()=>{const h=await page(mk("c1"));assert.ok(h.includes('<base href="/">'));assert.ok(h.includes('<link rel="canonical" href="'+URL+'/post/c1/">'));assert.ok(h.includes("<script src=\"data.js\">"),"사이트 스크립트 유지(사람이 열면 실제 화면)");assert.ok(h.includes('name="twitter:card"'));assert.ok(h.includes('property="article:published_time" content="2026-01-02"'))});
+ await tc("TC-S-109",async()=>{const r=await run([]);assert.equal(r.pages.length,0);await assert.rejects(()=>build({posts:[],site,write:true}),/발행된 글이 없어/);return "글이 0개면 기존 페이지를 지우지 않고 중단"});
+ await tc("TC-S-110",async()=>{assert.equal(mdText(null),"");assert.equal(mdText("**a** _b_ `c`"),"a b c")});
+
+ // ---- 사이트(jsdom): routeHash, seo(), 링크 복사, GA ----
+ const w=await loadSite({gtag:true});
+ const $=s=>w.document.querySelector(s);
+ const go=async h=>{w.location.hash=h;await sleep(60)};
+ await tc("TC-S-111",()=>{const rh=()=>w.eval("routeHash()");assert.equal(rh(),"#/");w.history.pushState(null,"","/post/abc/");assert.equal(rh(),"#/post/abc");w.history.pushState(null,"","/post/abc");assert.equal(rh(),"#/post/abc");w.history.pushState(null,"","/post/abc/#/cat/X");assert.equal(rh(),"#/cat/X","해시가 있으면 해시가 우선");w.history.pushState(null,"","/other/");assert.equal(rh(),"#/");w.history.pushState(null,"","/index.html?demo=1")});
+ await tc("TC-S-112",async()=>{await go("#/post/editor-test");assert.equal($('meta[name=description]').content,w.$$("posts").find(p=>p.id==="editor-test").ex);assert.equal($('link[rel=canonical]').href,URL+"/post/editor-test/");assert.equal($('meta[property="og:title"]').content,"에디터 테스트 — Plan-P");assert.equal($('meta[property="og:type"]').content,"article");assert.ok($('meta[property="og:image"]').content.startsWith("https://picsum.photos/"));await go("#/");assert.equal($('link[rel=canonical]').href,URL+"/");assert.equal($('meta[property="og:image"]').content,URL+"/og-default.png");assert.equal($('meta[name=description]').content,siteDesc());assert.equal($('meta[property="og:type"]').content,"website")});
+ await tc("TC-S-113",async()=>{await go("#/post/editor-test");let copied=null;Object.defineProperty(w.navigator,"clipboard",{value:{writeText:async t=>{copied=t}},configurable:true});w.__calls.length=0;$("#shr").click();await sleep(60);assert.equal(copied,URL+"/post/editor-test/");assert.equal($("#shr").textContent,"복사했습니다");const e=w.__calls.filter(c=>c[1]==="share");assert.equal(e.length,1);assert.deepEqual(plain(e[0][2]),{method:"copy_link",content_type:"post",item_id:"editor-test"})});
+ await tc("TC-S-114",async()=>{await go("#/post/editor-test");w.document.querySelector("#shr");let prompted=null;Object.defineProperty(w.navigator,"clipboard",{value:{writeText:async()=>{throw new Error("denied")}},configurable:true});w.prompt=t=>{prompted=t};$("#shr").click();await sleep(60);assert.ok(prompted,"복사가 막히면 주소를 보여 주는 창으로 대신함")});
+ await tc("TC-S-115",async()=>{w.history.pushState(null,"","/post/editor-test/");w.__calls.length=0;w.eval("gaView()");const pv=w.__calls.find(c=>c[1]==="page_view");assert.equal(pv[2].page_path,"/post/editor-test");w.history.pushState(null,"","/index.html?demo=1")});
+ await tc("TC-S-116",()=>{const ix=readFileSync(path.join(ROOT,"index.html"),"utf8");for(const k of ["description","og:title","og:description","og:image","og:url","og:type"])assert.ok(new RegExp(`(?:name|property)="${k}"`).test(ix),k);assert.ok(/rel="canonical"/.test(ix)&&/twitter:card/.test(ix));assert.ok(/<meta name="robots" content="noindex">/.test(readFileSync(path.join(ROOT,"admin.html"),"utf8")),"관리자는 색인 제외");const rb=readFileSync(path.join(ROOT,"robots.txt"),"utf8");assert.ok(rb.includes("Disallow: /admin.html")&&rb.includes("Sitemap: "+URL+"/sitemap.xml"))});
+ w.close();
+}

@@ -1,3 +1,8 @@
+// 공유·검색용 대표 주소와 설명. 자체 도메인을 쓰면 SITE_URL만 바꾼다 (tools/build-seo.mjs도 이 값을 읽는다)
+const SITE_URL="https://plan-p-1b255.web.app";
+const SITE_DESC="AI와 프로덕트 기획을 기록하는 블로그";
+// 화면 주소: 보통 #/… 이고, 글 전용 주소(/post/글ID/)로 열면 그 글의 #/post/글ID 로 본다
+const routeHash=()=>location.hash||(/^\/post\/[^/]+\/?$/.test(location.pathname)?"#/post/"+location.pathname.split("/")[2]:"#/");
 // 사이트 데이터 로더. Firestore(site/config + posts)에서 읽고, 실패하거나 비어 있으면 DEFAULT
 const P=[ // id,title,cats,date,author,excerpt,img seed
 ["when-you-tell-them-the-truth","When you tell them the truth",["Opinion"],"Isabella","Ei mei scripta intellegat. Verear voluptaria eam at, consul putent eu vel. Pro saepe maluisset ne, audire maiorum forensibus eos et. Diceret detraxit vis at. Eum et iidque tollit assentior, ullum soleat usu id.","street-man"],

@@ -1,0 +1,66 @@
+{
+ "ranAt": "2026-11-17T18:00:00+09:00",
+ "source": "내장 브라우저(iframe 폭 320/375/768px, 5스킨×6화면) 및 사용자 확인",
+ "results": [
+  {
+   "id": "TC-M-001",
+   "result": "Pass",
+   "actual": "5스킨 × 6화면을 375px에서 측정: 가로 스크롤 0건 (30화면)"
+  },
+  {
+   "id": "TC-M-002",
+   "result": "Pass",
+   "actual": "375px 30화면: 폭을 벗어나는 요소 0개"
+  },
+  {
+   "id": "TC-M-003",
+   "result": "Pass",
+   "actual": "최초 측정에서 Fail(30화면 모두 '홈' 12×19, '글 목록' 40×19, '전체 보기' 51×21px) → DEF-002 수정(누르는 영역 확대) 후 plan-p·reader 12화면 재측정: 24px 미만 0개"
+  },
+  {
+   "id": "TC-M-004",
+   "result": "Pass",
+   "actual": "최초 측정 최소 글자 11px(카테고리 라벨) Fail → DEF-003 수정(12px) 후 재측정 최소 12px"
+  },
+  {
+   "id": "TC-M-005",
+   "result": "Pass",
+   "actual": "375/320/768px 90화면 모두 상단 메뉴가 한 줄 가로 스크롤(scrollWidth>clientWidth), 문서 가로 넘침 없음"
+  },
+  {
+   "id": "TC-M-006",
+   "result": "Pass",
+   "actual": "320px 30화면: 가로 스크롤 0건"
+  },
+  {
+   "id": "TC-M-007",
+   "result": "Pass",
+   "actual": "320px 30화면: 폭을 벗어나는 요소 0개"
+  },
+  {
+   "id": "TC-M-008",
+   "result": "Pass",
+   "actual": "768px 30화면: 가로 스크롤 0건"
+  },
+  {
+   "id": "TC-M-009",
+   "result": "Pass",
+   "actual": "768px 30화면: 폭을 벗어나는 요소 0개"
+  },
+  {
+   "id": "TC-M-010",
+   "result": "Pass",
+   "actual": "reader 스킨 375/768px: 헤더가 위쪽 막대(높이 78px), 고정 사이드바 아님, 넘침 없음"
+  },
+  {
+   "id": "TC-M-011",
+   "result": "Pass",
+   "actual": "375px 글 화면 5스킨: 댓글 영역 포함 폭을 넘는 요소 0개"
+  },
+  {
+   "id": "TC-X-001",
+   "result": "Pass",
+   "actual": "사용자 확인: '정상 작동하네'(운영 사이트에서 댓글·답글·추천)"
+  }
+ ]
+}

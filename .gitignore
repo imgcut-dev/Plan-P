@@ -69,3 +69,7 @@ node_modules/
 .dataconnect
 firestore.rules
 .DS_Store
+
+# build-seo.mjs가 만드는 파일 (배포 때 매번 새로 만든다)
+/post/
+/sitemap.xml

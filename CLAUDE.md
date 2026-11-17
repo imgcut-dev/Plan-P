@@ -17,7 +17,7 @@
 - 디자인: 한 스킨 안에서 포인트 색 하나, 그림자·그라데이션·광고 없음. 상세는 `DESIGN.md`.
 
 ## 배포
-- 순서: 로컬에서 확인 → 커밋·푸시 → `firebase deploy --only hosting`. GitHub 푸시와 호스팅 배포는 **별개**다. 요청받았을 때만 한다.
+- 순서: 로컬에서 확인 → 커밋·푸시 → `node tools/build-seo.mjs`(글 공유 페이지와 sitemap 생성) → `firebase deploy --only hosting`. 글을 발행·수정했다면 생성을 빼먹지 않는다. GitHub 푸시와 호스팅 배포는 **별개**다. 요청받았을 때만 한다.
 - `firebase.json` ignore(`**/.*/**`, `design-system/**`, `docs/**`, `CLAUDE.md`, `firestore.rules`)는 지우지 않는다. 배포 후 `/.git/config`, `/firestore.rules`가 404인지 확인한다.
 
 ## 문서 안내
@@ -28,6 +28,7 @@
 | `CLAUDE.md` | 이 프로젝트에서 Claude가 지킬 규칙, 구조, 배포 순서. 세션 시작 때 자동으로 읽힌다 | 구조, 규칙, 배포 방식이 바뀔 때 |
 | `DESIGN.md` | 디자인 원칙, 색·글꼴·간격 값, 스킨 규칙 (정본 값은 `design-system/tokens.json`) | 디자인 규칙이 바뀔 때, 새 스킨을 추가할 때 |
 | `docs/analytics-events.md` | GA4 이벤트 이름·파라미터 규칙표, GA에 등록할 맞춤 측정기준 | 이벤트를 추가하거나 고칠 때 (이름은 이 표를 먼저 고친다) |
+| `docs/test/` + `tests/` | 테스트 케이스(`cases.py`), 자동 결과, 엑셀(`test-cases.xlsx`), HTML 보고서(`report.html`). 실행: `cd tests && npm i && node run.mjs`, 이어서 `python3 docs/test/build.py` | 기능을 추가·수정한 뒤, 배포 전 |
 | `docs/decisions.md` | 정한 것과 이유, 날짜. 새 결정은 맨 위에 추가 | 정책이나 방향을 정한 **그 자리에서** |
 | `docs/failures/주제-영문.md` | 막혔던 일 / 원인 / 푼 방법 / 다시 안 겪으려면. 주제마다 파일 하나, 목록은 `README.md` | 막혔다가 푼 **직후** |
 

@@ -220,7 +220,7 @@ function write(){
    <label for="f-tag">태그 입력</label><input id="f-tag" list="dl-tags" placeholder="입력하고 Enter 또는 쉼표" onkeydown="tagKey(event)" onblur="addTag(this.value);this.value=''"></div>
   <div class="panel"><h3>대표 이미지</h3>
    <img id="pv" class="prev" src="${esc(D.img||"placeholder.svg")}" alt="">
-   <label for="f-img">이미지 URL</label><input id="f-img" value="${esc(D.img)}" placeholder="https://" oninput="$('#pv').src=this.value||'placeholder.svg'"></div>
+   <label for="f-img">이미지 URL</label><input id="f-img" value="${esc(D.img)}" placeholder="https://" oninput="$('#pv').src=this.value||'placeholder.svg'"><div class="lead" style="margin:6px 0 0;font-size:12px">이 이미지가 링크를 공유할 때 썸네일로 쓰입니다. https 주소, 가로 1200 세로 630 정도의 이미지를 권장합니다. 공유 미리보기는 사이트를 배포한 뒤에 반영됩니다.</div></div>
  </aside></div>`;
 }
 // 본문 에디터: TOAST UI Editor(NHN, MIT). 마크다운으로 저장. 이미지는 URL만 허용(Firebase Storage 연결 시 업로드 훅 교체)

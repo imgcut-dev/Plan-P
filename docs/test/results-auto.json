@@ -1,0 +1,770 @@
+{
+ "ranAt": "2026-11-17T08:30:47.790Z",
+ "results": [
+  {
+   "id": "TC-U-001",
+   "result": "Pass",
+   "actual": "&lt;a href=&quot;x&quot; onclick=&#39;y&#39;&gt;&amp;"
+  },
+  {
+   "id": "TC-U-002",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-003",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-004",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-005",
+   "result": "Pass",
+   "actual": "2026년 11월 17일"
+  },
+  {
+   "id": "TC-U-006",
+   "result": "Pass",
+   "actual": "&lt;b&gt;x&lt;/b&gt;"
+  },
+  {
+   "id": "TC-U-007",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-008",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-009",
+   "result": "Pass",
+   "actual": "스크립트·이미지 태그가 글자로 바뀜"
+  },
+  {
+   "id": "TC-U-010",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-011",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-012",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-013",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-014",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-015",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-016",
+   "result": "Pass",
+   "actual": "20개 글 검사"
+  },
+  {
+   "id": "TC-U-017",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-018",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-019",
+   "result": "Pass",
+   "actual": "Firestore를 못 읽으면 샘플 데이터 20개"
+  },
+  {
+   "id": "TC-U-020",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-021",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-022",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-023",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-024",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-025",
+   "result": "Pass",
+   "actual": "{\"page_location\":\"https://plan-p-1b255.web.app/post/abc\",\"page_path\":\"/post/abc\",\"page_title\":\"T\"}"
+  },
+  {
+   "id": "TC-U-026",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-027",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-028",
+   "result": "Pass",
+   "actual": "1.2초 뒤 page_view + search(테스트) 각 1회"
+  },
+  {
+   "id": "TC-U-029",
+   "result": "Pass",
+   "actual": "연속 입력 3번 → search 1회(abc)"
+  },
+  {
+   "id": "TC-U-030",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-031",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-032",
+   "result": "Pass",
+   "actual": "제목순: b,a,c"
+  },
+  {
+   "id": "TC-U-033",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-034",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-035",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-036",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-037",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-038",
+   "result": "Pass",
+   "actual": "23개 → 10/10/3"
+  },
+  {
+   "id": "TC-U-039",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-040",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-041",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-042",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-043",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-044",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-045",
+   "result": "Pass",
+   "actual": "일상,기록,메모,이야기"
+  },
+  {
+   "id": "TC-U-046",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-047",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-048",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-U-049",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-001",
+   "result": "Pass",
+   "actual": "섹션 순서: chips → picks → feature → latest"
+  },
+  {
+   "id": "TC-I-002",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-003",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-004",
+   "result": "Pass",
+   "actual": "에디터 테스트 — Plan-P"
+  },
+  {
+   "id": "TC-I-005",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-006",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-007",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-008",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-009",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-010",
+   "result": "Pass",
+   "actual": "전체 20개 → 4페이지"
+  },
+  {
+   "id": "TC-I-011",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-012",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-013",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-014",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-015",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-016",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-017",
+   "result": "Pass",
+   "actual": "data-skin=journal, 포인트 #B18443"
+  },
+  {
+   "id": "TC-I-018",
+   "result": "Pass",
+   "actual": "data-skin=dark, 포인트 #4F46E5"
+  },
+  {
+   "id": "TC-I-019",
+   "result": "Pass",
+   "actual": "data-skin=reader, 포인트 #1B1B1A"
+  },
+  {
+   "id": "TC-I-020",
+   "result": "Pass",
+   "actual": "data-skin=studio, 포인트 #0D0D0D"
+  },
+  {
+   "id": "TC-I-021",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-030",
+   "result": "Pass",
+   "actual": "{\"page_location\":\"http://localhost/post/editor-test\",\"page_path\":\"/post/editor-test\",\"page_title\":\"에디터 테스트 — Plan-P\"}"
+  },
+  {
+   "id": "TC-I-031",
+   "result": "Pass",
+   "actual": "{\"category\":\"Business\",\"source\":\"menu\"}"
+  },
+  {
+   "id": "TC-I-032",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-033",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-034",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-035",
+   "result": "Pass",
+   "actual": "{\"content_type\":\"home_section\",\"content_id\":\"latest\",\"post_id\":\"editor-test\"}"
+  },
+  {
+   "id": "TC-I-036",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-037",
+   "result": "Pass",
+   "actual": "25/50/75/100 각 1회"
+  },
+  {
+   "id": "TC-I-038",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-039",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-101",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-102",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-103",
+   "result": "Pass",
+   "actual": "{\"uid\":\"u1\",\"name\":\"홍길동\",\"photo\":null,\"text\":\"안녕하세요\",\"createdAt\":{\"seconds\":1794904242},\"parentId\":null,\"status\":\"visible\"}"
+  },
+  {
+   "id": "TC-I-104",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-105",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-106",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-107",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-108",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-109",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-110",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-111",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-112",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-113",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-114",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-115",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-116",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-117",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-118",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-119",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-120",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-121",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-122",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-123",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-201",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-202",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-203",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-204",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-205",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-206",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-207",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-208",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-209",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-210",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-211",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-212",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-213",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-214",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-215",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-220",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-221",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-222",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-223",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-224",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-225",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-226",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-I-227",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-101",
+   "result": "Pass",
+   "actual": "글 a/b의 제목·주소·이미지가 서로 다름"
+  },
+  {
+   "id": "TC-S-102",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-103",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-104",
+   "result": "Pass",
+   "actual": "제목 m 요약 m 큰제목 본문 굵게 링크 둘째 문단"
+  },
+  {
+   "id": "TC-S-105",
+   "result": "Pass",
+   "actual": "https://plan-p-1b255.web.app/ https://plan-p-1b255.web.app/post/new/ https://plan-p-1b255.web.app/post/old/"
+  },
+  {
+   "id": "TC-S-106",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-107",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-108",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-109",
+   "result": "Pass",
+   "actual": "글이 0개면 기존 페이지를 지우지 않고 중단"
+  },
+  {
+   "id": "TC-S-110",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-111",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-112",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-113",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-114",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-115",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-116",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-D-001",
+   "result": "Pass",
+   "actual": "/index.html 200, /admin.html 200, /comments.js 200, /analytics.js 200, /skins.css 200, /data.js 200, /fb.js 200"
+  },
+  {
+   "id": "TC-D-002",
+   "result": "Pass",
+   "actual": "/.git/config 404, /firestore.rules 404, /docs/decisions.md 404, /DESIGN.md 404, /CLAUDE.md 404, /firebase.json 404, /tests/package.json 404, /design-system/README.md 404"
+  },
+  {
+   "id": "TC-D-003",
+   "result": "Pass",
+   "actual": "기대한 대로 동작"
+  },
+  {
+   "id": "TC-S-001",
+   "result": "Fail",
+   "actual": "<head>에 meta description이 없음"
+  },
+  {
+   "id": "TC-S-002",
+   "result": "Fail",
+   "actual": "없는 og 태그: og:title, og:description, og:image, og:url, og:type"
+  },
+  {
+   "id": "TC-S-003",
+   "result": "Fail",
+   "actual": "사이트맵에 글 주소가 2개 이상 있어야 함 (0개)"
+  },
+  {
+   "id": "TC-S-004",
+   "result": "Fail",
+   "actual": "홈에 twitter:card 없음"
+  },
+  {
+   "id": "TC-S-005",
+   "result": "Fail",
+   "actual": "홈에 canonical 없음"
+  },
+  {
+   "id": "TC-S-006",
+   "result": "Fail",
+   "actual": "robots.txt 404"
+  },
+  {
+   "id": "TC-S-007",
+   "result": "Fail",
+   "actual": "글 전용 주소가 없음"
+  },
+  {
+   "id": "TC-S-008",
+   "result": "Fail",
+   "actual": "글 페이지 없음"
+  }
+ ]
+}
