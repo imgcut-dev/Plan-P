@@ -11,6 +11,7 @@ export default async function(){
  await tc("TC-D-002",async()=>{const out=[];for(const p of ["/.git/config","/firestore.rules","/docs/decisions.md","/DESIGN.md","/CLAUDE.md","/firebase.json","/tests/package.json","/design-system/README.md"]){const r=await get(p);out.push(p+" "+r.status);assert.equal(r.status,404,p+" 이(가) 공개됨: "+r.status)}return out.join(", ")});
  await tc("TC-D-003",async()=>{const r=await get("/없는페이지");assert.equal(r.status,404)});
  await tc("TC-D-004",async()=>{const r=await get("/post/zzz-not-built/");assert.equal(r.status,200,"아직 만들지 않은 글 주소가 "+r.status+" (사이트 화면으로 열려야 함)");assert.ok(r.text.includes('id="app"')&&r.text.includes("document.write"),"index.html이 대신 내려오고 기준 주소 보정 스크립트가 있어야 함")});
+ await tc("TC-D-005",async()=>{const out=[];for(const [f,t] of [["/favicon.ico","image"],["/favicon.svg","svg"],["/favicon-32.png","png"],["/apple-touch-icon.png","png"]]){const r=await fetch(BASE+f);const ct=r.headers.get("content-type")||"";out.push(f+" "+r.status+" "+ct);assert.equal(r.status,200,f+" "+r.status);assert.ok(ct.includes(t),f+" 형식이 "+ct)}const h=(await get("/index.html")).text;assert.ok(h.includes('rel="icon"'),"운영 index.html에 파비콘 링크 없음");return out.join(", ")});
 
  const home=(await get("/index.html")).text;
  // 운영 사이트맵에서 글 주소 두 개를 골라, 크롤러처럼 JS 없이 받은 HTML을 비교한다

@@ -206,6 +206,7 @@ add(
 ("TC-D-002","배포","호스팅 보안","숨겨야 할 파일은 404","운영 배포됨","/.git/config, /firestore.rules, /docs/decisions.md, /DESIGN.md, /CLAUDE.md, /tests/package.json 요청","모두 404","P1","자동(curl)"),
 ("TC-D-003","배포","호스팅 보안","존재하지 않는 주소는 404.html","-","/없는페이지 요청","404","P3","자동(curl)"),
 ("TC-D-004","배포","호스팅","아직 생성하지 않은 글 주소도 사이트 화면으로 열린다","운영 배포됨","/post/zzz-not-built/ 요청","200, index.html과 기준 주소 보정 스크립트","P1","자동(curl)"),
+("TC-D-005","배포","호스팅","파비콘 파일이 운영에서 제공된다","운영 배포됨","/favicon.ico, .svg, -32.png, /apple-touch-icon.png 요청","모두 200과 알맞은 형식, 운영 index.html에 파비콘 링크","P1","자동(curl)"),
 )
 
 # ---------------- SEO ----------------
@@ -245,6 +246,7 @@ add(
 ("TC-S-123","SEO","화면","해시 링크는 현재 주소 기준으로 화면만 바꾼다(기준 주소가 루트여도)","-","메뉴 클릭, Ctrl+클릭","기본 동작을 막고 화면 전환, Ctrl+클릭은 새 탭 동작 유지","P1",SEOG),
 ("TC-S-124","SEO","화면","없는 글 주소는 noindex","/post/없는글/","화면 그림","robots noindex 추가, 정상 글에서는 제거","P2",SEOG),
 ("TC-S-125","SEO","설정","호스팅 설정: /post/** 대체 응답, 제외 목록","-","index.html, firebase.json 확인","글 주소 보정 스크립트, rewrites, tests/tools/docs 제외","P1",SEOG),
+("TC-S-126","SEO","파비콘","파비콘 파일과 링크가 사이트·관리자·글 페이지에 있다","-","index.html, admin.html, 생성된 글 페이지, 아이콘 파일 확인","svg·ico(16/32/48)·png(32)·apple-touch-icon(180) 파일, 링크와 theme-color가 모두 존재","P2",SEOG),
 )
 
 # ---------------- 수동 ----------------
