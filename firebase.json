@@ -12,7 +12,9 @@
       "tests/**",
       "tools/**",
       "DESIGN.md",
-      "firestore.rules"
+      "firestore.rules",
+      "weather.html",
+      "cat.html"
     ],
     "rewrites": [
       {

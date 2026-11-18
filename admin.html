@@ -367,6 +367,8 @@ function design(){
  <div class="two"><div><label>포인트 색 (버튼·선택)</label><div class="sw"><input type="color" value="${S.accent}" oninput="S_('accent',this.value)"><code>${S.accent}</code></div></div>
  <div><label>링크·라벨 글자색</label><div class="sw"><input type="color" value="${S.accentText||S.accent}" oninput="S_('accentText',this.value)"><code>${S.accentText||S.accent}</code></div></div></div>
  <label for="d2">푸터 문구</label><input id="d2" value="${esc(S.footer)}" oninput="S_('footer',this.value)">
+ <label for="d3">날씨 API 키 (OpenWeatherMap)</label><input id="d3" value="${esc(S.weatherKey||"")}" placeholder="home.openweathermap.org > API keys" autocomplete="off" oninput="S_('weatherKey',this.value.trim())">
+ <div class="note" style="margin-top:6px">푸터의 날씨 표시에 쓰입니다. 비워 두면 날씨를 보이지 않습니다. 이 값은 사이트 설정에 저장되고 <b>방문자 브라우저에서도 볼 수 있습니다</b>. 날씨 전용 무료 키만 넣으세요. 키 발급 후 활성화까지 최대 2시간이 걸릴 수 있습니다.</div>
  <label>미리보기</label><div class="pv"><div class="logo"><span class="mark" id="pm" style="background:${S.accent}">${esc((S.name||"P")[0])}</span><span id="pl">${esc(S.name)}</span></div><span class="btn" id="pb" style="background:${S.accent}">전체 글 보기</span> <span id="pt" style="color:${S.accentText||S.accent};font-weight:700;margin-left:12px">링크 글자</span></div>
  <div class="bar" style="margin-top:12px"><button class="btn o s" onclick="setSkin('${S.skin||"plan-p"}')">이 스킨의 기본 색으로 되돌리기</button></div>
  <div class="note">글자색은 흰 배경 위에서 읽기 쉬운 진한 색을 고르세요. 기본값 <b>#4338CA</b>는 대비 7.9:1입니다.</div></div>`;
