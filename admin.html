@@ -50,6 +50,14 @@ label{display:block;font-size:12px;font-weight:700;color:var(--mut);margin:14px 
 .row{display:grid;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
 .r-menu,.hd{grid-template-columns:1fr 1.6fr 96px}.hd{display:grid;gap:10px;font-size:12px;font-weight:700;color:var(--mut);padding:0 0 6px}.r-add{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}.r-add label{margin:0 0 5px}
 .pvnav{display:flex;gap:22px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:10px;padding:0 20px;min-height:48px;align-items:center;font-weight:500}.pvnav span:first-child{color:var(--acct);font-weight:700;box-shadow:0 3px 0 var(--acc)}.acts{display:flex;gap:6px}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+.dc{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;min-width:0}
+.kp small{display:block;color:var(--mut);font-size:12px}.kp b{display:block;font-size:26px;line-height:1.35}.kp span{font-size:12px;color:var(--mut)}
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}.dc h3{font-size:15px;margin-bottom:12px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}.dc h3 span{font-size:12px;font-weight:400;color:var(--mut)}
+.bars{display:flex;align-items:flex-end;gap:4px;height:120px;border-bottom:1px solid var(--line)}.bars i{flex:1;background:var(--acc);border-radius:2px 2px 0 0;min-height:2px}.ct2{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}.ct2 button{height:26px;padding:0 10px;border:0;background:#fff;font-size:12px;color:var(--mut)}.ct2 button+button{border-left:1px solid var(--line)}.ct2 button[aria-pressed=true]{background:var(--acc);color:#fff;font-weight:700}.cv{position:relative;height:190px}
+.bx{display:flex;gap:4px;margin-top:4px;font-size:11px;color:var(--mut)}.bx span{flex:1;text-align:center;overflow:hidden}
+.hb div{display:grid;grid-template-columns:minmax(70px,120px) 1fr 34px;gap:10px;align-items:center;margin:9px 0;font-size:13px}.hb .t{height:8px;background:var(--tint);border-radius:4px;overflow:hidden}.hb .t i{display:block;height:100%;background:var(--acc)}.hb em{font-style:normal;text-align:right;font-weight:700}
+@media(max-width:900px){.dg{grid-template-columns:1fr}}
 .card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
 table{width:100%;border-collapse:collapse}th{font-size:11px;letter-spacing:.06em;color:var(--mut);text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);background:#FBFBFA}
 td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle}tr:last-child td{border:0}
@@ -101,6 +109,7 @@ td input[type=checkbox],th input[type=checkbox]{width:18px;height:18px;padding:0
 <div id="toast"></div>
 <datalist id="dl-tags"></datalist><datalist id="dl-cats"></datalist><datalist id="dl-links"></datalist>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha384-bs/nf9FbdNouRbMiFcrcZfLXYPKiPaGVGplVbv7dLGECccEXDW+S3zjqSKR5ZEaD" crossorigin="anonymous"></script>
 <script src="https://uicdn.toast.com/editor/3.2.2/toastui-editor-all.min.js"></script>
 <script src="https://uicdn.toast.com/editor/3.2.2/i18n/ko-kr.js"></script>
 <script src="data.js"></script>
@@ -108,8 +117,8 @@ td input[type=checkbox],th input[type=checkbox]{width:18px;height:18px;padding:0
 addEventListener("error",e=>{const i=e.target;if(i.tagName==="IMG"&&!i.src.endsWith("placeholder.svg"))i.src="placeholder.svg"},true);
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const TABS=[["posts","글 관리"],["write","글쓰기"],["menu","카테고리 관리"],["cmts","댓글 관리"],["home","메인 관리"],["design","디자인 관리"],["data","데이터 · 게시"]];
-let C,tab="posts",D=null,Di=-1,ED;
+const TABS=[["dash","대시보드"],["posts","글 관리"],["write","글쓰기"],["menu","카테고리 관리"],["cmts","댓글 관리"],["home","메인 관리"],["design","디자인 관리"],["data","데이터 · 게시"],["settings","설정"]];
+let C,tab="dash",D=null,Di=-1,ED;
 const today=()=>new Date().toISOString().slice(0,10);
 // 카테고리 후보 = 카테고리 목록(nav)의 #/cat/이름 링크 + 글에 쓰인 카테고리
 const allTags=()=>[...new Set(C.posts.flatMap(p=>p.tags||[]))];
@@ -367,8 +376,6 @@ function design(){
  <div class="two"><div><label>포인트 색 (버튼·선택)</label><div class="sw"><input type="color" value="${S.accent}" oninput="S_('accent',this.value)"><code>${S.accent}</code></div></div>
  <div><label>링크·라벨 글자색</label><div class="sw"><input type="color" value="${S.accentText||S.accent}" oninput="S_('accentText',this.value)"><code>${S.accentText||S.accent}</code></div></div></div>
  <label for="d2">푸터 문구</label><input id="d2" value="${esc(S.footer)}" oninput="S_('footer',this.value)">
- <label for="d3">날씨 API 키 (OpenWeatherMap)</label><input id="d3" value="${esc(S.weatherKey||"")}" placeholder="home.openweathermap.org > API keys" autocomplete="off" oninput="S_('weatherKey',this.value.trim())">
- <div class="note" style="margin-top:6px">푸터의 날씨 표시에 쓰입니다. 비워 두면 날씨를 보이지 않습니다. 이 값은 사이트 설정에 저장되고 <b>방문자 브라우저에서도 볼 수 있습니다</b>. 날씨 전용 무료 키만 넣으세요. 키 발급 후 활성화까지 최대 2시간이 걸릴 수 있습니다.</div>
  <label>미리보기</label><div class="pv"><div class="logo"><span class="mark" id="pm" style="background:${S.accent}">${esc((S.name||"P")[0])}</span><span id="pl">${esc(S.name)}</span></div><span class="btn" id="pb" style="background:${S.accent}">전체 글 보기</span> <span id="pt" style="color:${S.accentText||S.accent};font-weight:700;margin-left:12px">링크 글자</span></div>
  <div class="bar" style="margin-top:12px"><button class="btn o s" onclick="setSkin('${S.skin||"plan-p"}')">이 스킨의 기본 색으로 되돌리기</button></div>
  <div class="note">글자색은 흰 배경 위에서 읽기 쉬운 진한 색을 고르세요. 기본값 <b>#4338CA</b>는 대비 7.9:1입니다.</div></div>`;
@@ -405,7 +412,7 @@ async function cmLoad(){
  try{const q=await FB.getDocs(FB.collectionGroup(FB.db,"comments"));CM=q.docs.map(d=>({id:d.id,pid:d.ref.parent.parent.id,...d.data()}))}
  catch(e){CM=[];toast("댓글을 읽지 못했습니다: 규칙 배포와 로그인을 확인하세요")}
  CMb=false;
- if(tab==="cmts")render();else if(tab==="posts"&&$("#plist"))plist()}
+ if(tab==="cmts"||tab==="dash")render();else if(tab==="posts"&&$("#plist"))plist()}
 async function cmHide(pid,id,st){try{await FB.updateDoc(FB.doc(FB.db,"posts",pid,"comments",id),{status:st});CM.find(c=>c.id===id).status=st;toast(st==="hidden"?"숨겼습니다":"공개했습니다");render()}catch{toast("처리하지 못했습니다")}}
 async function cmDel(pid,id){if(!confirm("이 댓글을 삭제할까요? 되돌릴 수 없습니다. 이 댓글에 달린 답글은 사이트에 보이지 않게 되며, 이 목록에서 따로 삭제할 수 있습니다."))return;try{await FB.deleteDoc(FB.doc(FB.db,"posts",pid,"comments",id));CM=CM.filter(c=>c.id!==id);toast("삭제했습니다");render()}catch{toast("삭제하지 못했습니다")}}
 function exp(){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(C,null,1)],{type:"application/json"}));a.download="data.json";a.click()}
@@ -431,7 +438,176 @@ async function seed(){
   C=await loadCfg(true);render();toast("올렸습니다")}catch{toast("올리기 실패: 로그인과 네트워크를 확인하세요")}
 }
 
-const V={posts,write,menu,cmts,home,design,data};
+// 대시보드: 실제 글·댓글·추천 데이터. 조회수는 아직 집계하지 않아서 넣지 않는다
+let LK=null,LKb=false;
+async function lkLoad(){
+ if(LKb)return;LKb=true;
+ try{const ps=C.posts.filter(p=>p.status!=="draft"),rs=await Promise.all(ps.map(p=>FB.getDocs(FB.collection(FB.db,"posts",p.id,"likes"))));
+  LK={};ps.forEach((p,i)=>{let a=0,b=0;rs[i].docs.forEach(d=>d.data().cid?b++:a++);LK[p.id]={post:a,cm:b}})}
+ catch(e){LK={}}
+ LKb=false;if(tab==="dash")render()}
+const dk=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+function dashV(){
+ const HAS=!!window.Chart,tg=(k,l)=>`<span class="ct2" role="group" aria-label="차트 종류">${l.map(([v,t])=>`<button type="button" aria-pressed="${DT[k]===v}" onclick="setDT('${k}','${v}')">${t}</button>`).join("")}</span>`;
+ head("대시보드");
+ if(!CM)cmLoad();if(!LK)lkLoad();
+ const pub=C.posts.filter(p=>p.status!=="draft"),dr=C.posts.length-pub.length;
+ const cm=CM||[],vis=cm.filter(c=>c.status==="visible"),hid=cm.length-vis.length,lk=LK||{};
+ const when=c=>c.createdAt&&c.createdAt.toDate?c.createdAt.toDate():null,ts=c=>(c.createdAt&&c.createdAt.seconds)||0;
+ const days=Array.from({length:14},(_,i)=>{const d=new Date();d.setDate(d.getDate()-13+i);return d}),per=Object.fromEntries(days.map(d=>[dk(d),0]));
+ cm.forEach(c=>{const t=when(c);if(t&&dk(t) in per)per[dk(t)]++});
+ const wk=days.slice(-7).reduce((n,d)=>n+per[dk(d)],0),mx=Math.max(1,...days.map(d=>per[dk(d)]));
+ const likeSum=Object.values(lk).reduce((n,x)=>n+x.post,0),ti=id=>(C.posts.find(p=>p.id===id)||{}).title||id;
+ const catN={};pub.forEach(p=>p.cats.forEach(c=>catN[c]=(catN[c]||0)+1));
+ const cats=Object.entries(catN).sort((a,b)=>b[1]-a[1]),cmx=Math.max(1,...cats.map(c=>c[1]));
+ const rank=pub.map(p=>({p,c:vis.filter(x=>x.pid===p.id).length,l:(lk[p.id]||{}).post||0})).sort((a,b)=>(b.c+b.l)-(a.c+a.l)||(b.p.date||"").localeCompare(a.p.date||"")).slice(0,5);
+ const recent=[...cm].sort((a,b)=>ts(b)-ts(a)).slice(0,5);
+ const pp=Object.fromEntries(days.map(d=>[dk(d),0]));pub.forEach(p=>{if(p.date in pp)pp[p.date]++});const pmx=Math.max(1,...days.map(d=>pp[dk(d)]));
+ const wait=!CM?"불러오는 중…":"";
+ return `<h2>대시보드</h2><p class="lead">실제로 쌓인 글, 댓글, 추천을 한눈에 봅니다. 방문 통계는 Google Analytics에서, 나머지는 사이트에 쌓인 글·댓글·추천에서 가져옵니다.</p>
+ ${gaBlock(tg)}
+ <div class="kp"><div class="dc"><small>전체 글</small><b>${C.posts.length}</b><span>발행 ${pub.length} · 임시저장 ${dr}</span></div>
+ <div class="dc"><small>댓글</small><b>${CM?cm.length:"…"}</b><span>${CM?`공개 ${vis.length} · 숨김 ${hid}`:wait}</span></div>
+ <div class="dc"><small>최근 7일 새 댓글</small><b>${CM?wk:"…"}</b><span>${wait||"오늘 포함"}</span></div>
+ <div class="dc"><small>글 추천</small><b>${LK?likeSum:"…"}</b><span>${LK?"발행한 글의 추천 합계":"불러오는 중…"}</span></div></div>
+  <div class="dg"><div class="dc"><h3>일별 새 글 ${tg("p",[["bar","막대"],["line","선"]])}</h3>
+   ${HAS?`<div class="cv"><canvas id="dch0" role="img" aria-label="최근 14일 일별 새 글 수"></canvas></div>`:`<div class="bars" role="img" aria-label="최근 14일 일별 새 글 수">${days.map(d=>`<i title="${d.getMonth()+1}.${d.getDate()} · ${pp[dk(d)]}개" style="height:${pp[dk(d)]/pmx*100}%"></i>`).join("")}</div>`}
+   <p class="note" style="margin-top:8px">${Math.max(...days.map(d=>pp[dk(d)]))>0?(()=>{const pk=days.find(d=>pp[dk(d)]===pmx);return `새 글을 가장 많이 발행한 날은 ${pk.getMonth()+1}월 ${pk.getDate()}일로, 하루 ${pmx}개입니다.`})():"최근 14일 동안 새로 발행한 글이 없습니다."}</p></div>
+ <div class="dc"><h3>일별 새 댓글 ${tg("c",[["bar","막대"],["line","선"]])}</h3>
+  ${CM?(HAS?`<div class="cv"><canvas id="dch1" role="img" aria-label="최근 14일 일별 새 댓글 수"></canvas></div>`:`<div class="bars" role="img" aria-label="최근 14일 일별 새 댓글 수">${days.map(d=>`<i title="${d.getMonth()+1}.${d.getDate()} · ${per[dk(d)]}개" style="height:${per[dk(d)]/mx*100}%"></i>`).join("")}</div>
+  <div class="bx"><span>${days[0].getMonth()+1}.${days[0].getDate()}</span><span style="flex:12"></span><span>${days[13].getMonth()+1}.${days[13].getDate()}</span></div>`)+`<p class="note" style="margin-top:8px">${mx>0&&days.some(d=>per[dk(d)]===mx)&&Math.max(...days.map(d=>per[dk(d)]))>0?(()=>{const pk=days.find(d=>per[dk(d)]===mx);return `새 댓글이 가장 많은 날은 ${pk.getMonth()+1}월 ${pk.getDate()}일로, 하루 ${mx}개입니다.`})():"최근 14일 동안 새 댓글이 없습니다."}</p>`:`<p class="note">${wait}</p>`}</div>
+  </div>
+  <div class="dg"><div class="dc"><h3>카테고리별 글 ${HAS?tg("k",[["bar","막대"],["doughnut","도넛"]]):"<span>발행한 글 기준</span>"}</h3>${HAS&&cats.length?`<div class="cv"><canvas id="dch2" role="img" aria-label="카테고리별 발행한 글 수"></canvas></div>`:`<div class="hb">${cats.length?cats.map(([n,k])=>`<div><span>${esc(n)}</span><span class="t"><i style="width:${k/cmx*100}%"></i></span><em>${k}</em></div>`).join(""):`<p class="note">발행한 글이 없습니다.</p>`}</div>`}</div>
+ <div class="dc"><h3>반응이 많은 글 TOP 5 <span>공개 댓글 + 글 추천</span></h3>
+  ${CM&&LK?`<div class="hb">${rank.map(r=>`<div style="grid-template-columns:1fr 120px"><span title="${esc(r.p.title)}" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r.p.title)}</span><em style="text-align:right;font-weight:500">댓글 ${r.c} · 추천 ${r.l}</em></div>`).join("")}</div>`:`<p class="note">불러오는 중…</p>`}</div>
+  </div>
+  ${gaReact()}
+  <div class="dg" style="grid-template-columns:1fr"><div class="dc"><h3>최근 댓글 <a style="color:var(--acct);cursor:pointer;font-size:12px;font-weight:700" onclick="go('cmts')">댓글 관리로 이동</a></h3>
+  ${CM?(recent.length?recent.map(c=>`<div style="padding:8px 0;border-bottom:1px solid var(--line)"><div style="white-space:pre-wrap;word-break:break-word">${esc(c.text.length>80?c.text.slice(0,80)+"…":c.text)}</div><small style="color:var(--mut)">${esc(c.name)} · ${esc(ti(c.pid))} · ${when(c)?when(c).toLocaleString("ko-KR"):""} ${c.status==="hidden"?'<span class="st d">숨김</span>':""}</small></div>`).join(""):`<p class="note">아직 댓글이 없습니다.</p>`):`<p class="note">${wait}</p>`}</div></div>`;
+}
+// 차트 종류(막대·선·도넛)는 화면에서 바꾼다. 마지막 선택은 이 브라우저에 기억한다
+let DT={c:"bar",k:"bar",p:"bar",v:"line"},DCH={};
+try{Object.assign(DT,JSON.parse(localStorage.getItem("dashTypes")||"{}"))}catch{}
+function setDT(k,v){DT[k]=v;try{localStorage.setItem("dashTypes",JSON.stringify(DT))}catch{}render()}
+function dashCharts(){
+ if(!window.Chart||!CM)return;
+ Object.values(DCH).forEach(c=>c.destroy());DCH={};
+ const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim(),acc=css("--acc"),line=css("--line"),mut=css("--mut");
+ const rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${n>>8&255},${n&255},${a})`};
+ Chart.defaults.font.family='"Noto Sans KR",sans-serif';Chart.defaults.color=mut;
+ const days=Array.from({length:14},(_,i)=>{const d=new Date();d.setDate(d.getDate()-13+i);return d}),per=Object.fromEntries(days.map(d=>[dk(d),0]));
+ CM.forEach(c=>{const t=c.createdAt&&c.createdAt.toDate&&c.createdAt.toDate();if(t&&dk(t) in per)per[dk(t)]++});
+ const pub0=C.posts.filter(p=>p.status!=="draft"),pp=Object.fromEntries(days.map(d=>[dk(d),0]));pub0.forEach(p=>{if(p.date in pp)pp[p.date]++});
+ const c0=document.getElementById("dch0");
+ if(c0)DCH.p=new Chart(c0,{type:DT.p,data:{labels:days.map(d=>`${d.getMonth()+1}.${d.getDate()}`),datasets:[{data:days.map(d=>pp[dk(d)]),backgroundColor:DT.p==="line"?rgba(acc,.12):acc,borderColor:acc,borderWidth:2,borderRadius:3,fill:true,tension:0,pointRadius:3,pointBackgroundColor:acc}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` 새 글 ${c.parsed.y}개`}}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:7,maxRotation:0}},y:{beginAtZero:true,grid:{color:line},border:{display:false},ticks:{precision:0}}}}});
+ const c1=document.getElementById("dch1");
+ if(c1)DCH.c=new Chart(c1,{type:DT.c,data:{labels:days.map(d=>`${d.getMonth()+1}.${d.getDate()}`),datasets:[{data:days.map(d=>per[dk(d)]),backgroundColor:DT.c==="line"?rgba(acc,.12):acc,borderColor:acc,borderWidth:2,borderRadius:3,fill:true,tension:0,pointRadius:3,pointBackgroundColor:acc}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` 새 댓글 ${c.parsed.y}개`}}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:7,maxRotation:0}},y:{beginAtZero:true,grid:{color:line},border:{display:false},ticks:{precision:0}}}}});
+ const pub=C.posts.filter(p=>p.status!=="draft"),n={};pub.forEach(p=>p.cats.forEach(x=>n[x]=(n[x]||0)+1));
+ const ce=Object.entries(n).sort((a,b)=>b[1]-a[1]),c2=document.getElementById("dch2"),tot=ce.reduce((s,x)=>s+x[1],0);
+ if(c2)DCH.k=new Chart(c2,DT.k==="doughnut"
+  ?{type:"doughnut",data:{labels:ce.map(x=>x[0]),datasets:[{data:ce.map(x=>x[1]),backgroundColor:ce.map((_,i)=>rgba(acc,[1,.78,.58,.4,.26,.16][i]||.12)),borderColor:"#fff",borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:"60%",plugins:{legend:{position:"right",labels:{boxWidth:10,boxHeight:10,generateLabels:ch=>ch.data.labels.map((l,i)=>({text:`${l}  ${ce[i][1]}개 (${Math.round(ce[i][1]/tot*100)}%)`,fillStyle:ch.data.datasets[0].backgroundColor[i],strokeStyle:ch.data.datasets[0].backgroundColor[i],index:i}))}}}}}
+  :{type:"bar",data:{labels:ce.map(x=>x[0]),datasets:[{data:ce.map(x=>x[1]),backgroundColor:acc,borderRadius:3,barThickness:14}]},
+    options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` 글 ${c.parsed.x}개`}}},scales:{x:{beginAtZero:true,grid:{color:line},border:{display:false},ticks:{precision:0}},y:{grid:{display:false}}}}});
+}
+// ---- 방문 통계: Google Analytics Data API (관리자 로그인 때 읽기 권한을 따로 받는다) ----
+// 토큰은 메모리에만 둔다(새로 고치면 다시 연결). 속성 ID는 site.gaProperty에 저장한다.
+let GT=null,GA=null,GAb=false,GAerr="",GP=30,DS="v";
+const gaTok=()=>GT&&GT.exp>Date.now()?GT.tok:null;
+async function gaConnect(){
+ const pr=new FB.GoogleAuthProvider();pr.addScope("https://www.googleapis.com/auth/analytics.readonly");
+ try{const res=await FB.signInWithPopup(FB.auth,pr),cr=FB.GoogleAuthProvider.credentialFromResult(res);
+  GT={tok:cr.accessToken,exp:Date.now()+50*60*1000};GA=null;GAerr="";render()}
+ catch{toast("연결을 취소했거나 실패했습니다")}}
+function setGP(n){GP=n;GA=null;GAerr="";render()}
+function gaReload(){GA=null;GAerr="";render()}
+async function gaRun(body){
+ const r=await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${C.site.gaProperty}:runReport`,{method:"POST",headers:{Authorization:"Bearer "+gaTok(),"Content-Type":"application/json"},body:JSON.stringify(body)});
+ if(!r.ok){const e=await r.json().catch(()=>({}));throw {status:r.status,msg:(e.error&&e.error.message)||""}}
+ return r.json()}
+const gaNum=m=>+((m||{}).value||0);
+async function gaLoad(){
+ if(GAb||!C.site.gaProperty||!gaTok())return;GAb=true;
+ const P=GP,cur={startDate:`${P-1}daysAgo`,endDate:"today",name:"cur"},prev={startDate:`${2*P-1}daysAgo`,endDate:`${P}daysAgo`,name:"prev"},M=[{name:"screenPageViews"},{name:"totalUsers"}];
+ try{
+  const [sum,day,pg,sh]=await Promise.all([
+   gaRun({dateRanges:[cur,prev],metrics:M}),
+   gaRun({dateRanges:[cur],dimensions:[{name:"date"}],metrics:M,orderBys:[{dimension:{dimensionName:"date"}}]}),
+   gaRun({dateRanges:[cur],dimensions:[{name:"pagePath"}],metrics:[{name:"screenPageViews"}],dimensionFilter:{filter:{fieldName:"pagePath",stringFilter:{matchType:"BEGINS_WITH",value:"/post/"}}},limit:1000}),
+   // 공유는 item_id를 GA 맞춤 측정기준으로 등록해야 글별로 나온다. 없으면 null
+   gaRun({dateRanges:[cur],dimensions:[{name:"customEvent:item_id"}],metrics:[{name:"eventCount"}],dimensionFilter:{filter:{fieldName:"eventName",stringFilter:{value:"share"}}},limit:1000}).catch(()=>null)]);
+  const S={cur:[0,0],prev:[0,0]};(sum.rows||[]).forEach(r=>{S[r.dimensionValues[0].value]=[gaNum(r.metricValues[0]),gaNum(r.metricValues[1])]});
+  const byDay={};(day.rows||[]).forEach(r=>{byDay[r.dimensionValues[0].value]=[gaNum(r.metricValues[0]),gaNum(r.metricValues[1])]});
+  const labels=[],v=[],u=[];for(let i=P-1;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=dk(d).replace(/-/g,"");labels.push(`${d.getMonth()+1}.${d.getDate()}`);v.push((byDay[k]||[0,0])[0]);u.push((byDay[k]||[0,0])[1])}
+  const pages={};(pg.rows||[]).forEach(r=>{const id=decodeURIComponent(r.dimensionValues[0].value.split("/")[2]||"");if(id)pages[id]=(pages[id]||0)+gaNum(r.metricValues[0])});
+  let shares=null;if(sh){shares={};(sh.rows||[]).forEach(r=>{shares[r.dimensionValues[0].value]=gaNum(r.metricValues[0])})}
+  GA={P,S,labels,v,u,pages,shares};GAerr=""}
+ catch(e){GA=null;if(e.status===401)GT=null;GAerr=e.status===401?"연결이 만료되었습니다. 다시 연결해 주세요.":e.status===403?"Analytics Data API가 꺼져 있거나, 이 계정에 해당 속성의 읽기 권한이 없습니다.":e.status===400?"속성 ID를 확인해 주세요. "+(e.msg||""):"방문 통계를 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요."}
+ GAb=false;if(tab==="dash")render()}
+const dp=(a,b)=>b?((a-b)/b*100):null;
+const dpT=x=>x==null?"":`<span style="color:${x>=0?"#1A7F4B":"var(--red)"};font-weight:700">${x>=0?"▲":"▼"} ${Math.abs(x).toFixed(1)}%</span>`;
+const nf=n=>Math.round(n).toLocaleString("ko-KR");
+function gaRows(){
+ const ok=GA&&GA.P===GP,pub=C.posts.filter(p=>p.status!=="draft"),lk=LK||{},cmv=CM?CM.filter(c=>c.status==="visible"):[];
+ return pub.map(p=>{const v=ok?GA.pages[p.id]||0:null,l=LK?(lk[p.id]||{}).post||0:null,c=CM?cmv.filter(x=>x.pid===p.id).length:null,sh=ok&&GA.shares?GA.shares[p.id]||0:null;
+  return {p,v,l,c,sh,r:(l||0)+(c||0)+(sh||0)}}).sort((a,b)=>DS==="r"?b.r-a.r||(b.v||0)-(a.v||0):(b.v||0)-(a.v||0)||b.r-a.r)}
+function gaReact(){
+ const ok=!!GA&&GA.P===GP,rows=gaRows();
+ return ` <div class="dg" style="grid-template-columns:1fr"><div class="dc"><h3>글별 반응 <span>추천${ok&&GA.shares?"·공유":""}·댓글</span></h3>
+  ${rows.length&&CM&&LK?`<div class="cv" style="height:${Math.min(8,rows.length)*34+40}px"><canvas id="dch4" role="img" aria-label="반응이 많은 글의 추천, 공유, 댓글 수"></canvas></div>`:`<p class="note">불러오는 중…</p>`}
+  <div style="overflow:auto;max-height:340px;margin-top:12px"><table><tr><th>글</th><th><a style="cursor:pointer;${DS==="v"?"color:var(--acct)":""}" onclick="DS='v';render()">조회수${DS==="v"?" ↓":""}</a></th><th>추천</th><th>공유</th><th>댓글</th><th><a style="cursor:pointer;${DS==="r"?"color:var(--acct)":""}" onclick="DS='r';render()">반응 합${DS==="r"?" ↓":""}</a></th></tr>
+  ${rows.map(r=>`<tr><td style="min-width:200px;white-space:normal">${esc(r.p.title)}</td><td>${r.v==null?"—":nf(r.v)}</td><td>${r.l==null?"…":r.l}</td><td>${r.sh==null?"—":r.sh}</td><td>${r.c==null?"…":r.c}</td><td><b>${CM&&LK?r.r:"…"}</b></td></tr>`).join("")}</table></div></div></div>`}
+function gaBlock(tg){
+ const prop=!!C.site.gaProperty,tok=!!gaTok(),ok=!!GA&&GA.P===GP;
+ if(prop&&tok&&!ok&&!GAerr)gaLoad();
+ const loading=prop&&tok&&!ok&&!GAerr&&GAb,S=ok?GA.S:null,rows=gaRows(),react=rows.reduce((n,r)=>n+r.r,0),ppu=ok&&S.cur[1]?S.cur[0]/S.cur[1]:0;
+ const right=tok&&prop?`<span style="display:flex;gap:8px;align-items:center"><span class="ct2" role="group" aria-label="기간">${[7,30,90].map(n=>`<button type="button" aria-pressed="${GP===n}" onclick="setGP(${n})">${n}일</button>`).join("")}</span><button class="btn o s" onclick="gaReload()">새로 고침</button></span>`
+  :`<button class="btn o s" onclick="${prop?"gaConnect()":"go('settings')"}">${prop?"Google Analytics 연결":"설정에서 연결"}</button>`;
+ const sub=t=>ok?t:`<span>${loading?"불러오는 중…":"GA 연결 전"}</span>`;
+ const dash="—";
+ return `<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px"><h2 style="margin:0;font-size:17px">방문 통계 <span style="font-size:12px;font-weight:400;color:var(--mut)">Google Analytics</span></h2>${right}</div>
+ ${GAerr?`<p class="note" style="color:var(--red);margin:-4px 0 12px">${esc(GAerr)}</p>`:""}
+ <div class="kp"><div class="dc"><small>전체 조회수 · ${GP}일</small><b>${ok?nf(S.cur[0]):dash}</b>${ok?(dpT(dp(S.cur[0],S.prev[0]))||'<span>비교할 기록 없음</span>')+` <span>앞선 ${GP}일 대비</span>`:sub()}</div>
+ <div class="dc"><small>전체 방문자 수 · ${GP}일</small><b>${ok?nf(S.cur[1]):dash}</b>${ok?(dpT(dp(S.cur[1],S.prev[1]))||'<span>비교할 기록 없음</span>')+` <span>앞선 ${GP}일 대비</span>`:sub()}</div>
+ <div class="dc"><small>방문자당 조회수</small><b>${ok?ppu.toFixed(1):dash}</b>${ok?"<span>조회수 ÷ 방문자 수</span>":sub()}</div>
+ <div class="dc"><small>글 반응 합계</small><b>${CM&&LK?nf(react):"…"}</b><span>추천 + ${ok&&GA.shares?"공유 + ":""}댓글</span></div></div>
+ <div class="dc" style="margin-bottom:16px"><h3>일별 조회수·방문자 수 ${tg("v",[["line","선"],["bar","막대"]])}</h3>${ok?`<div class="cv" style="height:240px"><canvas id="dch3" role="img" aria-label="일별 조회수와 방문자 수"></canvas></div>`:`<div class="cv" style="height:240px;display:grid;place-items:center"><p class="note">${loading?"불러오는 중…":"GA 연결 전입니다"}</p></div>`}</div>
+ <h2 style="font-size:17px;margin:20px 0 12px">사이트 활동 <span style="font-size:12px;font-weight:400;color:var(--mut)">Firestore</span></h2>`}
+function gaCharts(){
+ if(!window.Chart)return;
+ ["v","r"].forEach(k=>{DCH[k]&&DCH[k].destroy();delete DCH[k]});
+ const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim(),acc=css("--acc"),line=css("--line"),mut=css("--mut");
+ const rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${n>>8&255},${n&255},${a})`};
+ Chart.defaults.font.family='"Noto Sans KR",sans-serif';Chart.defaults.color=mut;
+ const c3=document.getElementById("dch3");
+ if(c3&&GA){
+  const isL=DT.v==="line",ds=(l,d,c,dash)=>({label:l,data:d,borderColor:c,backgroundColor:isL?rgba(c,.08):c,borderWidth:2,borderRadius:3,fill:isL&&!dash,tension:0,pointRadius:GA.P<=14?3:0,pointBackgroundColor:c,borderDash:dash?[5,4]:[]});
+  DCH.v=new Chart(c3,{type:DT.v,data:{labels:GA.labels,datasets:[ds("조회수",GA.v,acc),ds("방문자 수",GA.u,mut,true)]},
+   options:{responsive:true,maintainAspectRatio:false,interaction:{mode:"index",intersect:false},plugins:{legend:{position:"top",align:"end",labels:{boxWidth:10,boxHeight:10}},tooltip:{callbacks:{label:c=>` ${c.dataset.label} ${nf(c.parsed.y)}`}}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:8,maxRotation:0}},y:{beginAtZero:true,grid:{color:line},border:{display:false},ticks:{precision:0,callback:v=>nf(v)}}}}})}
+ const c4=document.getElementById("dch4");if(!c4||!CM||!LK)return;
+ const top=gaRows().sort((a,b)=>b.r-a.r||(b.v||0)-(a.v||0)).slice(0,8),cut=t=>t.length>16?t.slice(0,16)+"…":t,hasSh=!!(GA&&GA.P===GP&&GA.shares);
+ const sets=[["추천",top.map(r=>r.l||0),1],["공유",top.map(r=>r.sh||0),.55],["댓글",top.map(r=>r.c||0),.28]].filter(x=>x[0]!=="공유"||hasSh);
+ DCH.r=new Chart(c4,{type:"bar",data:{labels:top.map(r=>cut(r.p.title)),datasets:sets.map(([l,d,a])=>({label:l,data:d,backgroundColor:rgba(acc,a),borderRadius:2,barThickness:16}))},
+  options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"top",align:"end",labels:{boxWidth:10,boxHeight:10}},tooltip:{callbacks:{title:i=>top[i[0].dataIndex].p.title}}},scales:{x:{stacked:true,beginAtZero:true,grid:{color:line},border:{display:false},ticks:{precision:0}},y:{stacked:true,grid:{display:false},ticks:{autoSkip:false}}}}});
+}
+// 설정: 외부 서비스 연결 값(GA 속성 ID, 날씨 API 키). 모두 사이트 설정(site/config)에 저장된다
+const gaId=v=>String(v).replace(/\D/g,"");
+function settingsV(){
+ head("설정",`<span id="dirty" style="font-size:12px;color:var(--red)">${dirty?"저장하지 않은 변경이 있습니다":""}</span><button class="btn" onclick="save()">저장</button>`);
+ const S=C.site;
+ return `<h2>설정</h2><p class="lead">외부 서비스를 연결하는 값입니다. 입력한 뒤 위의 저장 버튼을 눌러야 반영됩니다. 이 값들은 사이트 설정에 저장되며 <b>방문자 브라우저에서도 볼 수 있으니</b> 비밀 값은 넣지 마세요.</p>
+ <div style="max-width:640px">
+ <h4>방문 통계 · Google Analytics</h4>
+ <label for="s-ga" style="margin-top:0">GA 속성 ID</label><input id="s-ga" inputmode="numeric" value="${esc(S.gaProperty||"")}" placeholder="예: 123456789" autocomplete="off" oninput="S_('gaProperty',gaId(this.value))">
+ <div class="note" style="margin-top:6px">GA 관리 &gt; 속성 설정의 <b>속성 ID</b>(숫자)입니다. 측정 ID <code>G-…</code>와 다릅니다. 대시보드의 방문 통계에 쓰이며, Google Cloud 프로젝트 <code>plan-p-1b255</code>에서 <b>Analytics Data API</b>를 사용 설정해야 합니다. 저장한 뒤 대시보드에서 "Google Analytics 연결"을 누르세요.</div>
+ <h4>날씨 · OpenWeatherMap</h4>
+ <label for="s-wx" style="margin-top:0">날씨 API 키</label><input id="s-wx" value="${esc(S.weatherKey||"")}" placeholder="home.openweathermap.org > API keys" autocomplete="off" oninput="S_('weatherKey',this.value.trim())">
+ <div class="note" style="margin-top:6px">사이트 푸터의 날씨 표시에 쓰입니다. 비워 두면 날씨를 보이지 않습니다. 날씨 전용 무료 키만 넣으세요. 키 발급 후 활성화까지 최대 2시간이 걸릴 수 있습니다.</div>
+ </div>`;
+}
+const V={dash:dashV,posts,write,menu,cmts,home,design,data,settings:settingsV};
 function render(){
  $("#side").innerHTML=TABS.map(([k,l])=>`<a class="${k===tab?"on":""}" onclick="go('${k}')">${l}</a>`).join("");
  $("#dl-tags").innerHTML=allTags().map(t=>`<option value="${esc(t)}">`).join("");
@@ -439,10 +615,11 @@ function render(){
  $("#dl-links").innerHTML=`<option value="#/"><option value="#/all">`+cats().map(c=>`<option value="#/cat/${esc(c)}">`).join("");
  $("#main").innerHTML=V[tab]();
  if(tab==="write")initEditor();
+ if(tab==="dash"){dashCharts();gaCharts()}
  document.querySelectorAll(".nm").forEach(e=>e.textContent=C.site.name);
 }
 // 관리자 인증: Google 로그인 → site/admin 읽기가 통과하면(규칙: 관리자 이메일만) 관리자
-let FB;
+let FB,LASTUID=null;
 const show=on=>{$("#app").hidden=!on;$("#login").hidden=on;$("#login").style.display=on?"none":"grid"};
 const login=()=>FB.signInWithPopup(FB.auth,new FB.GoogleAuthProvider()).catch(()=>toast("로그인을 취소했거나 실패했습니다"));
 import("./fb.js").then(m=>{FB=m;$("#lbtn").disabled=false;
@@ -450,7 +627,8 @@ import("./fb.js").then(m=>{FB=m;$("#lbtn").disabled=false;
   if(!u)return show(false);
   try{await FB.getDoc(FB.doc(FB.db,"site","admin"))}
   catch{$("#lmsg").textContent="관리자 계정이 아닙니다. 다른 계정으로 로그인하세요";return FB.signOut(FB.auth)}
-  C=await loadCfg(true);
+  if(C&&LASTUID===u.uid)return; // GA 연결 팝업처럼 같은 계정의 로그인 이벤트는 다시 읽지 않는다
+  LASTUID=u.uid;C=await loadCfg(true);
   const hm=location.hash.match(/^#cmts\/(.+)$/); // 글 관리의 댓글 수를 누르면 새 창에서 그 글의 댓글만 연다
   if(hm){tab="cmts";CMp=decodeURIComponent(hm[1])}
   show(true);render();cmLoad();

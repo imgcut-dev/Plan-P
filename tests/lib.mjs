@@ -14,9 +14,10 @@ export async function until(fn,ms=4000){const t=Date.now();while(Date.now()-t<ms
 class Loader extends ResourceLoader{
  fetch(url){
   const u=new URL(url);
-  if(u.hostname!=="localhost")return Promise.resolve(Buffer.from("")); // CDN, 폰트, GA는 불러오지 않는다
+  const done=b=>{const p=Promise.resolve(b);p.abort=()=>{};return p}; // window.close()가 아직 끝나지 않은 요청을 abort()로 끊을 수 있게
+  if(u.hostname!=="localhost")return done(Buffer.from("")); // CDN, 폰트, GA는 불러오지 않는다
   const f=path.join(ROOT,decodeURIComponent(u.pathname));
-  return Promise.resolve(existsSync(f)?readFileSync(f):Buffer.from(""));
+  return done(existsSync(f)?readFileSync(f):Buffer.from(""));
  }
 }
 // file: "index.html" | "admin.html", query: "?demo=1", hash: "#/"
