@@ -1,5 +1,5 @@
 {
- "ranAt": "2026-11-17T08:56:19.660Z",
+ "ranAt": "2026-11-18T00:07:44.270Z",
  "results": [
   {
    "id": "TC-U-001",
@@ -414,7 +414,7 @@
   {
    "id": "TC-I-103",
    "result": "Pass",
-   "actual": "{\"uid\":\"u1\",\"name\":\"홍길동\",\"photo\":null,\"text\":\"안녕하세요\",\"createdAt\":{\"seconds\":1794905767},\"parentId\":null,\"status\":\"visible\"}"
+   "actual": "{\"uid\":\"u1\",\"name\":\"홍길동\",\"photo\":null,\"text\":\"안녕하세요\",\"createdAt\":{\"seconds\":1794960456},\"parentId\":null,\"status\":\"visible\"}"
   },
   {
    "id": "TC-I-104",

@@ -48,8 +48,8 @@ nav a.on{color:var(--acct);border-bottom-color:var(--acc)}
 .ib{width:40px;height:40px;border:0;background:none;border-radius:var(--r3);display:grid;place-items:center;cursor:pointer}
 .ib:hover{background:var(--surf)}
 .btn-l{height:36px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r3);font-size:13px;font-weight:500;display:flex;align-items:center}
-#q{display:none;border-bottom:1px solid var(--line);padding:10px 0}
-#q.on{display:block}#q input{width:100%;border:0;outline:0;font-size:18px;background:none}
+#q{display:none;flex:1 1 0;min-width:0}
+#q.on{display:block}.bar.sq nav{display:none}#q input{width:100%;height:36px;border:1px solid var(--line);border-radius:var(--r3);padding:0 14px;outline:0;font-size:15px;background:none;color:var(--ink)}#q input:focus{border-color:var(--acc)}
 /* chips, labels */
 .chips{display:flex;gap:8px;flex-wrap:wrap;padding:24px 0 8px}
 .chip{height:34px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:500;display:flex;align-items:center;border:1px solid var(--line);background:var(--bg)}
@@ -163,12 +163,11 @@ footer .wrap{padding:28px 24px;font-size:13px;color:var(--mut)}
 <header><div class="wrap bar">
  <a class="logo" href="#/"><span class="mark" id="mk">P</span><span id="logo"></span></a>
  <nav id="nav" aria-label="주 메뉴"></nav>
+ <div id="q"><input id="qi" placeholder="글 검색" aria-label="글 검색"></div>
  <div class="tools">
   <button class="ib" id="srch" aria-label="검색"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
-  <a class="btn-l" href="admin.html">관리자</a>
  </div>
 </div>
-<div class="wrap" id="q"><input id="qi" placeholder="글 검색" aria-label="글 검색"></div>
 </header>
 <main class="wrap" id="app"></main>
 <footer><div class="wrap" id="foot"></div></footer>
@@ -316,7 +315,7 @@ setTimeout(()=>document.body.classList.add("ready"),6000); // 불러오기가 �
  if(SK.font)document.head.insertAdjacentHTML("beforeend",`<link rel="stylesheet" href="${SK.font}">`);
  const ac=fk?SK.accent:(S.accent||SK.accent),act=fk?SK.accentText:(S.accentText||(S.accent?ac:SK.accentText));
  document.head.insertAdjacentHTML("beforeend",`<style>:root{--acc:${ac};--acct:${act}}</style>`);
- $("#logo").textContent=S.name;$("#mk").textContent=(S.name||"P")[0];$("#foot").textContent=S.footer;
+ $("#logo").textContent=S.name;$("#mk").textContent=(S.name||"P")[0];$("#foot").textContent=S.footer;$("#foot").insertAdjacentHTML("beforeend",`<div style="margin-top:6px;font-size:12px"><a href="admin.html" style="color:inherit;opacity:.6">관리자</a></div>`);
  if(gaOn())$("#foot").insertAdjacentHTML("beforeend",`<div style="margin-top:6px;font-size:12px">이 사이트는 방문 통계를 위해 Google Analytics를 사용합니다.</div>`);
  gaInit();gaBind();
  const at=()=>location.pathname+location.search+location.hash;let last="";
@@ -326,7 +325,7 @@ setTimeout(()=>document.body.classList.add("ready"),6000); // 불러오기가 �
  document.addEventListener("click",e=>{const l=e.target.closest&&e.target.closest('a[href^="#/"]');if(!l||e.defaultPrevented||e.button||e.metaKey||e.ctrlKey||e.shiftKey||l.target)return;e.preventDefault();location.hash=l.getAttribute("href")});
  nav();document.body.classList.add("ready");
 })();
-$("#srch").onclick=()=>{$("#q").classList.toggle("on");$("#qi").focus()};
+$("#srch").onclick=()=>{const on=$("#q").classList.toggle("on");$(".bar").classList.toggle("sq",on);if(on)$("#qi").focus();else navHint&&navHint()};
 $("#qi").oninput=e=>{const v=e.target.value.trim();location.hash=v?"#/search/"+enc(v):"#/all"};
 </script>
 </body>
