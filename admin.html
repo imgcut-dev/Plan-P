@@ -544,7 +544,7 @@ async function gaLoad(){
   const pages={};(pg.rows||[]).forEach(r=>{const id=decodeURIComponent(r.dimensionValues[0].value.split("/")[2]||"");if(id)pages[id]=(pages[id]||0)+gaNum(r.metricValues[0])});
   let shares=null;if(sh){shares={};(sh.rows||[]).forEach(r=>{shares[r.dimensionValues[0].value]=gaNum(r.metricValues[0])})}
   GA={P,S,labels,v,u,pages,shares};GAerr=""}
- catch(e){GA=null;if(e.status===401)GT=null;GAerr=e.status===401?"연결이 만료되었습니다. 다시 연결해 주세요.":e.status===403?"Analytics Data API가 꺼져 있거나, 이 계정에 해당 속성의 읽기 권한이 없습니다.":e.status===400?"속성 ID를 확인해 주세요. "+(e.msg||""):"방문 통계를 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요."}
+ catch(e){GA=null;if(e.status===401)GT=null;GAerr=e.status===401?"연결이 만료되었습니다. 다시 연결해 주세요.":e.status===403?"Analytics Data API가 꺼져 있거나, 이 계정에 해당 속성의 읽기 권한이 없습니다."+(e.msg?" (Google 응답: "+e.msg+")":""):e.status===400?"속성 ID를 확인해 주세요. "+(e.msg||""):"방문 통계를 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요."}
  GAb=false;if(tab==="dash")render()}
 const dp=(a,b)=>b?((a-b)/b*100):null;
 const dpT=x=>x==null?"":`<span style="color:${x>=0?"#1A7F4B":"var(--red)"};font-weight:700">${x>=0?"▲":"▼"} ${Math.abs(x).toFixed(1)}%</span>`;
